@@ -24,3 +24,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 
 // authenticate user
 Route::post('/login', [AuthController::class, 'login']);
+
+//logout 
+
+Route::get('/logout', [AuthController::class, 'logout']);

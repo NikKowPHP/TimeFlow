@@ -4,7 +4,7 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import axiosClient from "../axios-client";
 
 function DefaultLayout() {
-  const { user, token, setUser } = useStateContext();
+  const { user, token, setUser, setToken } = useStateContext();
   if (!token) {
     return <Navigate to="/login" />;
   }
@@ -13,7 +13,7 @@ function DefaultLayout() {
 
     axiosClient.post('/logout')
     .then(()=> {
-      setUser(null)
+      setUser({})
       setToken(null)
     })
   }

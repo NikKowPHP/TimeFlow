@@ -1,6 +1,7 @@
 import React from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { Link, Navigate, Outlet } from "react-router-dom";
+import axiosClient from "../axios-client";
 
 function DefaultLayout() {
   const { user, token } = useStateContext();
@@ -9,6 +10,10 @@ function DefaultLayout() {
   }
   const onLogout = (ev) => {
     ev.preventDefault();
+
+    axiosClient.post('/logout')
+    .then(()=> {
+    })
   }
   return (
     <div id="defaultLayout">

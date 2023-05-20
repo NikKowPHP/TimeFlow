@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import axiosClient from '../axios-client';
 import { useStateContext } from '../contexts/ContextProvider';
@@ -10,6 +10,7 @@ export default function Signup() {
 		const passwordConfirmationRef = useRef();
 
 		const {setUser, setToken} = useStateContext();
+		const [errors, setErrors] = useState(null);
 	const onSubmit = (ev) => {
 		ev.preventDefault();
 		const payload = {
@@ -19,7 +20,6 @@ export default function Signup() {
 			password_confirmation: passwordConfirmationRef.current.value
 		}
 
-		console.log(payload);
 
 		axiosClient.post('/signup', payload)
 		.then(({data}) => {
@@ -30,7 +30,7 @@ export default function Signup() {
 		.catch(err => {
 			const response = err.response;
 			if(response && response.status === 422) {
-				console.log(response.data.errors);
+				setErrors(response.data.errors);
 			}
 		})
 	}
@@ -39,6 +39,13 @@ export default function Signup() {
 			<div className="form">
 				<form action="" onSubmit={onSubmit}>
 					<h1 className='title'>Sign Up</h1>
+					{
+						errors && <div className='alert'>
+							{Object.keys(errors).map(key => (
+								<p key={key}>{errors[key][0]}</p>
+							))}
+						</div>
+					}
 					<input type="text" ref={nameRef} placeholder='Name' />
 					<input type="email" ref={emailRef} placeholder='Email' />
 					<input type="password" ref={passwordRef} placeholder='Password' />

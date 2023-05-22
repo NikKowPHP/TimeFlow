@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axiosClient from '../axios-client'
 
 export default function UserForm() {
 
 	const {id} = useParams()
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false)
 		const [errors, setErrors] = useState(null);
 	const [user, setUser] = useState({
@@ -18,6 +19,31 @@ export default function UserForm() {
 
 	const onSubmitForm = (ev) => {
 		ev.preventDefault();
+		if(user.id) {
+			axiosClient.put(`/users/${user.id}`, user)
+			.then(() => {
+				navigate('/users')
+
+			})
+		.catch(err => {
+			const response = err.response;
+			if(response && response.status === 422) {
+				setErrors(response.data.errors);
+			}
+		})
+		} else {
+			axiosClient.post(`/users/`, user)
+			.then(() => {
+				navigate('/users')
+			})
+			.catch(err => {
+				const response = err.response;
+				if(response && response.status === 422) {
+					setErrors(response.data.errors);
+				}
+			})
+		}
+
 	}
 	if(id) {
 		useEffect(() => {
@@ -25,7 +51,6 @@ export default function UserForm() {
 			axiosClient.get(`/users/${id}`)
 			.then(({data}) => {
 				setLoading(false)
-				debugger;
 				setUser(data)
 
 			})
@@ -49,7 +74,8 @@ export default function UserForm() {
 				<div className="text-center">Loading ...</div>
 			)}
 					{
-						errors && <div className='alert'>
+						errors && 
+						 <div className='alert'>
 							{Object.keys(errors).map(key => (
 								<p key={key}>{errors[key][0]}</p>
 							))}

@@ -6,7 +6,7 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-body{
+calendar_body{
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -47,7 +47,7 @@ header .icons span{
 header .icons span:hover{
   background: #f2f2f2;
 }
-header .current-date{
+header .current_date{
   font-size: 1.45rem;
   font-weight: 500;
 }

@@ -6,6 +6,7 @@ import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import UserForm from "./views/UserForm";
+import Calendar from "./components/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
         path: "/users/:id",
         element: <UserForm key='userUpdate'/>,
       },
+      {
+        path: "/users/calendar/:id",
+        element: <Calendar />
+      }
     ],
   },
   {

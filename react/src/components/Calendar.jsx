@@ -30,33 +30,32 @@ export default function Calendar() {
   };
 
 	useEffect(() => {
-		getCurrentMonthDates();
-	}, [])
+		generateMonthDates();
+	}, [year, month])
 
-	const getCurrentMonthDates = () => {
+	const generateMonthDates = () => {
 		const firstDayOfMonth = new Date(year,month, 1);
-		const lastDayOfMonth = new Date(year, month + 1, 0);
+    const startingDay = firstDayOfMonth.getDay();
+    console.log(startingDay)
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 		const currentMonthDates = [];
+    for( let i = 1; i < startingDay; i++ ) {
+      currentMonthDates.push('');
+    }
 
-		for(let i = firstDayOfMonth.getDate(); i <= lastDayOfMonth.getDate(); i++) {
+		for(let i = 1; i <= daysInMonth; i++) {
 			currentMonthDates.push(i);
 		}
 		setDates(currentMonthDates);
 	}
 
-  const getNextMonthDates = () => {
-    const nextMonth = new Date(year, month + 1);
-		setYear(nextMonth.getFullYear());
-		setMonth(nextMonth.getMonth());
-    const nextMonthDates = [];
-
-
-    while (nextMonth.getMonth() === month + 1) {
-      nextMonthDates.push(nextMonth.getDate());
-      nextMonth.setDate(nextMonth.getDate() + 1);
+  const goToNextMonth = () => {
+    if(month === 11) {
+      setYear(year + 1);
+      setMonth(0);
+    } else {
+      setMonth(month + 1);
     }
-    console.log(nextMonth.getMonth());
-    setDates(nextMonthDates);
   };
 
 
@@ -85,7 +84,7 @@ export default function Calendar() {
             chevron_left
           </span>
           <span
-            onClick={getNextMonthDates}
+            onClick={goToNextMonth}
             className="material-symbols-rounded"
           >
             chevron_right

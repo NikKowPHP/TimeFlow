@@ -45,16 +45,24 @@ export default function Calendar() {
 	}
 
   const getNextMonthDates = () => {
-    const nextMonth = new Date(year, month + 1, 1);
+    const nextMonth = new Date(year, month + 1);
+		setYear(nextMonth.getFullYear());
+		setMonth(nextMonth.getMonth());
     const nextMonthDates = [];
+
 
     while (nextMonth.getMonth() === month + 1) {
       nextMonthDates.push(nextMonth.getDate());
       nextMonth.setDate(nextMonth.getDate() + 1);
     }
-    debugger;
+    console.log(nextMonth.getMonth());
     setDates(nextMonthDates);
   };
+
+
+
+
+
   const getPrevMonthDates = () => {};
 
 

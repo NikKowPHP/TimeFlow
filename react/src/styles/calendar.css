@@ -63,7 +63,7 @@ header .current_date{
 .calendar .days{
   margin-bottom: 20px;
 }
-.calendar li{
+.calendar .days li{
   color: #333;
   width: calc(100% / 7);
   font-size: 1.07rem;
@@ -77,6 +77,20 @@ header .current_date{
   cursor: pointer;
   position: relative;
   margin-top: 30px;
+}
+.calendar .months {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.calendar .month {
+  display: block;
+  border: 1px solid black;
+  padding: 10px 3px;
+  width: 90px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 .days li.inactive{
   color: #aaa;

@@ -61,6 +61,16 @@ export default function Calendar() {
 
 
 
+  const getActiveDateClass = (date) => {
+    const presentDate = new Date();
+    const presentMonth = presentDate.getMonth();
+    const presentDateDay = presentDate.getDate();
+    const presentYear = presentDate.getFullYear();
+    if(month === presentMonth && presentDateDay === date && year === presentYear) {
+      return 'active';
+    } 
+    return 'inactive';
+  }
 
   const getPrevMonthDates = () => {};
 
@@ -105,7 +115,7 @@ export default function Calendar() {
           <ul>
 						{
 							dates.map((date, index)=> (
-								<li onClick={handleDateClick} className={currentDateDay === date ? 'active' : 'inactive' }  key={index}>{date}</li>
+								<li onClick={handleDateClick} className={getActiveDateClass(date) }  key={index}>{date}</li>
 							))
 						}
 						</ul>

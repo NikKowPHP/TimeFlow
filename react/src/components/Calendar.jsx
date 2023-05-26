@@ -72,7 +72,14 @@ export default function Calendar() {
     return 'inactive';
   }
 
-  const getPrevMonthDates = () => {};
+  const getPrevMonthDates = () => {
+    if(month === 0) {
+      setYear(year - 1);
+      setMonth(11);
+    } else {
+      setMonth(month - 1);
+    }
+  };
 
 
   const handleDateClick = (date) => {

@@ -111,7 +111,7 @@ export default function Calendar() {
   return (
     <div className="calendar-wrapper">
       <header>
-        <p className="current-date">{year}</p>
+        <button className="current-date btn-transparent">{year}</button>
         <button className="current-month btn-transparent" onClick={toggleShowAllMonths}>{getMonthName(month)}</button>
 
         <div className="icons">

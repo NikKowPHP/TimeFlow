@@ -56,7 +56,6 @@ header .current_date{
 }
 .calendar ul{
   display: flex;
-  justify-content: space-around;
   flex-wrap: wrap;
   list-style: none;
   text-align: center;
@@ -68,6 +67,10 @@ header .current_date{
   color: #333;
   width: calc(100% / 7);
   font-size: 1.07rem;
+}
+.calendar .weeks {
+
+  justify-content: space-around;
 }
 .calendar .weeks li{
   font-weight: 500;
@@ -87,12 +90,17 @@ header .current_date{
 }
 .calendar .month {
   display: block;
+  cursor: pointer;
   border: 1px solid black;
   padding: 10px 3px;
   width: 90px;
   margin-right: 10px;
   margin-bottom: 10px;
 }
+.calendar .month:hover {
+  border-color: #22222254;
+}
+
 .days li.inactive{
   color: #aaa;
 }

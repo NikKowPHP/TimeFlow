@@ -103,8 +103,8 @@ export default function Calendar() {
   const toggleShowAllMonths = () => {
     setShowAllMonths(!showAllMonths);
   };
-  const handleMonthClick = () => {
-    setMonth[month];
+  const handleMonthClick = (selectedMonth) => {
+    setMonth(selectedMonth);
     setShowAllMonths(!showAllMonths);
   }
 
@@ -128,11 +128,11 @@ export default function Calendar() {
       </header>
       <div className="calendar">
         {showAllMonths ? (
-          <ul className="months">
+          <ul className="months animated fadeInDown">
                 {months.map((month, index) => (
-                  <li
-                    onClick={handleMonthClick}
-                    className='month'
+                  <li 
+                    onClick={() => handleMonthClick(month)}
+                    className='month animated fadeInDown'
                     key={index}
                   >
                     {getMonthName(month)}
@@ -141,7 +141,7 @@ export default function Calendar() {
           </ul>
         ) : (
           <>
-            <ul className="weeks">
+            <ul className="weeks animated fadeInDown">
               <li>Mon</li>
               <li>Tue</li>
               <li>Wed</li>
@@ -150,7 +150,7 @@ export default function Calendar() {
               <li>Sat</li>
               <li>Sun</li>
             </ul>
-            <div className="days">
+            <div className="days animated fadeInDown">
               <ul>
                 {dates.map((date, index) => (
                   <li

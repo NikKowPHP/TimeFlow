@@ -10,7 +10,10 @@ export default function Calendar() {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [showAllMonths, setShowAllMonths] = useState(false);
+
+  const [showMonths, setShowMonths] = useState(false);
+  const [showYears, setShowYears] = useState(false);
+  const [showDates, setShowDates] = useState(false);
 
   const getMonthName = (month) => {
     const months = [
@@ -31,7 +34,7 @@ export default function Calendar() {
   };
 
   const generateMonthDates = () => {
-    if (!showAllMonths) {
+    if (!showMonths) {
       const firstDayOfMonth = new Date(year, month, 1);
       const startingDay = firstDayOfMonth.getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -47,22 +50,18 @@ export default function Calendar() {
     } else {
     }
   };
-  function generateMonths () {
-      const months= [];
+  function generateMonths() {
+    const months = [];
 
-      for (let i = 0; i < 12; i++) {
-        months.push(i);
-      }
-      return months;
+    for (let i = 0; i < 12; i++) {
+      months.push(i);
+    }
+    return months;
   }
 
   useEffect(() => {
     generateMonthDates();
   }, [year, month]);
-  
-
-
-
 
   const goToNextMonth = () => {
     if (month === 11) {
@@ -100,46 +99,39 @@ export default function Calendar() {
   const handleDateClick = (date) => {
     setSelectedDate(date);
   };
-  const toggleShowAllMonths = () => {
-    setShowAllMonths(!showAllMonths);
+  const toggleShowMonths = () => {
+    setShowMonths(!showMonths);
+  };
+  const toggleShowYears = () => {
+    setShowYears(!showYears);
   };
   const handleMonthClick = (selectedMonth) => {
     setMonth(selectedMonth);
-    setShowAllMonths(!showAllMonths);
-  }
+    setShowMonths(!showMonths);
+  };
 
-  return (
-    <div className="calendar-wrapper">
-      <header>
-        <button className="current-date btn-transparent">{year}</button>
-        <button className="current-month btn-transparent" onClick={toggleShowAllMonths}>{getMonthName(month)}</button>
-
-        <div className="icons">
-          <span
-            onClick={getPrevMonthDates}
-            className="material-symbols-rounded"
+  const renderMonths = () => {
+    return (
+      <ul className="months animated fadeInDown">
+        {months.map((month, index) => (
+          <li
+            onClick={() => handleMonthClick(month)}
+            className="month animated fadeInDown"
+            key={index}
           >
-            chevron_left
-          </span>
-          <span onClick={goToNextMonth} className="material-symbols-rounded">
-            chevron_right
-          </span>
-        </div>
-      </header>
-      <div className="calendar">
-        {showAllMonths ? (
-          <ul className="months animated fadeInDown">
-                {months.map((month, index) => (
-                  <li 
-                    onClick={() => handleMonthClick(month)}
-                    className='month animated fadeInDown'
-                    key={index}
-                  >
-                    {getMonthName(month)}
-                  </li>
-                ))}
-          </ul>
-        ) : (
+            {getMonthName(month)}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const renderYears = () => {
+
+  }
+  const renderDates = () => {
+    return (
+
           <>
             <ul className="weeks animated fadeInDown">
               <li>Mon</li>
@@ -164,7 +156,41 @@ export default function Calendar() {
               </ul>
             </div>
           </>
-        )}
+    )
+  }
+
+  return (
+    <div className="calendar-wrapper">
+      <header>
+        <button
+          className="current-date btn-transparent"
+          onClick={toggleShowYears}
+        >
+          {year}
+        </button>
+        <button
+          className="current-month btn-transparent"
+          onClick={toggleShowMonths}
+        >
+          {getMonthName(month)}
+        </button>
+
+        <div className="icons">
+          <span
+            onClick={getPrevMonthDates}
+            className="material-symbols-rounded"
+          >
+            chevron_left
+          </span>
+          <span onClick={goToNextMonth} className="material-symbols-rounded">
+            chevron_right
+          </span>
+        </div>
+      </header>
+      <div className="calendar">
+        {showMonths && renderMonths()}
+        {showDates && renderDates()}
+        {!showMonths && !showYears  && renderDates()}
       </div>
     </div>
   );

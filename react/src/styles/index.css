@@ -87,6 +87,11 @@ input:focus {
 .btn:focus {
     background: #5b08a7;
 }
+.btn-transparent {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
 
 .text-center {
     text-align: center;

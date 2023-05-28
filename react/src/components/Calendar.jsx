@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
 
 export default function Calendar() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
 
   const currentDate = new Date();
-  const currentDateDay = currentDate.getDate();
   const months = generateMonths();
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
@@ -50,14 +49,6 @@ export default function Calendar() {
     } else {
     }
   };
-  function generateMonths() {
-    const months = [];
-
-    for (let i = 0; i < 12; i++) {
-      months.push(i);
-    }
-    return months;
-  }
 
   useEffect(() => {
     generateMonthDates();
@@ -73,18 +64,14 @@ export default function Calendar() {
   };
 
   const getActiveDateClass = (date) => {
-    const presentDate = new Date();
-    const presentMonth = presentDate.getMonth();
-    const presentDateDay = presentDate.getDate();
-    const presentYear = presentDate.getFullYear();
-    if (
-      month === presentMonth &&
-      presentDateDay === date &&
-      year === presentYear
-    ) {
-      return "active";
+    const presentDate = new Date().toLocaleDateString();
+    date = date.toLocaleDateString();
+    console.log(selectedDate);
+    if(selectedDate === presentDate === date) {
+      return 'active';
+    } else if(selectedDate === date) {
+      return 'active';
     }
-    return "inactive";
   };
 
   const getPrevMonthDates = () => {
@@ -97,7 +84,10 @@ export default function Calendar() {
   };
 
   const handleDateClick = (date) => {
-    setSelectedDate(date);
+    const selectedDate = new Date(year, month, date).toLocaleDateString();
+    console.log(selectedDate);
+    
+    setSelectedDate(selectedDate);
   };
   const toggleShowMonths = () => {
     setShowMonths(!showMonths);
@@ -108,6 +98,35 @@ export default function Calendar() {
   const handleMonthClick = (selectedMonth) => {
     setMonth(selectedMonth);
     setShowMonths(!showMonths);
+  };
+
+  const renderDates = () => {
+    return (
+      <>
+        <ul className="weeks animated fadeInDown">
+          <li>Mon</li>
+          <li>Tue</li>
+          <li>Wed</li>
+          <li>Thu</li>
+          <li>Fri</li>
+          <li>Sat</li>
+          <li>Sun</li>
+        </ul>
+        <div className="days animated fadeInDown">
+          <ul>
+            {dates.map((date, index) => (
+              <li
+                onClick={() => handleDateClick(date)}
+                className={getActiveDateClass(new Date(year,month,date))}
+                key={index}
+              >
+                {date}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </>
+    );
   };
 
   const renderMonths = () => {
@@ -126,38 +145,6 @@ export default function Calendar() {
     );
   };
 
-  const renderYears = () => {
-
-  }
-  const renderDates = () => {
-    return (
-
-          <>
-            <ul className="weeks animated fadeInDown">
-              <li>Mon</li>
-              <li>Tue</li>
-              <li>Wed</li>
-              <li>Thu</li>
-              <li>Fri</li>
-              <li>Sat</li>
-              <li>Sun</li>
-            </ul>
-            <div className="days animated fadeInDown">
-              <ul>
-                {dates.map((date, index) => (
-                  <li
-                    onClick={handleDateClick}
-                    className={getActiveDateClass(date)}
-                    key={index}
-                  >
-                    {date}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
-    )
-  }
 
   return (
     <div className="calendar-wrapper">
@@ -190,8 +177,18 @@ export default function Calendar() {
       <div className="calendar">
         {showMonths && renderMonths()}
         {showDates && renderDates()}
-        {!showMonths && !showYears  && renderDates()}
+        {!showMonths && renderDates()}
       </div>
     </div>
   );
+
+  // get months 
+  function generateMonths() {
+    const months = [];
+
+    for (let i = 0; i < 12; i++) {
+      months.push(i);
+    }
+    return months;
+  }
 }

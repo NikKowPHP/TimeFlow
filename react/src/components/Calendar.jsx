@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
+import Tooltip from "./Tooltip";
 
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
+  const [isSelectedDate, setIsSelectedDate] = useState(false);
 
   const currentDate = new Date();
   const months = generateMonths();
@@ -14,63 +16,31 @@ export default function Calendar() {
   const [showYears, setShowYears] = useState(false);
   const [showDates, setShowDates] = useState(false);
 
-  const getMonthName = (month) => {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return months[month];
-  };
+  const [tooltipPosition, setTooltipPosition] = useState(null);
 
-  const generateMonthDates = () => {
-    if (!showMonths) {
-      const firstDayOfMonth = new Date(year, month, 1);
-      const startingDay = firstDayOfMonth.getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const currentMonthDates = [];
-      for (let i = 1; i < startingDay; i++) {
-        currentMonthDates.push("");
-      }
-
-      for (let i = 1; i <= daysInMonth; i++) {
-        currentMonthDates.push(i);
-      }
-      setDates(currentMonthDates);
-    } else {
-    }
-  };
 
   useEffect(() => {
     generateMonthDates();
   }, [year, month]);
 
+
+  const getActiveDateClass = (date) => {
+    const presentDate = new Date().toLocaleDateString();
+    date = date.toLocaleDateString();
+    if(selectedDate === presentDate === date) {
+      return 'active';
+    } else if(selectedDate === date) {
+      return 'active';
+    }
+  };
+
+  // go to next or prev month
   const goToNextMonth = () => {
     if (month === 11) {
       setYear(year + 1);
       setMonth(0);
     } else {
       setMonth(month + 1);
-    }
-  };
-
-  const getActiveDateClass = (date) => {
-    const presentDate = new Date().toLocaleDateString();
-    date = date.toLocaleDateString();
-    console.log(selectedDate);
-    if(selectedDate === presentDate === date) {
-      return 'active';
-    } else if(selectedDate === date) {
-      return 'active';
     }
   };
 
@@ -83,22 +53,41 @@ export default function Calendar() {
     }
   };
 
-  const handleDateClick = (date) => {
+
+  // handle clicks
+  const handleDateClick = (event, date) => {
     const selectedDate = new Date(year, month, date).toLocaleDateString();
-    console.log(selectedDate);
-    
     setSelectedDate(selectedDate);
+    setIsSelectedDate(!isSelectedDate);
+    const dateElement = event.target;
+    const {top, left} = dateElement.getBoundingClientRect();
+    console.log(top, left);
+    const position  = {
+      top: (top /2) - dateElement.offsetHeight +'px',
+      left: (left / 2 )+ 'px'
+    };
+    setTooltipPosition(position);
+
+
+
+
+
+
   };
+  const handleMonthClick = (selectedMonth) => {
+    setMonth(selectedMonth);
+    setShowMonths(!showMonths);
+  };
+
+
+  //toggle views
   const toggleShowMonths = () => {
     setShowMonths(!showMonths);
   };
   const toggleShowYears = () => {
     setShowYears(!showYears);
   };
-  const handleMonthClick = (selectedMonth) => {
-    setMonth(selectedMonth);
-    setShowMonths(!showMonths);
-  };
+
 
   const renderDates = () => {
     return (
@@ -116,14 +105,19 @@ export default function Calendar() {
           <ul>
             {dates.map((date, index) => (
               <li
-                onClick={() => handleDateClick(date)}
+                onClick={(ev) => handleDateClick(ev, date)}
                 className={getActiveDateClass(new Date(year,month,date))}
                 key={index}
               >
                 {date}
               </li>
-            ))}
+            ))
+            
+            }
           </ul>
+          {tooltipPosition && (
+            <Tooltip text={'tooltip content'} position= {tooltipPosition} />
+          )}
         </div>
       </>
     );
@@ -182,6 +176,7 @@ export default function Calendar() {
     </div>
   );
 
+  //helper functions
   // get months 
   function generateMonths() {
     const months = [];
@@ -191,4 +186,41 @@ export default function Calendar() {
     }
     return months;
   }
+  // generate dates of the month
+  function generateMonthDates()  {
+    if (!showMonths) {
+      const firstDayOfMonth = new Date(year, month, 1);
+      const startingDay = firstDayOfMonth.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const currentMonthDates = [];
+      for (let i = 1; i < startingDay; i++) {
+        currentMonthDates.push("");
+      }
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        currentMonthDates.push(i);
+      }
+      setDates(currentMonthDates);
+    } else {
+    }
+  };
+  // get month names 
+  function getMonthName(month) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return months[month];
+  };
+  // helper functions end
 }

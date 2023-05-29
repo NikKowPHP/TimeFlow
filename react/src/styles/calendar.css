@@ -53,6 +53,7 @@ header .current_date{
 }
 .calendar{
   padding: 20px;
+  /* position: relative; */
 }
 .calendar ul{
   display: flex;

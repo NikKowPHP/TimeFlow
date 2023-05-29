@@ -1,10 +1,25 @@
-.task-container {
+.task {
 		background-color: aliceblue;
 		border: 1px solid black;
-		margin-top: 10px;
+		margin-top: 20px;
 }
 .task-content {
   padding: 10px;
+}
+.task ul {
+	padding: 10px;
+	display: block;
+	text-align: start;
+}
+.task li {
+	list-style: inside;
+}
+.task-date {
+	text-align: center;
+	padding: 10px;
+}
+.task-time{
+	margin-right: 70px;
 }
 
 

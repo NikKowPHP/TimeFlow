@@ -15,7 +15,6 @@ export default function Calendar() {
   const [showYears, setShowYears] = useState(false);
   const [showDates, setShowDates] = useState(false);
 
-  const [tooltipPosition, setTooltipPosition] = useState(null);
 
 
   useEffect(() => {
@@ -26,8 +25,8 @@ export default function Calendar() {
   const getActiveDateClass = (date) => {
     const presentDate = new Date().toLocaleDateString();
     date = date.toLocaleDateString();
-    if(selectedDate === presentDate === date) {
-      return 'active';
+    if( presentDate === date) {
+      return 'active current-date';
     } else if(selectedDate === date) {
       return 'active';
     }

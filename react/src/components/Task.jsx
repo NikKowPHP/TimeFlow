@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import "../styles/tooltip.css";
+import "../styles/task.css";
 
 export default function Task({ onClick, data }) {
   const [showTask, setShowTask] = useState(false);

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
-import Tooltip from "./Tooltip";
+import Task from "./Task";
 
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
-  const [isSelectedDate, setIsSelectedDate] = useState(false);
 
   const currentDate = new Date();
   const months = generateMonths();
@@ -59,18 +58,6 @@ export default function Calendar() {
     const selectedDate = new Date(year, month, date).toLocaleDateString();
     setSelectedDate(selectedDate);
     setIsSelectedDate(!isSelectedDate);
-    const dateElement = event.target;
-    const {top, left} = dateElement.getBoundingClientRect();
-    console.log(top, left);
-    const position  = {
-      top: (top /2) - dateElement.offsetHeight +'px',
-      left: (left / 2 )+ 'px'
-    };
-    setTooltipPosition(position);
-
-
-
-
 
 
   };
@@ -115,8 +102,8 @@ export default function Calendar() {
             
             }
           </ul>
-          {tooltipPosition && (
-            <Tooltip text={'tooltip content'} position= {tooltipPosition} />
+          {selectedDate && (
+            <Task data={'you are free today'} />
           )}
         </div>
       </>

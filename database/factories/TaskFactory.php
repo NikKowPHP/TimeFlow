@@ -20,9 +20,9 @@ class TaskFactory extends Factory
             //
             'user_id' => 1,
 
-            'date' => $this->faker->date(),
-            'time_start' => $this->faker->time(),
-            'time_end' => $this->faker->time(),
+            'date' => $this->faker->dateTimeThisMonth(),
+            'time_start' => $this->faker->dateTimeThisMonth(),
+            'time_end' => $this->faker->dateTimeThisMonth(),
             'title' => $this->faker->title()
         ];
     }

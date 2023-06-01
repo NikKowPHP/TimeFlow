@@ -18,8 +18,8 @@ class TaskResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'date' => $this->date,
-            'time_start' => $this->time_start->format('H:i:s'),
-            'time_end' => $this->time_end->format('H:i:s'),
+            'time_start' => $this->time_start,
+            'time_end' => $this->time_end,
             'title' => $this->title,
         ];
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,10 +22,12 @@ Route::middleware('auth:sanctum')->group(function() {
 Route::get('/user', function (Request $request) {
     return $request->user();
 });
+// Route::get('/calendar/user/{user_id}', [TaskController::class, 'indexByUser']);
 //logout user
 Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::apiResource('/users', UserController::class);
+
 
 });
 
@@ -33,3 +36,6 @@ Route::post('/signup', [AuthController::class, 'signup']);
 
 // authenticate user
 Route::post('/login', [AuthController::class, 'login']);
+
+
+Route::apiResource('/calendar', TaskController::class);

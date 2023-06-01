@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateTaskRequest;
-use App\Http\Resources\TaskResource;
 
 class TaskController extends Controller
 {
@@ -17,14 +18,14 @@ class TaskController extends Controller
     public function index()
     {
         return TaskResource::collection(
-            Task::query()->orderBy('date', 'desc')
+            Task::query()->orderBy('date', 'desc')->get()
         );
     }
     public function indexByUser($user_id)
     {
-        return TaskResource::collection(
-            Task::where('user_id', $user_id)->get()
-        );
+        $user = User::where('user_id', $user_id);
+        $tasks = $user->tasks;
+        return TaskResource::collection($tasks);
     }
 
     /**

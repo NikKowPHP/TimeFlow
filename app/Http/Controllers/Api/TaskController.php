@@ -27,6 +27,11 @@ class TaskController extends Controller
         $tasks = $user->tasks;
         return TaskResource::collection($tasks);
     }
+    public function indexByDate($date)
+    {
+        $date = Task::whereDate('date', $date);
+        return TaskResource::collection($date);
+    }
 
     /**
      * Store a newly created resource in storage.

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
 import Task from "./Task";
+import axiosClient from "../axios-client";
+import { useNavigate } from "react-router-dom";
+
+
+import TaskList from "./TaskList";
 
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
@@ -15,11 +20,47 @@ export default function Calendar() {
   const [showYears, setShowYears] = useState(false);
   const [showDates, setShowDates] = useState(false);
 
+  const [tasks, setTasks] = useState([]);
 
+  const navigate = useNavigate();
+
+  const getTasks = () => {
+    axiosClient
+      .get(`/calendar/${convertDateSql(selectedDate)}`)
+      .then(({ data }) => {
+        setTasks(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log(error);
+      });
+  };
+
+  console.log(tasks);
+
+  useEffect(() => {
+    getTasks();
+  }, []);
 
   useEffect(() => {
     generateMonthDates();
   }, [year, month]);
+
+  const convertDateJs = (date) => {
+    const newDate = new Date(date.replace(/-/g, "/")).toLocaleDateString();
+  };
+  const convertDateSql = (date) => {
+    const dateArr = date.split('/');
+    console.log(dateArr);
+    const year = dateArr[2];
+    const month = dateArr[0];
+    const day = dateArr[1];
+    const mysqlDate = `${year}-${month}-${day}`;
+    return mysqlDate;
+
+
+  };
+
 
 
   const getActiveDateClass = (date) => {
@@ -56,7 +97,8 @@ export default function Calendar() {
   const handleDateClick = (event, date) => {
     const selectedDate = new Date(year, month, date).toLocaleDateString();
     setSelectedDate(selectedDate);
-    setIsSelectedDate(!isSelectedDate);
+    navigate(`/calendar/${convertDateSql(selectedDate)}`);
+    
 
 
   };
@@ -101,10 +143,11 @@ export default function Calendar() {
             
             }
           </ul>
-          {selectedDate && (
-            <Task data={'you are free today'} />
-          )}
         </div>
+          {selectedDate && (
+            <TaskList selectedDate={selectedDate}  />
+          )
+  }
       </>
     );
   };

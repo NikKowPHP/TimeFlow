@@ -38,4 +38,5 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 
+Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
 Route::apiResource('/calendar', TaskController::class);

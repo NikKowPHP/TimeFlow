@@ -29,7 +29,7 @@ class TaskController extends Controller
     }
     public function indexByDate($date)
     {
-        $date = Task::whereDate('date', $date);
+        $date = Task::whereDate('date', $date)->get();
         return TaskResource::collection($date);
     }
 

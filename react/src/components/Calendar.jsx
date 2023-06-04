@@ -25,6 +25,7 @@ export default function Calendar() {
   const navigate = useNavigate();
 
   const getTasks = () => {
+    const url = `/calendar/${convertDateSql(selectedDate)}`;
     axiosClient
       .get(`/calendar/${convertDateSql(selectedDate)}`)
       .then(({ data }) => {
@@ -36,11 +37,10 @@ export default function Calendar() {
       });
   };
 
-  console.log(tasks);
 
   useEffect(() => {
     getTasks();
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     generateMonthDates();
@@ -51,11 +51,12 @@ export default function Calendar() {
   };
   const convertDateSql = (date) => {
     const dateArr = date.split('/');
-    console.log(dateArr);
     const year = dateArr[2];
     const month = dateArr[0];
     const day = dateArr[1];
     const mysqlDate = `${year}-${month}-${day}`;
+    console.log(mysqlDate)
+
     return mysqlDate;
 
 
@@ -144,8 +145,8 @@ export default function Calendar() {
             }
           </ul>
         </div>
-          {selectedDate && (
-            <TaskList selectedDate={selectedDate}  />
+          {tasks && (
+            <TaskList selectedDate={selectedDate} tasksArray={tasks}  />
           )
   }
       </>

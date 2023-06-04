@@ -13,10 +13,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <DefaultLayout />,
     children: [
-			{
-				path: '/',
-				element: <Navigate to='/users' />
-			},
+      {
+        path: "/",
+        element: <Navigate to="/users" />,
+      },
       {
         path: "/users",
         element: <Users />,
@@ -27,16 +27,31 @@ const router = createBrowserRouter([
       },
       {
         path: "/users/new",
-        element: <UserForm key='userCreate'/>,
+        element: <UserForm key="userCreate" />,
       },
       {
         path: "/users/:id",
-        element: <UserForm key='userUpdate'/>,
+        element: <UserForm key="userUpdate" />,
       },
       {
-        path: "/users/calendar/:id",
-        element: <Calendar />
-      }
+        path: "/calendar",
+        element: <Calendar />,
+        children: [
+          {
+            path: "/calendar/:id",
+            element: <Calendar />,
+          },
+          {
+            path: "/calendar/:date",
+            element: <Calendar />,
+          },
+
+          {
+            path: "/calendar/user/:id",
+            element: <Calendar />,
+          },
+        ],
+      },
     ],
   },
   {

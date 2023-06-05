@@ -57,6 +57,9 @@ export default function Calendar() {
     getAllTasks();
     generateMonthDates();
   }, [year, month]);
+  useEffect(() => {
+    if(selectedDate) getTasks();
+  }, [selectedDate]);
 
 
   const convertDateSql = (date) => {
@@ -86,6 +89,24 @@ export default function Calendar() {
   };
 
 
+  const getThisTasks = (date) => {
+    let modifiedMonth = month + 1;
+    let modifiedDate = date;
+
+    if(month < 10) {
+      modifiedMonth = '0' + modifiedMonth;
+    }
+    if(date < 10) {
+      modifiedDate = '0' + modifiedDate;
+    }
+    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
+    console.log(selectedDate);
+    if(allTasks.some(task => task.date === thisDate)) {
+      return 'has-tasks';
+    }
+    return '';
+
+  }
   const hasTasks = (date) => {
     let modifiedMonth = month + 1;
     let modifiedDate = date;

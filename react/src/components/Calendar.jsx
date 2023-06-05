@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
-import Task from "./Task";
 import axiosClient from "../axios-client";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 
 export default function Calendar() {
+  const navigate = useNavigate();
+
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
 
   const currentDate = new Date();
@@ -21,41 +22,49 @@ export default function Calendar() {
   const [showDates, setShowDates] = useState(false);
 
   const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
 
-  const navigate = useNavigate();
 
+
+  // get tasks
   const getTasks = () => {
-    const url = `/calendar/${convertDateSql(selectedDate)}`;
     axiosClient
       .get(`/calendar/${convertDateSql(selectedDate)}`)
       .then(({ data }) => {
         setTasks(data.data);
+        console.log(data.data)
       })
       .catch((error) => {
         console.error(error);
         console.log(error);
       });
   };
+  const getAllTasks = () => {
+    axiosClient
+      .get(`/calendar`)
+      .then(({ data }) => {
+        setAllTasks(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log(error);
+      });
+
+  };
 
 
   useEffect(() => {
-    getTasks();
-  }, [selectedDate]);
-
-  useEffect(() => {
+    getAllTasks();
     generateMonthDates();
   }, [year, month]);
 
-  const convertDateJs = (date) => {
-    const newDate = new Date(date.replace(/-/g, "/")).toLocaleDateString();
-  };
+
   const convertDateSql = (date) => {
     const dateArr = date.split('/');
     const year = dateArr[2];
     const month = dateArr[0];
     const day = dateArr[1];
     const mysqlDate = `${year}-${month}-${day}`;
-    console.log(mysqlDate)
 
     return mysqlDate;
 
@@ -64,6 +73,7 @@ export default function Calendar() {
 
 
 
+  // css togglers
   const getActiveDateClass = (date) => {
     const presentDate = new Date().toLocaleDateString();
     date = date.toLocaleDateString();
@@ -72,7 +82,28 @@ export default function Calendar() {
     } else if(selectedDate === date) {
       return 'active';
     }
+    return '';
   };
+
+
+  const hasTasks = (date) => {
+    let modifiedMonth = month + 1;
+    let modifiedDate = date;
+
+    if(month < 10) {
+      modifiedMonth = '0' + modifiedMonth;
+    }
+    if(date < 10) {
+      modifiedDate = '0' + modifiedDate;
+    }
+    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
+    if(allTasks.some(task => task.date === thisDate)) {
+      return 'has-tasks';
+    }
+    return '';
+  }
+
+
 
   // go to next or prev month
   const goToNextMonth = () => {
@@ -99,8 +130,7 @@ export default function Calendar() {
     const selectedDate = new Date(year, month, date).toLocaleDateString();
     setSelectedDate(selectedDate);
     navigate(`/calendar/${convertDateSql(selectedDate)}`);
-    
-
+    getTasks();
 
   };
   const handleMonthClick = (selectedMonth) => {
@@ -117,6 +147,8 @@ export default function Calendar() {
     setShowYears(!showYears);
   };
 
+
+  // render views
 
   const renderDates = () => {
     return (
@@ -135,7 +167,7 @@ export default function Calendar() {
             {dates.map((date, index) => (
               <li
                 onClick={(ev) => handleDateClick(ev, date)}
-                className={getActiveDateClass(new Date(year,month,date))}
+                className={`${getActiveDateClass(new Date(year,month,date))} ${hasTasks(date)}`}
                 key={index}
               >
                 {date}

@@ -13,7 +13,7 @@ const TaskList = ({selectedDate, tasksArray = [], user = {}}) => {
 						{
 							tasksArray && 
 							tasksArray.map((task, index) => (
-								<Task data={{title: task.title, timeStart: task.time_start, timeEnd: task.time_end}} />
+								<Task key={index} data={{title: task.title, timeStart: task.time_start, timeEnd: task.time_end}} />
 							))
 
 						}

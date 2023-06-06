@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\api\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -40,3 +41,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
 Route::apiResource('/calendar', TaskController::class);
+
+Route::middleware('admin')->group(function() {
+    Route::apiResource('roles', RoleController::class);
+});

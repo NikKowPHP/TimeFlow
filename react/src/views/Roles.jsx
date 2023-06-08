@@ -1,6 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axiosClient from '../axios-client';
 
 export default function Roles() {
+	const [loading, setLoading] = useState(false);
+	const [roles, setRoles] = useState([]);
+
+	useEffect(() => {
+		getRoles();
+	}, [])
+
+	const getRoles = () => {
+		setLoading(true);
+		axiosClient
+		.get("/roles")
+		.then(({data}) => {
+      console.log(data)
+			setRoles(data.data);
+			setLoading(false);
+		})
+		.catch(() => {
+			setLoading(false);
+		})
+	}
+
 	return (
     <div>
       <div
@@ -10,9 +33,9 @@ export default function Roles() {
           alignItems: "center",
         }}
       >
-        <h1>Users</h1>
+        <h1>Roles</h1>
         <Link className="btn-add" to={"/users/new"}>
-          Add new
+          Add new role
         </Link>
       </div>
       <div className="card animated fadeInDown">

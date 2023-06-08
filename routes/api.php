@@ -27,10 +27,10 @@ Route::get('/user', function (Request $request) {
 //logout user
 Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::apiResource('/users', UserController::class);
 
 
 });
+Route::apiResource('/users', UserController::class);
 
 // create user
 Route::post('/signup', [AuthController::class, 'signup']);
@@ -43,5 +43,6 @@ Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
 Route::apiResource('/calendar', TaskController::class);
 
 Route::middleware('admin')->group(function() {
-    Route::apiResource('roles', RoleController::class);
+    Route::apiResource('/roles', RoleController::class);
 });
+// Route::middleware('admin')->get('/users/roles',[ RoleController::class, 'index']);

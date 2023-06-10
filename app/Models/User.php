@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -47,12 +48,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class);
     }
-    public function role()
+    public function roles()
     {
-        return $this->belongsTo(Role::class);
-    }
-    public function isAdmin()
-    {
-        return $this->role->name === 'admin';
+        return $this->belongsToMany(Role::class, 'role_user');
     }
 }

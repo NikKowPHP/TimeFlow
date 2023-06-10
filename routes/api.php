@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\api\RoleController;
+use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -18,31 +18,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
+    //get authenthicated user
+    Route::get('/user', [UserController::class, 'getAuthUser']);
+
+    // get all users
+    Route::apiResource('/users', UserController::class);
+
+    //logout user
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Route::get('/calendar/user/{user_id}', [TaskController::class, 'indexByUser']);
+    Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
+    Route::apiResource('/calendar', TaskController::class);
+
 });
-// Route::get('/calendar/user/{user_id}', [TaskController::class, 'indexByUser']);
-//logout user
-Route::post('/logout', [AuthController::class, 'logout']);
 
+// admin middleware control
+Route::middleware('admin')->group(function () {
 
+    // get all roles
+    Route::apiResource('/roles', RoleController::class);
 
 });
-Route::apiResource('/users', UserController::class);
+
 
 // create user
 Route::post('/signup', [AuthController::class, 'signup']);
 
 // authenticate user
 Route::post('/login', [AuthController::class, 'login']);
-
-
-Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
-Route::apiResource('/calendar', TaskController::class);
-
-Route::middleware('admin')->group(function() {
-    Route::apiResource('/roles', RoleController::class);
-});
-// Route::middleware('admin')->get('/users/roles',[ RoleController::class, 'index']);

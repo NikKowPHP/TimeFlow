@@ -30,6 +30,14 @@ function DefaultLayout() {
         <Link to={"/dashboard"}>Dashboard</Link>
         <Link to={"/users"}>Users</Link>
         <Link to={"/calendar"}>Calendar</Link>
+        
+        {
+          user.roles.includes('admin')  && 
+          (
+           <Link to={"/roles"}>Roles</Link>
+          )
+        }
+
       </aside>
       <div className="content">
         <header>

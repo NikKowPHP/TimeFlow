@@ -8,6 +8,13 @@ function DefaultLayout() {
   if (!token) {
     return <Navigate to="/login" />;
   }
+  useEffect(()=> {
+    axiosClient.get('/user')
+    .then(({data}) => {
+      setUser(data)
+    })
+
+  }, [])
   const onLogout = (ev) => {
     ev.preventDefault();
 
@@ -17,13 +24,7 @@ function DefaultLayout() {
       setToken(null)
     })
   }
-  useEffect(()=> {
-    axiosClient.get('/user')
-    .then(({data}) => {
-      setUser(data)
-    })
-
-  }, [])
+  console.log(user)
   return (
     <div id="defaultLayout">
       <aside>
@@ -31,18 +32,15 @@ function DefaultLayout() {
         <Link to={"/users"}>Users</Link>
         <Link to={"/calendar"}>Calendar</Link>
         
-        {
-          user.roles.includes('admin')  && 
-          (
-           <Link to={"/roles"}>Roles</Link>
-          )
-        }
+         {user && user.hasOwnProperty('roles') && user.roles.includes("admin") && (
+          <Link to={"/roles"}>Roles</Link>
+        )}
 
       </aside>
       <div className="content">
         <header>
           <div>Header</div>
-          <div>{user.name}</div>
+          <div>{user && user.name}</div>
           <a href="#" onClick={onLogout} className="btn btn-logout">Logout</a>
         </header>
         <main>

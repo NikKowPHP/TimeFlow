@@ -53,11 +53,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user');
     }
-    public function isAdmin(Request $request)
+    public function isAdmin()
     {
-        $user = $request->user();
-        $user->load('roles');
-        if($user->roles->contains('role', 'admin')) {
+        $this->load('roles');
+        if($this->roles->contains('role', 'admin')) {
             return true;
         }
         return false;

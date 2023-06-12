@@ -26,22 +26,22 @@ Route::middleware('auth:sanctum')->group(function () {
     // get all users
     Route::apiResource('/users', UserController::class);
 
+    Route::apiResource('/calendar', TaskController::class);
+
+
+    Route::middleware('admin')->group(function () {
+        // get all roles
+        Route::apiResource('/roles', RoleController::class);
+    });
+
     //logout user
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Route::get('/calendar/user/{user_id}', [TaskController::class, 'indexByUser']);
     Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
-    Route::apiResource('/calendar', TaskController::class);
 
 });
 
 // admin middleware control
-Route::middleware('admin')->group(function () {
-
-    // get all roles
-    Route::apiResource('/roles', RoleController::class);
-
-});
 
 
 // create user

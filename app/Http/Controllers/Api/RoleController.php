@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserResource;
 
 class RoleController extends Controller
 {
@@ -14,9 +16,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return RoleResource::collection(
-            Role::all()
-        );
+        $users = User::with('roles')->get();
+        return UserResource::collection($users);
         
     }
 

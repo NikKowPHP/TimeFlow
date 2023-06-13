@@ -43,11 +43,9 @@ export default function Roles() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>User ID</th>
-
-              <th>Username</th>
+              <th>Name</th>
+              <th>Email</th>
               <th>Role</th>
-              <th>Create Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -64,22 +62,22 @@ export default function Roles() {
 
           {!loading && (
             <tbody>
-              {roles.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.id}</td>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.created_at}</td>
+              {roles.map((r, index) => (
+                <tr key={index}>
+                  <td>{r.id}</td>
+                  <td>{r.name}</td>
+                  <td>{r.email}</td>
+                  <td>{r.roles.length !== 0 ? r.roles : 'unassigned' }</td>
                   <td>
                     <Link
                       className="btn-edit"
                       style={{ marginRight: "5px" }}
-                      to={"/users/" + u.id}
+                      to={"/users/" + r.id}
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={(ev) => onDelete(u)}
+                      onClick={(ev) => onDelete(r)}
                       className="btn-delete"
                     >
                       Delete

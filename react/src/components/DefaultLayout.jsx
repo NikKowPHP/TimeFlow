@@ -24,7 +24,6 @@ function DefaultLayout() {
       setToken(null)
     })
   }
-  console.log(user)
   return (
     <div id="defaultLayout">
       <aside>

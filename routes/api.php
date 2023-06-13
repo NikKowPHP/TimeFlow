@@ -29,9 +29,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/calendar', TaskController::class);
 
 
+    // admin middleware control
     Route::middleware('admin')->group(function () {
+
+        // get a user with roles
+        Route::get('/roles/{id}', [RoleController::class, 'getUserWithRoles']);
+        
         // get all roles
         Route::apiResource('/roles', RoleController::class);
+        
+
     });
 
     //logout user
@@ -41,7 +48,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-// admin middleware control
 
 
 // create user

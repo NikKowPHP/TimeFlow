@@ -35,8 +35,12 @@ class RoleController extends Controller
      */
     public function show(string $id)
     {
-        $role = Role::find($id);
-        return RoleResource::collection($role);
+        //
+    }
+    public function getUserWithRoles($id)
+    {
+        $user = User::with('roles')->find($id);
+        return new UserResource($user);
     }
 
     /**

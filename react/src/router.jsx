@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       }, 
       {
         path: "/roles/:id",
-        element: <RoleForm/>
+        element: <RoleForm key="updateRoles"/>
       }, 
       {
         path: "/calendar",

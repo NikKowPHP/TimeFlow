@@ -1,105 +1,86 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import axiosClient from '../axios-client'
-import { useStateContext } from '../contexts/ContextProvider';
+import { Link, useParams } from 'react-router-dom'
+import axiosClient from '../axios-client';
 
-export default function UserForm() {
+export default function RoleForm() {
+		const {id} =  useParams();
+		const [user, setUser] = useState({});
+		const [roles, setRoles] = useState([]);
+		const [allRoles, setAllRoles] = useState([]);
+		const [showAllRoleNames, setShowAllRoleNames] = useState(false);
 
-	const {id} = useParams()
-	const navigate = useNavigate();
-	const [loading, setLoading] = useState(false)
-		const [errors, setErrors] = useState(null);
-		const {setNotification} = useStateContext()
-	const [user, setUser] = useState({
-		id: null,
-		name: '',
-		email: '',
-		password: '',
-		password_confirmation: '',
+		if(id) {
+			useEffect(() => {
+				axiosClient
+				.get(`/roles/${id}`)
+				.then(({data}) => {
+					setUser(data);
+					if(data.roles) {
+						setRoles(data.roles);
+					}
+				})
 
-	})
+			}, [])
+		}
+		useEffect(() => {
+			if(showAllRoleNames) getAllRoleNames();
+		}, [showAllRoleNames]);
 
-	const onSubmitForm = (ev) => {
-		ev.preventDefault();
-		if(user.id) {
-			axiosClient.put(`/users/${user.id}`, user)
-			.then(() => {
-				navigate('/users')
-				setNotification("User was Successfully updated")
+		const getAllRoleNames = () => {
+
+			axiosClient.get('/roles/all')
+			.then(({data}) =>{
+				setAllRoles(data.data);
 
 			})
-		.catch(err => {
-			const response = err.response;
-			if(response && response.status === 422) {
-				setErrors(response.data.errors);
-			}
-		})
-		} else {
-			axiosClient.post(`/users/`, user)
-			.then(() => {
-				setNotification("User was Successfully created")
-				navigate('/users')
+			.catch((error) => {
+				console.error(error);
 			})
-			.catch(err => {
-				const response = err.response;
-				if(response && response.status === 422) {
-					setErrors(response.data.errors);
-				}
-			})
+
 		}
 
-	}
-	if(id) {
-		useEffect(() => {
-			setLoading(true)
-			axiosClient.get(`/users/${id}`)
-			.then(({data}) => {
-				setLoading(false)
-				setUser(data)
+		const showRolesToggler = () => {
+			setShowAllRoleNames(!showAllRoleNames);
+			console.log(showAllRoleNames)
+		}
+		console.log(allRoles);
 
-			})
-			.catch(() => {
-				setLoading(false)
-			})
-
-
-		}, [])
-
-	}
 	return (
 		<>
-		{user.id && 
-		 <h1>Update User: {user.name}</h1> }
-		
-		{!user.id && <h1>New User</h1>}
-		
-		<div className='card animated fadeInDown'>
-			{loading && (
-				<div className="text-center">Loading ...</div>
-			)}
-					{
-						errors && 
-						 <div className='alert'>
-							{Object.keys(errors).map(key => (
-								<p key={key}>{errors[key][0]}</p>
-							))}
-						</div>
-					}
-					{!loading && 
-					
-					<form action="" onSubmit={onSubmitForm}>
-						<input type="text" value={user.name} onChange={ev => setUser({...user, name:ev.target.value})} placeholder='Name' />
-						<input type="email" value={user.email} onChange={ev =>setUser({...user, email:ev.target.value})} placeholder='Email' />
-						<input onChange={ev=> setUser({...user, password:ev.target.value})} type="password" placeholder='Password' />
-						<input onChange={ ev=> setUser({ ...user, password_confirmation: ev.target.value})} type="password" placeholder='Password Confirmation' />
-						<button className='btn btn-block btn-submit'>Save</button>
+		<div> userid: {id}</div>
 
-					</form>
-					}
-			
+		<div>Username: {user.name}</div>
 
-		</div>
+		{roles && roles.map((role, index) => (
+			<span key={index}>role: {role}</span>
+		))
 		
+		}
+		 {roles && (
+			<button className='btn-add' onClick={showRolesToggler}>Add roles</button>
+    )}
+		{ showAllRoleNames === true && (
+			allRoles.map((role, index) => (
+				<div key={index}>{role.id} {role.role}</div>
+
+				// <CheckboxForm  checkboxes={allRoles}  />
+			))
+		)}
+
 		</>
 	)
 }
+
+// const CheckboxForm = (checkboxes = []) => {
+// 	const [parentChecked, setParentChecked] = useState(false);
+// 	const [checkboxes, setCheckboxes] = useState([]);
+// 	const handleParentCheckboxChange = (event) => {
+// 		const isChecked = event.target.checked;
+// 		setParentChecked(isChecked);
+// 	}
+
+// 	const updatedCheckboxes = checkboxes.map((checkbox) => ({
+// 		...checkbox,
+// 		checked: isChecked,
+// 	}));
+// }

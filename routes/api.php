@@ -32,12 +32,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // admin middleware control
     Route::middleware('admin')->group(function () {
 
+
+
+        //get role names 
+        Route::get('/roles/all', [RoleController::class, 'getAllRoleNames']);
+        
         // get a user with roles
         Route::get('/roles/{id}', [RoleController::class, 'getUserWithRoles']);
         
         // get all roles
         Route::apiResource('/roles', RoleController::class);
         
+
 
     });
 

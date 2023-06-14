@@ -58,4 +58,9 @@ class RoleController extends Controller
     {
         //
     }
+
+    public function getAllRoleNames() {
+        $roles = Role::all();
+        return RoleResource::collection($roles);
+    }
 }

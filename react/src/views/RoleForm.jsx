@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import axiosClient from '../axios-client';
+import CheckboxForm from '../components/CheckboxForm';
 
 export default function RoleForm() {
 		const {id} =  useParams();
@@ -43,7 +44,6 @@ export default function RoleForm() {
 			setShowAllRoleNames(!showAllRoleNames);
 			console.log(showAllRoleNames)
 		}
-		console.log(allRoles);
 
 	return (
 		<>
@@ -59,28 +59,14 @@ export default function RoleForm() {
 		 {roles && (
 			<button className='btn-add' onClick={showRolesToggler}>Add roles</button>
     )}
-		{ showAllRoleNames === true && (
-			allRoles.map((role, index) => (
-				<div key={index}>{role.id} {role.role}</div>
+		{ showAllRoleNames === true && allRoles && (
+				<CheckboxForm  checkboxObjectsArray={allRoles}  />
+			// allRoles.map((role, index) => (
+			// 	// <div key={index}>{role.id} {role.role}</div>
 
-				// <CheckboxForm  checkboxes={allRoles}  />
-			))
+			// ))
 		)}
 
 		</>
 	)
 }
-
-// const CheckboxForm = (checkboxes = []) => {
-// 	const [parentChecked, setParentChecked] = useState(false);
-// 	const [checkboxes, setCheckboxes] = useState([]);
-// 	const handleParentCheckboxChange = (event) => {
-// 		const isChecked = event.target.checked;
-// 		setParentChecked(isChecked);
-// 	}
-
-// 	const updatedCheckboxes = checkboxes.map((checkbox) => ({
-// 		...checkbox,
-// 		checked: isChecked,
-// 	}));
-// }

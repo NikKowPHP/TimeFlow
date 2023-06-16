@@ -1,34 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
-export default function CheckboxForm({ checkboxObjectsArray = [] }) {
+export default function CheckboxForm({ checkboxObjectsArray }) {
   const [parentChecked, setParentChecked] = useState(false);
   const [checkboxes, setCheckboxes] = useState(checkboxObjectsArray);
-  const handleParentCheckboxChange = (event) => {
-    setParentChecked(event.target.checked);
-  };
-	console.log(checkboxes);
+  useEffect(() => {
+    setCheckboxes(checkboxObjectsArray);
+
+  }, [checkboxObjectsArray])
 
   return (
-    <form >
-      <div>
+    <form  className="form-checkbox">
+      <div className="checkbox-item">
+
         <label>
+          Parent Checkbox
           <input
+          name="parent-checkbox"
             type="checkbox"
             checked={parentChecked}
             onChange={(event) => setParentChecked(event.targetChecked)}
           />
-          Parent Checkbox
         </label>
       </div>
-      <div>
+
+      <div className="checkbox-item">
 				{
 					checkboxes.map((checkbox, index) => (
-        			<label>
+        			<label key={index}>
 					{checkbox.role}
           <input
             type="checkbox"
-            checked={parentChecked}
+            checked={checkbox.checked}
             onChange={(event) => setParentChecked(event.targetChecked)}
           />
 

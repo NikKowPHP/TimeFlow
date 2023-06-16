@@ -10,8 +10,8 @@ export default function RoleForm() {
 		const [allRoles, setAllRoles] = useState([]);
 		const [showAllRoleNames, setShowAllRoleNames] = useState(false);
 
+		useEffect(() => {
 		if(id) {
-			useEffect(() => {
 				axiosClient
 				.get(`/roles/${id}`)
 				.then(({data}) => {
@@ -20,12 +20,9 @@ export default function RoleForm() {
 						setRoles(data.roles);
 					}
 				})
-
-			}, [])
 		}
-		useEffect(() => {
-			if(showAllRoleNames) getAllRoleNames();
-		}, [showAllRoleNames]);
+			
+		}, [id])
 
 		const getAllRoleNames = () => {
 
@@ -41,9 +38,14 @@ export default function RoleForm() {
 		}
 
 		const showRolesToggler = () => {
-			setShowAllRoleNames(!showAllRoleNames);
-			console.log(showAllRoleNames)
+			setShowAllRoleNames((prevShowAllRoleNames) => !prevShowAllRoleNames);
 		}
+		console.log(showAllRoleNames);
+		useEffect(() => {
+			if(showAllRoleNames){
+				getAllRoleNames();
+			}
+		}, [showAllRoleNames]);
 
 	return (
 		<>
@@ -59,7 +61,7 @@ export default function RoleForm() {
 		 {roles && (
 			<button className='btn-add' onClick={showRolesToggler}>Add roles</button>
     )}
-		{ showAllRoleNames === true && allRoles && (
+		{  showAllRoleNames && allRoles && (
 				<CheckboxForm  checkboxObjectsArray={allRoles}  />
 			// allRoles.map((role, index) => (
 			// 	// <div key={index}>{role.id} {role.role}</div>

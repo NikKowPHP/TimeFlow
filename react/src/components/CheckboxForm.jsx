@@ -24,6 +24,23 @@ export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
   console.log(checkboxes);
   
   
+  const handleParentCheckboxChange = () => {
+    const isAllChecked = checkboxes.every((checkbox)=> checkbox.checked);
+    setParentChecked(!isAllChecked);
+    setCheckboxes((prevCheckboxes) => {
+      prevCheckboxes.map((checkbox) => ({
+        ...checkbox,
+        checked: !isAllChecked,
+      }))
+    });
+  }
+  const handleCheckboxChange = (checkboxId) => {
+    const updatedCheckboxes = checkboxes.map((checkbox) => {
+      console.log({...checkbox});
+      return checkbox.id === checkboxId ?  { ...checkbox, checked: !checkbox.checked} : checkbox;
+    });
+    setCheckboxes(updatedCheckboxes);
+  }
 
   return (
     <form  className="form-checkbox">
@@ -35,7 +52,7 @@ export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
           name="parent-checkbox"
             type="checkbox"
             checked={parentChecked}
-            onChange={(event) => setParentChecked(event.targetChecked)}
+            onChange={() => handleParentCheckboxChange()}
           />
         </label>
       </div>
@@ -43,7 +60,7 @@ export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
 
       <div className="checkbox-item">
 				{
-					checkboxes.map((checkbox) => (
+					checkboxes.map((checkbox, index) => (
         			<label key={checkbox.id}>
 					{checkbox.name}
           <input

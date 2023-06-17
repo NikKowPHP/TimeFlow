@@ -1,20 +1,36 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-export default function CheckboxForm({ checkboxObjectsArray }) {
+export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
   const [parentChecked, setParentChecked] = useState(false);
-  const [checkboxes, setCheckboxes] = useState(checkboxObjectsArray);
+  const [checkboxes, setCheckboxes] = useState([]);
   useEffect(() => {
-    setCheckboxes(checkboxObjectsArray);
+    setCheckboxes(generateCheckboxesInitialState());
 
   }, [checkboxObjectsArray])
+
+  const generateCheckboxesInitialState = () => {
+
+    const checkboxesArr = [];
+    checkboxObjectsArray.map((role) => {
+        checkboxesArr.push({
+          id: role.id,
+          name: role.role,
+          checked: takenRoles.includes(role.role) ? true : false
+        })
+    })
+    return checkboxesArr;
+  }
+  console.log(checkboxes);
+  
+  
 
   return (
     <form  className="form-checkbox">
       <div className="checkbox-item">
 
         <label>
-          Parent Checkbox
+          All
           <input
           name="parent-checkbox"
             type="checkbox"
@@ -23,16 +39,17 @@ export default function CheckboxForm({ checkboxObjectsArray }) {
           />
         </label>
       </div>
+      
 
       <div className="checkbox-item">
 				{
-					checkboxes.map((checkbox, index) => (
-        			<label key={index}>
-					{checkbox.role}
+					checkboxes.map((checkbox) => (
+        			<label key={checkbox.id}>
+					{checkbox.name}
           <input
             type="checkbox"
             checked={checkbox.checked}
-            onChange={(event) => setParentChecked(event.targetChecked)}
+            onChange={() => handleCheckboxChange(checkbox.id)}
           />
 
         </label>
@@ -41,7 +58,7 @@ export default function CheckboxForm({ checkboxObjectsArray }) {
 				}
 				
       </div>
-      <button type="submit">Submit</button>
+      <button className="btn" type="submit">Submit</button>
     </form>
   );
 }

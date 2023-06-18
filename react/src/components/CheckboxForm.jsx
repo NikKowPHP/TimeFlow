@@ -3,27 +3,27 @@ import React, { useEffect, useState } from "react";
 export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
   const [parentChecked, setParentChecked] = useState(false);
   const [checkboxes, setCheckboxes] = useState([]);
+
+
   useEffect(() => {
     setCheckboxes(generateCheckboxesInitialState());
   }, [checkboxObjectsArray, takenRoles]);
 
-  const generateCheckboxesInitialState = () => {
-    return checkboxObjectsArray.map((role) => ({
+  const generateCheckboxesInitialState = () => 
+    checkboxObjectsArray.map((role) => ({
       id: role.id,
       name: role.role,
       checked: takenRoles.includes(role.role),
     }));
-  };
+ 
 
   const handleParentCheckboxChange = () => {
-    setParentChecked(!parentChecked);
-    const updatedCheckboxes = checkboxes.map((checkbox) => {
-      return {
+    const updatedCheckboxes = checkboxes.map((checkbox) => ({
         ...checkbox,
         checked: !parentChecked,
-      };
-    });
+    }));
     setCheckboxes(updatedCheckboxes);
+    setParentChecked(!parentChecked);
   };
 
   const handleCheckboxChange = (checkboxId) => {
@@ -38,8 +38,10 @@ export default function CheckboxForm({ checkboxObjectsArray, takenRoles }) {
     setParentChecked(allChecked);
   };
 
+
+
   return (
-    <form className="form-checkbox">
+    <form className="form-checkbox" onSubmit={onSubmitForm}>
       <div className="checkbox-item">
         <label>
           All

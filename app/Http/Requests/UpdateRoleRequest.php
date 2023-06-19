@@ -21,9 +21,11 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'user_id' => 'required',
-            'role_id' => 'required|int|in:1,2,3',
+            'role_id' => 'required|array',
+            'role_id.*' => 'integer|exists:roles,id',
         ];
     }
 }

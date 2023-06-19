@@ -34,7 +34,7 @@ export default function Roles() {
         }}
       >
         <h1>Roles</h1>
-        <Link className="btn-add" to={"/users/new"}>
+        <Link className="btn-add" to={"/roles/new"}>
           Add new role
         </Link>
       </div>
@@ -72,7 +72,7 @@ export default function Roles() {
                     <Link
                       className="btn-edit"
                       style={{ marginRight: "5px" }}
-                      to={"/users/" + r.id}
+                      to={"/roles/" + r.id}
                     >
                       Edit
                     </Link>

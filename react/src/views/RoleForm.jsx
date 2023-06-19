@@ -61,7 +61,7 @@ export default function RoleForm() {
 			<button className='btn-add' onClick={showRolesToggler}>Add roles</button>
     )}
 		{  showAllRoleNames && allRoles && (
-				<CheckboxForm  takenRoles={roles} checkboxObjectsArray={allRoles}  />
+				<CheckboxForm userId={id} takenRoles={roles} checkboxObjectsArray={allRoles}  />
 			// allRoles.map((role, index) => (
 			// 	// <div key={index}>{role.id} {role.role}</div>
 

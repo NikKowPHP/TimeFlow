@@ -36,7 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         //get role names 
         Route::get('/roles/all', [RoleController::class, 'getAllRoleNames']);
-        
+
+        // update user roles
+        Route::put('/roles/{id}/update', [RoleController::class, 'updateUserRole']);
+
         // get a user with roles
         Route::get('/roles/{id}', [RoleController::class, 'getUserWithRoles']);
         

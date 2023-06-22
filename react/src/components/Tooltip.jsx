@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../styles/tooltip.css";
 
-export default function Tooltip({ children}) {
+export default function Tooltip({ children, content}) {
 	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
 	const handleOnClick = () => {

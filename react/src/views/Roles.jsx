@@ -1,30 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axiosClient from '../axios-client';
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import axiosClient from "../axios-client";
+import Tooltip from "../components/Tooltip";
+import CheckboxForm from "../components/CheckboxForm";
 
 export default function Roles() {
-	const [loading, setLoading] = useState(false);
-	const [roles, setRoles] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [roles, setRoles] = useState([]);
+  const [allRoles, setAllRoles] = useState([]);
+  const [showAllRoleNames, setShowAllRoleNames] = useState(false);
 
-	useEffect(() => {
-		getRoles();
-	}, [])
+  const updateRoles = (userId, selectedRoles) => {
+    const payload = {user_id: userId, role_id: selectedRoles};
+    console.log(payload);
+    axiosClient
+    .put(`/roles/${userId}`, payload)
+    .then(({data}) => {
 
-	const getRoles = () => {
-		setLoading(true);
-		axiosClient
-		.get("/roles")
-		.then(({data}) => {
-      console.log(data)
-			setRoles(data.data);
-			setLoading(false);
-		})
-		.catch(() => {
-			setLoading(false);
-		})
-	}
+      showRolesToggler();
+      
+      console.log(data);
 
-	return (
+      setRoles(handleRolesChange(data.id, data.roles))
+
+
+    })
+    const handleRolesChange = (userId, userRoles) => {
+      debugger;
+
+      const updatedRoles = roles.map((user) => {
+        return user.id === userId
+        ? {...user, roles: userRoles} 
+        : user;
+      });
+      console.log(updatedRoles)
+      setRoles(updatedRoles);
+
+    }
+
+  }
+
+  const handleCheckboxFormSubmit = (dataFromChild) => {
+    // console.log(dataFromChild)
+    updateRoles(dataFromChild.userId, dataFromChild.roles);
+    // setRoles(dataFromChild.roles);
+    // setUserId(dataFromChild.userId);
+  };
+
+  const showRolesToggler = () => {
+    setShowAllRoleNames((prevShowAllRoleNames) => !prevShowAllRoleNames);
+  };
+  useEffect(() => {
+    if (showAllRoleNames) {
+      getAllRoleNames();
+    }
+  }, [showAllRoleNames]);
+
+  useEffect(() => {
+    getRoles();
+  }, []);
+
+  const getRoles = () => {
+    setLoading(true);
+    axiosClient
+      .get("/roles")
+      .then(({ data }) => {
+        setRoles(data.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+  const getAllRoleNames = () => {
+    axiosClient
+      .get("/roles/all")
+      .then(({ data }) => {
+        setAllRoles(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  return (
     <div>
       <div
         style={{
@@ -67,15 +127,23 @@ export default function Roles() {
                   <td>{r.id}</td>
                   <td>{r.name}</td>
                   <td>{r.email}</td>
-                  <td>{r.roles.length !== 0 ? r.roles : 'unassigned' }</td>
+                  <td>{r.roles.length !== 0 ? r.roles : "unassigned"}</td>
+
                   <td>
-                    <Link
-                      className="btn-edit"
-                      style={{ marginRight: "5px" }}
-                      to={"/roles/" + r.id}
-                    >
-                      Edit
-                    </Link>
+                    {/* TOOLTIP IMPLEMENTATION */}
+                    <Tooltip
+                      children={
+                        <button className="btn-edit" style={{ marginRight: "5px" }} onClick={showRolesToggler}>Edit</button>
+                      }
+                      content={
+                        <CheckboxForm
+                          userId={r.id}
+                          takenRoles={r.roles}
+                          checkboxObjectsArray={allRoles}
+                          onSubmit={handleCheckboxFormSubmit}
+                        />
+                      }
+                    />
                     <button
                       onClick={(ev) => onDelete(r)}
                       className="btn-delete"
@@ -90,5 +158,5 @@ export default function Roles() {
         </table>
       </div>
     </div>
-	)
+  );
 }

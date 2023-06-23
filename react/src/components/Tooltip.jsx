@@ -7,12 +7,15 @@ export default function Tooltip({ children, content}) {
 	const handleOnClick = () => {
 		setIsTooltipVisible(!isTooltipVisible);
 	}
+	const handleContentClick = (event) => {
+		event.stopPropagation();
+	}
 
 	return (
 		<div className='tooltip-container' onClick={handleOnClick}>
 			{children}
 			{isTooltipVisible && (
-				<div className="tooltip">{content}</div>
+				<div className="tooltip" onClick={handleContentClick}>{content}</div>
 			)}
 		</div>
 	)

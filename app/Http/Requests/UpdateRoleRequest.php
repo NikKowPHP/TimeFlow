@@ -21,9 +21,10 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
+        // TODO: handle unprocessable content error when there is no roles
 
         return [
-            'user_id' => 'required|string',
+            'user_id' => 'required|int',
             'role_id' => 'required|array',
             'role_id.*' => 'integer|exists:roles,id'
         ];

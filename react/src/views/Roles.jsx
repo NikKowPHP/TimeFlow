@@ -14,9 +14,13 @@ export default function Roles() {
     updateRoles(dataFromChild.userId, dataFromChild.roles);
   };
   const handleRolesChange = (prevRoles, userId, userRoles) => {
-    console.log(allRoles);
+    const associatedRoles = userRoles.map((roleId) => {
+      const foundRole = allRoles.find((role) => role.id === roleId);
+      return foundRole ? foundRole.role : null;
+    });
+
     return prevRoles.map((user) =>
-      user.id === userId ? { ...user, roles: userRoles } : user
+      user.id === userId ? { ...user, roles: associatedRoles } : user
     );
   };
 
@@ -25,12 +29,11 @@ export default function Roles() {
     const updatedRoles = handleRolesChange(roles, userId, selectedRoles);
     setRoles(updatedRoles);
     // showRolesToggler();
-    setShowAllRoleNames(false)
+    setShowAllRoleNames(false);
 
     axiosClient
       .put(`/roles/${userId}`, payload)
-      .then(({ data }) => {
-      })
+      .then(({ data }) => {})
       .catch((error) => {
         console.error(error);
       });
@@ -49,9 +52,6 @@ export default function Roles() {
   useEffect(() => {
     getRoles();
   }, []);
-  useEffect(() => {
-    console.log(roles);
-  }, [roles]);
 
   const getRoles = () => {
     setLoading(true);
@@ -120,9 +120,19 @@ export default function Roles() {
                     <td>{r.id}</td>
                     <td>{r.name}</td>
                     <td>{r.email}</td>
-                    <td>{r.roles.length !== 0 ? r.roles : "unassigned"}</td>
-
                     <td>
+                      {r.roles.length !== 0
+                        ? r.roles.map((role, roleIndex) =>
+                            roleIndex === r.roles.length - 1 ? (
+                              <span key={roleIndex}>{role}</span>
+                            ) : (
+                              <span key={roleIndex}>{role}, </span>
+                            )
+                          )
+                        : "unassigned"}
+                    </td>
+                    <td>
+
                       {/* TOOLTIP IMPLEMENTATION */}
                       <Tooltip
                         children={

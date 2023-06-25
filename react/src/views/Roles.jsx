@@ -8,7 +8,9 @@ export default function Roles() {
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const [allRoles, setAllRoles] = useState([]);
+  const [isUpdatedRoles, setIsUpdatedRoles ] = useState(false);
   const [showAllRoleNames, setShowAllRoleNames] = useState(false);
+  
 
   const handleCheckboxFormSubmit = (dataFromChild) => {
     updateRoles(dataFromChild.userId, dataFromChild.roles);
@@ -20,7 +22,7 @@ export default function Roles() {
     });
 
     return prevRoles.map((user) =>
-      user.id === userId ? { ...user, roles: associatedRoles } : user
+      user.id === userId ? { ...user, roles: associatedRoles, isUpdatedRoles:false } : user
     );
   };
 
@@ -28,9 +30,7 @@ export default function Roles() {
     const payload = { user_id: userId, role_id: selectedRoles };
     const updatedRoles = handleRolesChange(roles, userId, selectedRoles);
     setRoles(updatedRoles);
-    // showRolesToggler();
-    setShowAllRoleNames(false);
-
+    setIsUpdatedRoles(!isUpdatedRoles);
     axiosClient
       .put(`/roles/${userId}`, payload)
       .then(({ data }) => {})
@@ -38,10 +38,11 @@ export default function Roles() {
         console.error(error);
       });
   };
-
   const showRolesToggler = () => {
     setShowAllRoleNames((prevShowAllRoleNames) => !prevShowAllRoleNames);
+    setIsUpdatedRoles(!isUpdatedRoles);
   };
+
 
   useEffect(() => {
     if (showAllRoleNames) {
@@ -132,14 +133,17 @@ export default function Roles() {
                         : "unassigned"}
                     </td>
                     <td>
-
+                      
                       {/* TOOLTIP IMPLEMENTATION */}
+
                       <Tooltip
+                      tooltipVisible={r.isUpdatedRoles}
                         children={
                           <button
                             className="btn-edit"
                             style={{ marginRight: "5px" }}
                             onClick={showRolesToggler}
+                            
                           >
                             Edit
                           </button>

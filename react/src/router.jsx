@@ -6,7 +6,6 @@ import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import UserForm from "./views/UserForm";
-import RoleForm from "./views/RoleForm";
 import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
 
@@ -38,14 +37,6 @@ const router = createBrowserRouter([
       {
         path: "/roles",
         element: <Roles />
-      }, 
-      {
-        path: "/roles/new",
-        element: <Roles />
-      }, 
-      {
-        path: "/roles/:id",
-        element: <RoleForm key="updateRoles"/>
       }, 
       {
         path: "/calendar",

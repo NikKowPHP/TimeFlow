@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/tooltip.css";
 
-export default function Tooltip({ children, content}) {
-	const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+export default function Tooltip({ children, content, tooltipVisible }) {
+	const [isTooltipVisible, setIsTooltipVisible] = useState(tooltipVisible);
+
+	useEffect(() => {
+		setIsTooltipVisible(tooltipVisible)
+	}, [tooltipVisible]);
 
 	const handleOnClick = () => {
 		setIsTooltipVisible(!isTooltipVisible);

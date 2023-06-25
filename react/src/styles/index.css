@@ -266,6 +266,23 @@ table > tbody > tr > td {
     margin-left: 10px;
     margin-right: 8px; 
 }
+.create-role-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    /* max-width: 300px; */
+}
+.create-role-form input {
+    padding: 10px;
+}
+.create-role-form h3 {
+    margin-bottom: 10px;
+}
+/* .create-role-form button {
+    margin: 5px;
+} */
 
 @keyframes fadeInDown {
     0% {

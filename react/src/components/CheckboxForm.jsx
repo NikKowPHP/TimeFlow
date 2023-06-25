@@ -57,29 +57,24 @@ export default function CheckboxForm({
     const selectedRoles = checkboxes
       .filter((checkbox) => checkbox.checked)
       .map((checkbox) => checkbox.id);
-    const payload = { user_id: userId, role_id: selectedRoles };
-
-    axiosClient
-      .put(`/roles/${userId}/update`, payload)
-      .then(({ data }) => {
         setCheckboxes((prevCheckboxes) =>
           prevCheckboxes.map((checkbox) => ({
             ...checkbox,
             checked: selectedRoles.includes(checkbox.id),
           }))
         );
-        const rolesDataToSend = checkboxes
+        const filterRoles = checkboxes
           .filter((checkbox) => checkbox.checked)
-          .map((checkbox) => checkbox.name);
+          .map((checkbox) => checkbox.id)
+        const rolesDataToSend = ({
+          userId: userId,
+          roles: filterRoles,
+        })
 
         onSubmit(rolesDataToSend);
         setNotification(`Roles were updated`);
-      })
-      .catch((error) => {
-        const response = error.response;
-        console.error(response);
-      });
-  };
+      };
+  // };
 
   return (
     <form className="form-checkbox" onSubmit={onSubmitForm}>

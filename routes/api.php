@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // update user roles
         Route::put('/roles/{id}', [RoleController::class, 'updateUserRole']);
         // Route::put('/roles/', [RoleController::class, 'updateUserRole']);
+        Route::post('/roles/new', [RoleController::class, 'store']);
 
         // get a user with roles
         Route::get('/roles/{id}', [RoleController::class, 'getUserWithRoles']);

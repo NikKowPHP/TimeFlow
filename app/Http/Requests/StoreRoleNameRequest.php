@@ -22,7 +22,7 @@ class StoreRoleNameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'role'=> 'string|unique'
+            'role'=> 'string|unique:roles,role'
         ];
     }
 }

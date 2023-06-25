@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\StoreRoleNameRequest;
 
 class RoleController extends Controller
 {
@@ -26,10 +27,12 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRoleNameRequest $request)
     {
-        //
-
+        $data = $request->validated();
+        $role = Role::create($data);
+        Log::debug('data create role', ['role'=> $role]);
+        return new RoleResource($role);
     }
 
     /**

@@ -1,9 +1,11 @@
 import React, { useRef } from 'react'
 import axiosClient from '../axios-client'
+import { useStateContext } from '../contexts/ContextProvider';
 
-export default function RoleForm() {
+export default function RoleForm({dataToParent}) {
 
 	const roleNameRef = useRef();
+	const {setNotification} = useStateContext();
 
 	const onSubmit = (ev) => {
 		ev.preventDefault();
@@ -12,7 +14,17 @@ export default function RoleForm() {
 		}
 		axiosClient
 		.post('/roles/new', payload)
-		.then(({data}) => {})
+		.then(({data}) => { 
+			const newData = {
+				role: data.data.role,
+				isCreated:true,
+			}
+			dataToParent(newData) 
+			setNotification(`Role ${newData.role} was created successfully`)
+			console.log('data a new role', data);
+			console.log('data to parent', dataToParent);
+
+		})
 		.catch((error) => {
 			console.error(error);
 		})

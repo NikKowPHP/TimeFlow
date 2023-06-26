@@ -4,7 +4,7 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import axiosClient from "../axios-client";
 
 function DefaultLayout() {
-  const { user, token, notification, setUser, setToken } = useStateContext();
+  const { user, token, notification, errors, setUser, setToken } = useStateContext();
   if (!token) {
     return <Navigate to="/login" />;
   }
@@ -47,6 +47,10 @@ function DefaultLayout() {
         </main>
         {notification &&  <div className="notification">
           {notification}
+        </div>
+        }
+        {errors &&  <div className="notification notification-error">
+          {errors.message}
         </div>
         }
       </div>

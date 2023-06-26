@@ -7,17 +7,25 @@ const StateContext = createContext({
 	setUser: () => {},
 	setToken: () => {},
 	setNotification: () => {},
+	setErrors: () => {},
 });
 
 export const ContextProvider = ({children}) => {
 	const [user, setUser] = useState({});
 	const [notification, _setNotification] = useState('');
+	const [errors, _setErrors] = useState({});
 	const [token, _setToken]= useState(localStorage.getItem('ACCESS_TOKEN'));
 
 	const setNotification = (message) => {
 		_setNotification(message);
 		setTimeout(() => {
 			_setNotification('');
+		}, 3000)
+	}
+	const setErrors = (message, errors) => {
+		_setErrors(message, errors);
+		setTimeout(() => {
+			_setErrors({});
 		}, 3000)
 	}
 
@@ -37,7 +45,9 @@ export const ContextProvider = ({children}) => {
 			setUser,
 			setToken,
 			notification,
-			setNotification
+			setNotification,
+			errors,
+			setErrors
 
 		}}>
 			{children}

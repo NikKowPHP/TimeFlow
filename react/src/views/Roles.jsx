@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import Tooltip from "../components/Tooltip";
 import CheckboxForm from "../components/CheckboxForm";
+import RoleForm from "./RoleForm";
 
 export default function Roles() {
   const [loading, setLoading] = useState(false);
@@ -10,6 +11,7 @@ export default function Roles() {
   const [allRoles, setAllRoles] = useState([]);
   const [isUpdatedRoles, setIsUpdatedRoles ] = useState(false);
   const [showAllRoleNames, setShowAllRoleNames] = useState(false);
+  const [showRoleCreationForm, setShowRoleCreationForm] = useState(false);
   
 
   const handleCheckboxFormSubmit = (dataFromChild) => {
@@ -76,6 +78,18 @@ export default function Roles() {
         console.error(error);
       });
   };
+  const handleDataFromChild = (data) => {
+    console.log(data);
+    setShowRoleCreationForm(!data.isCreated);
+    console.log(showRoleCreationForm);
+
+  }
+  const handleShowRoleCreationForm = () => {
+    setShowRoleCreationForm(!showRoleCreationForm);
+    console.log(showRoleCreationForm);
+  }
+
+  
 
   return (
     <div>
@@ -87,9 +101,15 @@ export default function Roles() {
         }}
       >
         <h1>Roles</h1>
-        <Link className="btn-add" to={"/roles/new"}>
-          Add new role
-        </Link>
+        <Tooltip 
+        tooltipVisible={showRoleCreationForm}
+        
+        children={
+          <button className="btn-add" onClick={handleShowRoleCreationForm}>Create a role</button>
+        }
+        content={<RoleForm  dataToParent={handleDataFromChild}/>}
+
+        />
       </div>
       <div className="card animated fadeInDown">
         <table>

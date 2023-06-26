@@ -70,9 +70,7 @@ export default function CheckboxForm({
           userId: userId,
           roles: filterRoles,
         })
-
         onSubmit(rolesDataToSend);
-        setNotification(`Roles were updated`);
       };
   // };
 

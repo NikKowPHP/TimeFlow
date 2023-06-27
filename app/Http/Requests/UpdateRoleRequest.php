@@ -3,9 +3,23 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 class UpdateRoleRequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $errorMessage = 'You must choose at least one role';
+        throw new HttpResponseException(
+            response()->json([
+                'message' => $errorMessage,
+                'errors'=> $errors,
+            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY)
+        );
+    }
     /**
      * Determine if the user is authorized to make this request.
      */

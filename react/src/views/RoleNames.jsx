@@ -1,18 +1,30 @@
-import React, { useState } from 'react'
-import axiosClient from '../axios-client';
+import React, { useEffect, useState } from "react";
+import axiosClient from "../axios-client";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function RoleNames() {
-	const [roleNames, setRoleNames] = useState([]);
+  const [allRoleNames, setAllRoleNames] = useState([]);
+  const { loading } = useStateContext();
 
-	axiosClient.get(`/roles/names`)
+  const getAllRoleNames = () => {
+    axiosClient
+      .get("/roles/all")
+      .then(({ data }) => {
+        setAllRoleNames(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-	.then(({data}) => {
 
 
-	})
+	useEffect(() => {
+		getAllRoleNames();
+}, []);
 
 
-	return (
+  return (
     <div>
       <div
         style={{
@@ -45,48 +57,12 @@ export default function RoleNames() {
 
           {!loading && (
             <tbody>
-              {roles.length > 0 &&
-                roles.map((r, index) => (
-                  <tr key={index}>
-                    <td>{r.id}</td>
-                    <td>{r.name}</td>
-                    <td>{r.email}</td>
+              {allRoleNames.length > 0 &&
+                allRoleNames.map((role) => (
+                  <tr key={role.id}>
+                    <td>{role.id}</td>
+                    <td>{role.role}</td>
                     <td>
-                      {r.roles.length !== 0
-                        ? r.roles.map((role, roleIndex) =>
-                            roleIndex === r.roles.length - 1 ? (
-                              <span key={roleIndex}>{role}</span>
-                            ) : (
-                              <span key={roleIndex}>{role}, </span>
-                            )
-                          )
-                        : "unassigned"}
-                    </td>
-                    <td>
-                      
-                      {/* TOOLTIP IMPLEMENTATION */}
-
-                      <Tooltip
-                      tooltipVisible={r.isUpdatedRoles}
-                        children={
-                          <button
-                            className="btn-edit"
-                            style={{ marginRight: "5px" }}
-                            onClick={showRolesToggler}
-                            
-                          >
-                            Edit
-                          </button>
-                        }
-                        content={
-                          <CheckboxForm
-                            userId={r.id}
-                            takenRoles={r.roles}
-                            checkboxObjectsArray={allRoles}
-                            onSubmit={handleCheckboxFormSubmit}
-                          />
-                        }
-                      />
                       <button
                         onClick={(ev) => onDelete(r)}
                         className="btn-delete"
@@ -101,5 +77,5 @@ export default function RoleNames() {
         </table>
       </div>
     </div>
-	)
+  );
 }

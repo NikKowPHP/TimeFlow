@@ -49,7 +49,7 @@ function DefaultLayout() {
           {notification}
         </div>
         }
-        {errors &&  <div className="notification notification-error">
+        {errors.message &&  <div className="notification notification-error">
           {errors.message}
         </div>
         }

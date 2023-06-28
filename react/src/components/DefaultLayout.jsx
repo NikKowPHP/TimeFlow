@@ -28,6 +28,7 @@ function DefaultLayout() {
         <Link to={"/dashboard"}>Dashboard</Link>
         <Link to={"/users"}>Users</Link>
         <Link to={"/calendar"}>Calendar</Link>
+        <Link to={"/tasks"}>Tasks</Link>
 
         {user &&
           user.hasOwnProperty("roles") &&

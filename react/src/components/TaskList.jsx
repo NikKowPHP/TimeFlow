@@ -11,7 +11,7 @@ const TaskList = ({selectedDate, tasksArray = [], user = {}}) => {
         <div>
           <ul>
 						{
-							tasksArray && 
+							tasksArray.length > 0 && 
 							tasksArray.map((task, index) => (
 								<Task key={index} data={{title: task.title, timeStart: task.time_start, timeEnd: task.time_end}} />
 							))

@@ -29,7 +29,7 @@ export default function Calendar() {
   // get tasks
   const getTasks = () => {
     axiosClient
-      .get(`/calendar/${convertDateSql(selectedDate)}`)
+      .get(`/calendar/calendar/${convertDateSql(selectedDate)}`)
       .then(({ data }) => {
         setTasks(data.data);
         console.log(data.data)
@@ -41,7 +41,7 @@ export default function Calendar() {
   };
   const getAllTasks = () => {
     axiosClient
-      .get(`/calendar`)
+      .get(`/calendar/calendar`)
       .then(({ data }) => {
         setAllTasks(data.data);
       })

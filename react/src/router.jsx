@@ -9,6 +9,7 @@ import UserForm from "./views/UserForm";
 import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
+import Tasks from "./views/Tasks";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
         path: "/roles/all",
         element: <RoleNames />
       }, 
+      {
+        path: "/tasks",
+        element: <Tasks />,
+      },
       {
         path: "/calendar",
         element: <Calendar />,

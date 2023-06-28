@@ -23,10 +23,16 @@ Route::middleware('auth:sanctum')->group(function () {
     //get authenthicated user
     Route::get('/user', [UserController::class, 'getAuthUser']);
 
+    Route::prefix('calendar')->group(function () {
+
+        Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
+        Route::apiResource('/calendar', TaskController::class);
+
+    });
+
     // get all users
     Route::apiResource('/users', UserController::class);
 
-    Route::apiResource('/calendar', TaskController::class);
 
 
     // admin middleware control
@@ -37,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //get role names 
         Route::get('/roles/all', [RoleController::class, 'getAllRoleNames']);
 
-        Route::delete('/roles/all/{id}', [RoleController::class, 'deleteRoleName'] );
+        Route::delete('/roles/all/{id}', [RoleController::class, 'deleteRoleName']);
         // update user roles
         Route::put('/roles/{id}', [RoleController::class, 'updateUserRole']);
         // Route::put('/roles/', [RoleController::class, 'updateUserRole']);
@@ -45,10 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // get a user with roles
         Route::get('/roles/{id}', [RoleController::class, 'getUserWithRoles']);
-        
+
         // get all roles
         Route::apiResource('/roles', RoleController::class);
-        
+
 
 
     });
@@ -56,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //logout user
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
+
 
 });
 

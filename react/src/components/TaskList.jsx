@@ -1,5 +1,4 @@
 import React from 'react'
-import axiosClient from '../axios-client'
 import Task from './Task'
 import "../styles/task.css";
 
@@ -11,10 +10,14 @@ const TaskList = ({selectedDate, tasksArray = [], user = {}}) => {
         <div>
           <ul>
 						{
-							tasksArray.length > 0 && 
+							tasksArray.length > 0 ? 
 							tasksArray.map((task, index) => (
 								<Task key={index} data={{title: task.title, timeStart: task.time_start, timeEnd: task.time_end}} />
 							))
+              :
+              (
+                <h3 style={{textAlign: 'center'}}>There is no tasks for the day</h3>
+              )
 
 						}
           </ul>

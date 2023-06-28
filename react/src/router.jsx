@@ -8,6 +8,7 @@ import GuestLayout from "./components/GuestLayout";
 import UserForm from "./views/UserForm";
 import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
+import RoleNames from "./views/RoleNames";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: "/roles",
         element: <Roles />
+      }, 
+      {
+        path: "/roles/all",
+        element: <RoleNames />
       }, 
       {
         path: "/calendar",

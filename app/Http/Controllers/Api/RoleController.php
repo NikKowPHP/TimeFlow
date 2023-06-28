@@ -68,12 +68,20 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+    }
+    public function deleteRoleName(string $id) 
+    {
+        $role = Role::find($id);
+        $role->delete();
+        return response("",204);
+
     }
 
     public function getAllRoleNames()
     {
         $roles = Role::all();
+        Log::debug('roles names :', ['roles' => $roles]);
         return RoleResource::collection($roles);
     }
 }

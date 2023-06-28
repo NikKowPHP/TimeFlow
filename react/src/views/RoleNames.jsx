@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
+import { toast } from "react-toastify";
 
 export default function RoleNames() {
   const [allRoleNames, setAllRoleNames] = useState([]);
-  const { loading } = useStateContext();
+  const { loading, setNotification } = useStateContext();
 
   const getAllRoleNames = () => {
     axiosClient
@@ -17,7 +18,16 @@ export default function RoleNames() {
       });
   };
 
+const onDelete = (role)=> {
+	if(!window.confirm('Are you sure you want to delete role?')) {
+		return;
+	}
+	axiosClient.delete(`/roles/all/${role.id}`).then(()=>{ 
+    setNotification(`Role ${role.role} was successfully deleted`);
+		getAllRoleNames();
+	})
 
+}
 
 	useEffect(() => {
 		getAllRoleNames();
@@ -64,7 +74,7 @@ export default function RoleNames() {
                     <td>{role.role}</td>
                     <td>
                       <button
-                        onClick={(ev) => onDelete(r)}
+                        onClick={() => onDelete(role)}
                         className="btn-delete"
                       >
                         Delete

@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //get role names 
         Route::get('/roles/all', [RoleController::class, 'getAllRoleNames']);
 
+        Route::delete('/roles/all/{id}', [RoleController::class, 'deleteRoleName'] );
         // update user roles
         Route::put('/roles/{id}', [RoleController::class, 'updateUserRole']);
         // Route::put('/roles/', [RoleController::class, 'updateUserRole']);

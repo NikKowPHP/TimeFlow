@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreUserRequest;
@@ -17,6 +18,7 @@ class TaskController extends Controller
      */
     public function index()
     {
+        Log::debug(Task::query()->orderBy('date', 'desc')->get());
         return TaskResource::collection(
             Task::query()->orderBy('date', 'desc')->get()
         );
@@ -62,6 +64,8 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $task = Task::find($id);
+        $task->delete();
+        return response('', 204);
     }
 }

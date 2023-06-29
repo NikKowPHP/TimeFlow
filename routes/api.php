@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     });
 
+    Route::apiResource('/tasks', TaskController::class);
+
     // get all users
     Route::apiResource('/users', UserController::class);
 

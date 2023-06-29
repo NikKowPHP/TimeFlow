@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import axiosClient from "../axios-client";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
@@ -24,6 +26,7 @@ function DefaultLayout() {
   };
   return (
     <div id="defaultLayout">
+      <ToastContainer />
       <aside>
         <Link to={"/dashboard"}>Dashboard</Link>
         <Link to={"/users"}>Users</Link>

@@ -4,9 +4,9 @@ import Tooltip from "../components/Tooltip";
 import CheckboxForm from "../components/CheckboxForm";
 import RoleForm from "./RoleForm";
 import { useStateContext } from "../contexts/ContextProvider";
+import { toast } from "react-toastify";
 
 export default function Roles() {
-  const {setErrors, setNotification} = useStateContext();
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const [allRoles, setAllRoles] = useState([]);
@@ -31,17 +31,13 @@ export default function Roles() {
 
   const updateRoles = (userId, selectedRoles) => {
     const payload = { user_id: userId, role_id: selectedRoles };
-    if(payload.role_id[0] === '') {
-      setErrors('It is required to choose at least one role');
-      return;
-    }
     const updatedRoles = handleRolesChange(roles, userId, selectedRoles);
     setRoles(updatedRoles);
     setIsUpdatedRoles(!isUpdatedRoles);
     axiosClient
       .put(`/roles/${userId}`, payload)
       .then(({ data }) => {
-        setNotification('Roles were updated successfully');
+        toast.success('roles were updated successfully')
       })
   };
   const showRolesToggler = () => {

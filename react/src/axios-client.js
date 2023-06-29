@@ -1,7 +1,5 @@
 import axios from "axios";
-import { useStateContext } from "./contexts/ContextProvider";
-
-const {setNotification} = useStateContext();
+import { toast } from "react-toastify";
 
 const axiosClient = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
@@ -23,15 +21,15 @@ axiosClient.interceptors.response.use(
       const { status, data } = response;
       if (status === 401) {
         localStorage.removeItem("ACCESS_TOKEN");
-        setNotification("Unathorized request");
+        toast.error("Unathorized request");
       } else if (status === 422) {
         toast.error(data.message);
         console.error("Validation errors:", data.errors);
       } else {
-        setNotification("An error occurred");
+        toast.error("An error occurred");
       }
     } else {
-      setNotification("Request failed")
+			toast.error('Request failed');
 		}
 		throw error;
   });

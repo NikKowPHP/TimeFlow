@@ -4,10 +4,16 @@ import { Link, Navigate, Outlet } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
+import Calendar from "./Calendar";
 
 function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
+
+    const location = useLocation().pathname;
+    const isCalendar = location.includes("calendar");
+
   if (!token) {
     return <Navigate to="/login" />;
   }
@@ -33,6 +39,7 @@ function DefaultLayout() {
         <Link to={"/calendar"}>Calendar</Link>
         <Link to={"/tasks"}>Tasks</Link>
 
+
         {user &&
           user.hasOwnProperty("roles") &&
           user.roles.includes("admin") && (
@@ -41,6 +48,10 @@ function DefaultLayout() {
               <Link to={"/roles/all"}>Role names</Link>
             </>
           )}
+
+          {
+           isCalendar && <Calendar size={'calendar-small'}/> 
+          }
       </aside>
       <div className="content">
         <header>

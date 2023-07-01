@@ -10,6 +10,7 @@ import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
+import CalendarMonth from "./views/CalendarMonth";
 
 const router = createBrowserRouter([
   {
@@ -50,20 +51,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/calendar",
-        element: <Calendar />,
+        element: <Calendar/>,
         children: [
           {
-            path: "/calendar/:id",
-            element: <Calendar />,
+            path: "/calendar/month",
+            element: <Calendar sort={'month'} />,
           },
           {
-            path: "/calendar/:date",
-            element: <Calendar />,
+            path: "/calendar/week",
+            element: <Calendar sort={'week'}/>,
           },
-
           {
-            path: "/calendar/user/:id",
-            element: <Calendar />,
+            path: "/calendar/agenda",
+            element: <Calendar sort={'agenda'} />,
           },
         ],
       },

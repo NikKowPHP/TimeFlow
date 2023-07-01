@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,6 +13,7 @@ function DefaultLayout() {
 
     const location = useLocation().pathname;
     const isCalendar = location.includes("calendar");
+    const navigate = useNavigate();
 
   if (!token) {
     return <Navigate to="/login" />;
@@ -30,6 +31,10 @@ function DefaultLayout() {
       setToken(null);
     });
   };
+
+  const handleOptionSelect = (option) => {
+    navigate(`/calendar/${option}`);
+  }
   return (
     <div id="defaultLayout">
       <ToastContainer />
@@ -55,8 +60,21 @@ function DefaultLayout() {
       </aside>
       <div className="content">
         <header>
-          <div>Header</div>
           <div>{user && user.name}</div>
+
+          {
+            isCalendar && (
+              <>
+              <select onChange={(e) => handleOptionSelect(e.target.value)}>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+                <option value="agenda">Agenda</option>
+              </select>
+              
+              </>
+            )
+          }
+
           <a href="#" onClick={onLogout} className="btn btn-logout">
             Logout
           </a>

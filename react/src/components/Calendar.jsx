@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "../styles/calendar.css";
 import axiosClient from "../axios-client";
-import { useNavigate } from "react-router-dom";
-
-
+import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 
-export default function Calendar() {
+export default function Calendar({ size }) {
   const navigate = useNavigate();
+  const calendarType = useLocation().pathname;
 
-  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
+
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleDateString()
+  );
 
   const currentDate = new Date();
   const months = generateMonths();
@@ -23,16 +25,31 @@ export default function Calendar() {
 
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
+  const [layout, setLayout] = useState('');
 
 
+  const renderLayout = () => {
+    switch(layout) {
+      case 'month':
+        return renderCalendarByMonth();
+      case 'week':
+        //
+      default: 
+      return renderCalendarByMonth();
+    }
 
+  }
+  useEffect(() => {
+    const modifiedCalendarType = calendarType.replace('/calendar/')
+    console.log(modifiedCalendarType);
+    setLayout(modifiedCalendarType);
+  }, [calendarType])
   // get tasks
   const getTasks = () => {
     axiosClient
       .get(`/calendar/calendar/${convertDateSql(selectedDate)}`)
       .then(({ data }) => {
         setTasks(data.data);
-        console.log(data.data)
       })
       .catch((error) => {
         console.error(error);
@@ -49,82 +66,54 @@ export default function Calendar() {
         console.error(error);
         console.log(error);
       });
-
   };
-
 
   useEffect(() => {
     getAllTasks();
     generateMonthDates();
   }, [year, month]);
   useEffect(() => {
-    if(selectedDate) getTasks();
+    if (selectedDate) getTasks();
   }, [selectedDate]);
 
-
   const convertDateSql = (date) => {
-    const dateArr = date.split('/');
+    const dateArr = date.split("/");
     const year = dateArr[2];
     const month = dateArr[0];
     const day = dateArr[1];
     const mysqlDate = `${year}-${month}-${day}`;
 
     return mysqlDate;
-
-
   };
-
-
 
   // css togglers
   const getActiveDateClass = (date) => {
     const presentDate = new Date().toLocaleDateString();
     date = date.toLocaleDateString();
-    if( presentDate === date) {
-      return 'active current-date';
-    } else if(selectedDate === date) {
-      return 'active';
+    if (presentDate === date) {
+      return "active current-date";
+    } else if (selectedDate === date) {
+      return "active";
     }
-    return '';
+    return "";
   };
 
-
-  const getThisTasks = (date) => {
-    let modifiedMonth = month + 1;
-    let modifiedDate = date;
-
-    if(month < 10) {
-      modifiedMonth = '0' + modifiedMonth;
-    }
-    if(date < 10) {
-      modifiedDate = '0' + modifiedDate;
-    }
-    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
-    console.log(selectedDate);
-    if(allTasks.some(task => task.date === thisDate)) {
-      return 'has-tasks';
-    }
-    return '';
-
-  }
   const hasTasks = (date) => {
     let modifiedMonth = month + 1;
     let modifiedDate = date;
 
-    if(month < 10) {
-      modifiedMonth = '0' + modifiedMonth;
+    if (month < 10) {
+      modifiedMonth = "0" + modifiedMonth;
     }
-    if(date < 10) {
-      modifiedDate = '0' + modifiedDate;
+    if (date < 10) {
+      modifiedDate = "0" + modifiedDate;
     }
     const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
-    if(allTasks.some(task => task.date === thisDate)) {
-      return 'has-tasks';
+    if (allTasks.some((task) => task.date === thisDate)) {
+      return "has-tasks";
     }
-    return '';
-  }
-
-
+    return "";
+  };
 
   // go to next or prev month
   const goToNextMonth = () => {
@@ -145,20 +134,17 @@ export default function Calendar() {
     }
   };
 
-
   // handle clicks
   const handleDateClick = (event, date) => {
     const selectedDate = new Date(year, month, date).toLocaleDateString();
     setSelectedDate(selectedDate);
     navigate(`/calendar/${convertDateSql(selectedDate)}`);
     getTasks();
-
   };
   const handleMonthClick = (selectedMonth) => {
     setMonth(selectedMonth);
     setShowMonths(!showMonths);
   };
-
 
   //toggle views
   const toggleShowMonths = () => {
@@ -169,12 +155,22 @@ export default function Calendar() {
   };
 
 
+
+
+
+
+
+
+
+
+
+
   // render views
 
   const renderDates = () => {
     return (
       <>
-        <ul className="weeks animated fadeInDown">
+        <ul className={"weeks animated fadeInDown "}>
           <li>Mon</li>
           <li>Tue</li>
           <li>Wed</li>
@@ -183,25 +179,22 @@ export default function Calendar() {
           <li>Sat</li>
           <li>Sun</li>
         </ul>
-        <div className="days animated fadeInDown">
+        <div className={"days animated fadeInDown "}>
           <ul>
             {dates.map((date, index) => (
               <li
                 onClick={(ev) => handleDateClick(ev, date)}
-                className={`${getActiveDateClass(new Date(year,month,date))} ${hasTasks(date)}`}
+                className={`${getActiveDateClass(
+                  new Date(year, month, date)
+                )} ${hasTasks(date)}`}
                 key={index}
               >
                 {date}
               </li>
-            ))
-            
-            }
+            ))}
           </ul>
         </div>
-          {tasks && (
-            <TaskList selectedDate={selectedDate} tasksArray={tasks}  />
-          )
-  }
+        {tasks && <TaskList selectedDate={selectedDate} tasksArray={tasks} />}
       </>
     );
   };
@@ -221,46 +214,82 @@ export default function Calendar() {
       </ul>
     );
   };
+  const renderCalendarByMonth = () => {
+    return (
+      <>
+        <div  className="calendar-days-by-month">
+          <ol className="calendar-days-by-month"></ol>
+          <div>Su</div>
+          <div>Mo</div>
+          <div>Tu</div>
+          <div>We</div>
+          <div>Th</div>
+          <div>Fr</div>
+          <div>Sa</div>
+        </div>
 
+        <div className="calendar-dates-by-month">
+          <div>1</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+          <div>6</div>
+        </div>
+      </>
+    );
+  };
 
   return (
-    <div className="calendar-wrapper">
-      <header>
-        <button
-          className="current-date btn-transparent"
-          onClick={toggleShowYears}
-        >
-          {year}
-        </button>
-        <button
-          className="current-month btn-transparent"
-          onClick={toggleShowMonths}
-        >
-          {getMonthName(month)}
-        </button>
+    //TODO: MAKE A TOOLBAR AND TO ADJUST THE VIEW , PUSH CALENDAR TO NAVIGATION BAR AND SHOW THE TABLE OF DAYS
+    <div className={"calendar-wrapper " + size && size}>
+      {size ? (
+        <>
+          <header>
+            <button
+              className="current-date btn-transparent"
+              onClick={toggleShowYears}
+            >
+              {year}
+            </button>
+            <button
+              className="current-month btn-transparent"
+              onClick={toggleShowMonths}
+            >
+              {getMonthName(month)}
+            </button>
 
-        <div className="icons">
-          <span
-            onClick={getPrevMonthDates}
-            className="material-symbols-rounded"
-          >
-            chevron_left
-          </span>
-          <span onClick={goToNextMonth} className="material-symbols-rounded">
-            chevron_right
-          </span>
-        </div>
-      </header>
-      <div className="calendar">
-        {showMonths && renderMonths()}
-        {showDates && renderDates()}
-        {!showMonths && renderDates()}
-      </div>
+            <div className="icons">
+              <span
+                onClick={getPrevMonthDates}
+                className="material-symbols-rounded"
+              >
+                chevron_left
+              </span>
+              <span
+                onClick={goToNextMonth}
+                className="material-symbols-rounded"
+              >
+                chevron_right
+              </span>
+            </div>
+          </header>
+          <div className="calendar">
+            {showMonths && renderMonths()}
+            {showDates && renderDates()}
+            {!showMonths && renderDates()}
+          </div>
+        </>
+      ): renderLayout()}
     </div>
   );
 
+
+
+
+
+
   //helper functions
-  // get months 
+  // get months
   function generateMonths() {
     const months = [];
 
@@ -270,7 +299,7 @@ export default function Calendar() {
     return months;
   }
   // generate dates of the month
-  function generateMonthDates()  {
+  function generateMonthDates() {
     if (!showMonths) {
       const firstDayOfMonth = new Date(year, month, 1);
       const startingDay = firstDayOfMonth.getDay();
@@ -286,8 +315,8 @@ export default function Calendar() {
       setDates(currentMonthDates);
     } else {
     }
-  };
-  // get month names 
+  }
+  // get month names
   function getMonthName(month) {
     const months = [
       "January",
@@ -304,6 +333,6 @@ export default function Calendar() {
       "December",
     ];
     return months[month];
-  };
+  }
   // helper functions end
 }

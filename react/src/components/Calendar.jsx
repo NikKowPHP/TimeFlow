@@ -5,13 +5,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 
 export default function Calendar({ size }) {
-  const navigate = useNavigate();
-  const calendarType = useLocation().pathname;
-
-
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toLocaleDateString()
-  );
 
   const currentDate = new Date();
   const months = generateMonths();
@@ -25,25 +18,29 @@ export default function Calendar({ size }) {
 
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
-  const [layout, setLayout] = useState('');
+  const [layout, setLayout] = useState("");
 
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleDateString()
+  );
+
+  const navigate = useNavigate();
+  const calendarType = useLocation().pathname;
 
   const renderLayout = () => {
-    switch(layout) {
-      case 'month':
+    switch (layout) {
+      case "month":
         return renderCalendarByMonth();
-      case 'week':
-        //
-      default: 
-      return renderCalendarByMonth();
+      case "week":
+      //
+      default:
+        return renderCalendarByMonth();
     }
-
-  }
+  };
   useEffect(() => {
-    const modifiedCalendarType = calendarType.replace('/calendar/')
-    console.log(modifiedCalendarType);
+    const modifiedCalendarType = calendarType.replace("/calendar/");
     setLayout(modifiedCalendarType);
-  }, [calendarType])
+  }, [calendarType]);
   // get tasks
   const getTasks = () => {
     axiosClient
@@ -154,17 +151,6 @@ export default function Calendar({ size }) {
     setShowYears(!showYears);
   };
 
-
-
-
-
-
-
-
-
-
-
-
   // render views
 
   const renderDates = () => {
@@ -216,26 +202,30 @@ export default function Calendar({ size }) {
   };
   const renderCalendarByMonth = () => {
     return (
-      <>
-        <div  className="calendar-days-by-month">
-          <ol className="calendar-days-by-month"></ol>
-          <div>Su</div>
-          <div>Mo</div>
-          <div>Tu</div>
-          <div>We</div>
-          <div>Th</div>
-          <div>Fr</div>
-          <div>Sa</div>
-        </div>
+      <div className="calendar-by-month-wrapper">
+        <ol className="calendar-by-month-days">
+          <li className="day-name">Mon</li>
+          <li className="day-name">Tue</li>
+          <li className="day-name">Wed</li>
+          <li className="day-name">Thu</li>
+          <li className="day-name">Fri</li>
+          <li className="day-name">Sat</li>
+          <li className="day-name">Sun</li>
 
-        <div className="calendar-dates-by-month">
-          <div>1</div>
-          <div>3</div>
-          <div>4</div>
-          <div>5</div>
-          <div>6</div>
-        </div>
-      </>
+        </ol>
+
+        <ol className="calendar-by-month-dates">
+          {
+            dates.map((date, index) => (
+              <li key={index}>{date}</li>
+            ))
+          }
+
+        </ol>
+          
+
+
+      </div>
     );
   };
 
@@ -279,14 +269,11 @@ export default function Calendar({ size }) {
             {!showMonths && renderDates()}
           </div>
         </>
-      ): renderLayout()}
+      ) : (
+        renderLayout()
+      )}
     </div>
   );
-
-
-
-
-
 
   //helper functions
   // get months
@@ -298,6 +285,7 @@ export default function Calendar({ size }) {
     }
     return months;
   }
+
   // generate dates of the month
   function generateMonthDates() {
     if (!showMonths) {

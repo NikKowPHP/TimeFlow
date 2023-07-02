@@ -6,17 +6,12 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-.calendar_body{
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content: center;
-  min-height: 100vh;
-  background: #9B59B6;
+.calendar {
+  background: #fff !important;
 }
 .calendar-wrapper{
   width: 450px;
-  background: #fff;
+  background: #fff !important;
   border-radius: 10px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
@@ -196,3 +191,56 @@ header .current_date{
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
+.calendar .by-month .days li {
+  color: #333;
+  width: calc(100% / 7);
+  font-size: 0.8rem;
+}
+
+/* 
+CALENDAR BY MONTH
+ */
+
+ .calendar-by-month-days {
+  display: grid;
+  font-weight: 500;
+  grid-template-columns: repeat(7, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+ }
+ .calendar-by-month-days li {
+  padding: 3px;
+  /* height: 70px; */
+  display:block;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+ }
+ .calendar-by-month-wrapper {
+  border-left: 1px solid black;
+  background-color: #fff;
+
+ }
+ .calendar-by-month-dates {
+     
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+ }
+ .calendar-by-month-dates li {
+
+  padding: 3px;
+  height: 70px;
+  display:block;
+  border-bottom: 1px solid black;
+  /* border-left:1px solid black; */
+  border-right: 1px solid black;
+ }
+
+
+

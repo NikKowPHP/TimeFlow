@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 
 export default function Calendar({ size }) {
-
   const currentDate = new Date();
   const months = generateMonths();
   const [year, setYear] = useState(currentDate.getFullYear());
@@ -86,10 +85,10 @@ export default function Calendar({ size }) {
   // css togglers
   const getActiveDateClass = (date) => {
     const presentDate = new Date().toLocaleDateString();
-    date = date.toLocaleDateString();
-    if (presentDate === date) {
+    const modifiedDate = new Date(date).toLocaleDateString();
+    if (presentDate === modifiedDate) {
       return "active current-date";
-    } else if (selectedDate === date) {
+    } else if (selectedDate === modifiedDate) {
       return "active";
     }
     return "";
@@ -168,15 +167,13 @@ export default function Calendar({ size }) {
         <div className={"days animated fadeInDown "}>
           <ul>
             {dates.map((date, index) => (
-              <li
-                onClick={(ev) => handleDateClick(ev, date)}
-                className={`${getActiveDateClass(
-                  new Date(year, month, date)
-                )} ${hasTasks(date)}`}
-                key={index}
-              >
-                {date}
-              </li>
+                  <li
+                    onClick={(ev) => handleDateClick(ev, date)}
+                    className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
+                    key={index}
+                  >
+                    {date !== '' && date.getDate()}
+                  </li>
             ))}
           </ul>
         </div>
@@ -200,6 +197,23 @@ export default function Calendar({ size }) {
       </ul>
     );
   };
+
+  const getTasksOfDate = (date) => {
+    let modifiedMonth = month + 1;
+    let modifiedDate = date;
+
+    if (month < 10) {
+      modifiedMonth = "0" + modifiedMonth;
+    }
+    if (date < 10) {
+      modifiedDate = "0" + modifiedDate;
+    }
+    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
+    return tasks.map((task) => {
+      task.date === date && task;
+    });
+  };
+
   const renderCalendarByMonth = () => {
     return (
       <div className="calendar-by-month-wrapper">
@@ -211,20 +225,19 @@ export default function Calendar({ size }) {
           <li className="day-name">Fri</li>
           <li className="day-name">Sat</li>
           <li className="day-name">Sun</li>
-
         </ol>
 
         <ol className="calendar-by-month-dates">
-          {
-            dates.map((date, index) => (
-              <li key={index}>{date}</li>
-            ))
-          }
-
+          {dates.map((date, index) => (
+            <li
+              className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
+              key={index}
+            >
+              {date !== '' && date.getDate()}
+              {getTasksOfDate(date)}
+            </li>
+          ))}
         </ol>
-          
-
-
       </div>
     );
   };
@@ -298,10 +311,13 @@ export default function Calendar({ size }) {
       }
 
       for (let i = 1; i <= daysInMonth; i++) {
-        currentMonthDates.push(i);
+        const modifiedMonth = month < 9 ? "0" + (month + 1) : month + 1;
+        const modifiedDate = i < 10 ? "0" + i : i;
+        const fullDate = `${year}-${modifiedMonth}-${modifiedDate}`;
+        const fullDateObj = new Date(fullDate);
+        currentMonthDates.push(fullDateObj);
       }
       setDates(currentMonthDates);
-    } else {
     }
   }
   // get month names

@@ -55,15 +55,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/calendar/month",
-            element: <Calendar sort={'month'} />,
+            element: <Calendar layout={'month'} />,
           },
           {
             path: "/calendar/week",
-            element: <Calendar sort={'week'}/>,
+            element: <Calendar layout={'week'}/>,
           },
           {
             path: "/calendar/agenda",
-            element: <Calendar sort={'agenda'} />,
+            element: <Calendar layout={'agenda'} />,
           },
         ],
       },

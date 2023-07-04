@@ -75,8 +75,8 @@ export default function Calendar({ size }) {
   const convertDateSql = (date) => {
     const dateArr = date.split("/");
     const year = dateArr[2];
-    const month = dateArr[0];
-    const day = dateArr[1];
+    const month = dateArr[0].padStart(2,'0');
+    const day = dateArr[1].padStart(2, '0');
     const mysqlDate = `${year}-${month}-${day}`;
 
     return mysqlDate;
@@ -131,8 +131,9 @@ export default function Calendar({ size }) {
   };
 
   // handle clicks
-  const handleDateClick = (event, date) => {
-    const selectedDate = new Date(year, month, date).toLocaleDateString();
+  const handleDateClick = (date) => {
+    debugger;
+    const selectedDate = date.toLocaleDateString();
     setSelectedDate(selectedDate);
     navigate(`/calendar/${convertDateSql(selectedDate)}`);
     getTasks();
@@ -168,7 +169,7 @@ export default function Calendar({ size }) {
           <ul>
             {dates.map((date, index) => (
                   <li
-                    onClick={(ev) => handleDateClick(ev, date)}
+                    onClick={() => handleDateClick(date)}
                     className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
                     key={index}
                   >
@@ -199,19 +200,21 @@ export default function Calendar({ size }) {
   };
 
   const getTasksOfDate = (date) => {
+    // console.log(date);
     let modifiedMonth = month + 1;
-    let modifiedDate = date;
+    let modifiedDate = '';
+    const options = date && {
+      year: date.getFullYear(),
+      month: String(date.getMonth() + 1).padStart(2,'0'),
+      day: String(date.getDate()).padStart(2, '0')
+    }
+    // console.log(modifiedDate)
 
-    if (month < 10) {
-      modifiedMonth = "0" + modifiedMonth;
-    }
-    if (date < 10) {
-      modifiedDate = "0" + modifiedDate;
-    }
     const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
-    return tasks.map((task) => {
-      task.date === date && task;
-    });
+    // return tasks.map((task) => {
+    //   console.log(task.date)
+    //   // task.date === date && task;
+    // });
   };
 
   const renderCalendarByMonth = () => {

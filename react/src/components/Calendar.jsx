@@ -282,9 +282,11 @@ export default function Calendar({ size }) {
   // generate dates of the month
   function generateMonthDates() {
     if (!showMonths) {
+      const currentMonthDates = [];
+      const fullCalendarDates = 42;
       const firstDayOfMonth = new Date(year, month, 1);
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const currentMonthDates = [];
+
       const previousMonthYear = month === 0 ? year - 1 : year;
       const previousMonth = month === 0 ? 11 : month - 1;
       const previousMonthDays = new Date(
@@ -292,6 +294,15 @@ export default function Calendar({ size }) {
         previousMonth + 1,
         0
       ).getDate();
+
+      const nextMonth = month === 11 ? 0: month + 1;
+      const nextMonthYear = month === 11 ? year + 1 : year;
+      const nextMonthDays = new Date(
+        nextMonthYear,
+        nextMonth + 1,
+        0
+      ).getDate();
+
       const startingDay = firstDayOfMonth.getDay();
 
       for (let i = startingDay -1; i >= 0; i--) {
@@ -309,9 +320,25 @@ export default function Calendar({ size }) {
         const fullDateObj = new Date(fullDate);
         currentMonthDates.push(fullDateObj);
       }
+      let nextMonthDay = 0;
+
+      for (let i = currentMonthDates.length;  i < fullCalendarDates; i++ ) {
+        const modifiedMonth =
+          nextMonth < 9 ? "0" + (nextMonth + 1) : nextMonth + 1;
+        nextMonthDay = nextMonthDay + 1; 
+
+        const fullDate = `${nextMonthYear}-${modifiedMonth}-${nextMonthDay}`;
+        const fullDateObj = new Date(fullDate);
+        currentMonthDates.push(fullDateObj);
+      }
       setDates(currentMonthDates);
       setStartingDay(startingDay);
     }
+  }
+  function getLastDayOfMonth() {
+    const nextMonthDate = new Date(year, month + 1, 1);
+    nextMonthDate.setDate(nextMonthDate.getDate() -1);
+    return nextMonthDate.getDate();
   }
   // get month names
   function getMonthName(month) {

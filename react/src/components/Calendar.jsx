@@ -19,7 +19,7 @@ export default function Calendar({ size }) {
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
   const [layout, setLayout] = useState("");
-  console.log(startingDay)
+  console.log(startingDay);
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toLocaleDateString()
@@ -162,7 +162,7 @@ export default function Calendar({ size }) {
             {dates.map((date, index) => (
               <li
                 onClick={() => handleDateClick(date)}
-                style={index === 0 ? {gridColumnStart: startingDay}: {}}
+                // style={index === 0 ? { gridColumnStart: startingDay } : {}}
                 className={`
                 ${getActiveDateClass(convertDateSql(date))} 
                 ${hasTasks(convertDateSql(date))} `}
@@ -210,7 +210,7 @@ export default function Calendar({ size }) {
         <ol className="calendar-by-month-dates">
           {dates.map((date, index) => (
             <li
-              style={index === 0 ? {gridColumnStart: startingDay}: {}}
+              // style={index === 0 ? { gridColumnStart: startingDay } : {}}
               className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
               key={index}
             >
@@ -285,8 +285,23 @@ export default function Calendar({ size }) {
       const firstDayOfMonth = new Date(year, month, 1);
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const currentMonthDates = [];
-      setStartingDay(firstDayOfMonth.getDay());
+      const previousMonthYear = month === 0 ? year - 1 : year;
+      const previousMonth = month === 0 ? 11 : month - 1;
+      const previousMonthDays = new Date(
+        previousMonthYear,
+        previousMonth + 1,
+        0
+      ).getDate();
+      const startingDay = firstDayOfMonth.getDay();
 
+      for (let i = startingDay -1; i >= 0; i--) {
+        const modifiedMonth =
+          previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
+        const modifiedDate = previousMonthDays - i;
+        const fullDate = `${previousMonthYear}-${modifiedMonth}-${modifiedDate}`;
+        const fullDateObj = new Date(fullDate);
+        currentMonthDates.push(fullDateObj);
+      }
       for (let i = 1; i <= daysInMonth; i++) {
         const modifiedMonth = month < 9 ? "0" + (month + 1) : month + 1;
         const modifiedDate = i < 10 ? "0" + i : i;
@@ -295,6 +310,7 @@ export default function Calendar({ size }) {
         currentMonthDates.push(fullDateObj);
       }
       setDates(currentMonthDates);
+      setStartingDay(startingDay);
     }
   }
   // get month names

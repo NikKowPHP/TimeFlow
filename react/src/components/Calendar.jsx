@@ -10,6 +10,7 @@ export default function Calendar({ size }) {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
+  const [startingDay, setStartingDay] = useState(null);
 
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
@@ -18,6 +19,7 @@ export default function Calendar({ size }) {
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
   const [layout, setLayout] = useState("");
+  console.log(startingDay)
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toLocaleDateString()
@@ -37,21 +39,11 @@ export default function Calendar({ size }) {
     }
   };
   useEffect(() => {
-    const modifiedCalendarType = calendarType.replace("/calendar/");
+    const modifiedCalendarType = calendarType.replace("/calendar/", "");
     setLayout(modifiedCalendarType);
   }, [calendarType]);
+
   // get tasks
-  const getTasks = () => {
-    axiosClient
-      .get(`/calendar/calendar/${convertDateSql(selectedDate)}`)
-      .then(({ data }) => {
-        setTasks(data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        console.log(error);
-      });
-  };
   const getAllTasks = () => {
     axiosClient
       .get(`/calendar/calendar`)
@@ -63,27 +55,29 @@ export default function Calendar({ size }) {
         console.log(error);
       });
   };
-
+  const getTasksOfSelectedDay = () => {
+    axiosClient
+      .get(`/calendar/calendar/${convertDateSql(selectedDate)}`)
+      .then(({ data }) => {
+        setTasks(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        console.log(error);
+      });
+  };
   useEffect(() => {
     getAllTasks();
     generateMonthDates();
   }, [year, month]);
+
   useEffect(() => {
-    if (selectedDate) getTasks();
+    getTasksOfSelectedDay();
   }, [selectedDate]);
-
-  const convertDateSql = (date) => {
-    const dateArr = date.split("/");
-    const year = dateArr[2];
-    const month = dateArr[0].padStart(2,'0');
-    const day = dateArr[1].padStart(2, '0');
-    const mysqlDate = `${year}-${month}-${day}`;
-
-    return mysqlDate;
-  };
 
   // css togglers
   const getActiveDateClass = (date) => {
+    console.log(date);
     const presentDate = new Date().toLocaleDateString();
     const modifiedDate = new Date(date).toLocaleDateString();
     if (presentDate === modifiedDate) {
@@ -132,11 +126,9 @@ export default function Calendar({ size }) {
 
   // handle clicks
   const handleDateClick = (date) => {
-    debugger;
     const selectedDate = date.toLocaleDateString();
     setSelectedDate(selectedDate);
     navigate(`/calendar/${convertDateSql(selectedDate)}`);
-    getTasks();
   };
   const handleMonthClick = (selectedMonth) => {
     setMonth(selectedMonth);
@@ -168,13 +160,16 @@ export default function Calendar({ size }) {
         <div className={"days animated fadeInDown "}>
           <ul>
             {dates.map((date, index) => (
-                  <li
-                    onClick={() => handleDateClick(date)}
-                    className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
-                    key={index}
-                  >
-                    {date !== '' && date.getDate()}
-                  </li>
+              <li
+                onClick={() => handleDateClick(date)}
+                style={index === 0 ? {gridColumnStart: startingDay}: {}}
+                className={`
+                ${getActiveDateClass(convertDateSql(date))} 
+                ${hasTasks(convertDateSql(date))} `}
+                key={index}
+              >
+                {date !== "" && date.getDate()}
+              </li>
             ))}
           </ul>
         </div>
@@ -199,24 +194,6 @@ export default function Calendar({ size }) {
     );
   };
 
-  const getTasksOfDate = (date) => {
-    // console.log(date);
-    let modifiedMonth = month + 1;
-    let modifiedDate = '';
-    const options = date && {
-      year: date.getFullYear(),
-      month: String(date.getMonth() + 1).padStart(2,'0'),
-      day: String(date.getDate()).padStart(2, '0')
-    }
-    // console.log(modifiedDate)
-
-    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
-    // return tasks.map((task) => {
-    //   console.log(task.date)
-    //   // task.date === date && task;
-    // });
-  };
-
   const renderCalendarByMonth = () => {
     return (
       <div className="calendar-by-month-wrapper">
@@ -233,11 +210,11 @@ export default function Calendar({ size }) {
         <ol className="calendar-by-month-dates">
           {dates.map((date, index) => (
             <li
+              style={index === 0 ? {gridColumnStart: startingDay}: {}}
               className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
               key={index}
             >
-              {date !== '' && date.getDate()}
-              {getTasksOfDate(date)}
+              {date !== "" && date.getDate()}
             </li>
           ))}
         </ol>
@@ -306,12 +283,9 @@ export default function Calendar({ size }) {
   function generateMonthDates() {
     if (!showMonths) {
       const firstDayOfMonth = new Date(year, month, 1);
-      const startingDay = firstDayOfMonth.getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const currentMonthDates = [];
-      for (let i = 1; i < startingDay; i++) {
-        currentMonthDates.push("");
-      }
+      setStartingDay(firstDayOfMonth.getDay());
 
       for (let i = 1; i <= daysInMonth; i++) {
         const modifiedMonth = month < 9 ? "0" + (month + 1) : month + 1;
@@ -340,6 +314,18 @@ export default function Calendar({ size }) {
       "December",
     ];
     return months[month];
+  }
+
+  function convertDateSql(date) {
+    if (typeof date === "string" && date !== "") {
+      const dateArr = date.split("/");
+      const year = dateArr[2];
+      const month = dateArr[0].padStart(2, "0");
+      const day = dateArr[1].padStart(2, "0");
+      const mysqlDate = `${year}-${month}-${day}`;
+
+      return mysqlDate;
+    }
   }
   // helper functions end
 }

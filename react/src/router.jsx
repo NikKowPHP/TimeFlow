@@ -10,7 +10,6 @@ import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
-import CalendarMonth from "./views/CalendarMonth";
 
 const router = createBrowserRouter([
   {

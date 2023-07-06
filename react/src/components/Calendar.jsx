@@ -19,7 +19,6 @@ export default function Calendar({ size }) {
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
   const [layout, setLayout] = useState("");
-  console.log(startingDay);
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toLocaleDateString()
@@ -77,7 +76,6 @@ export default function Calendar({ size }) {
 
   // css togglers
   const getActiveDateClass = (date) => {
-    console.log(date);
     const presentDate = new Date().toLocaleDateString();
     const modifiedDate = new Date(date).toLocaleDateString();
     if (presentDate === modifiedDate) {
@@ -89,20 +87,14 @@ export default function Calendar({ size }) {
   };
 
   const hasTasks = (date) => {
-    let modifiedMonth = month + 1;
-    let modifiedDate = date;
-
-    if (month < 10) {
-      modifiedMonth = "0" + modifiedMonth;
-    }
-    if (date < 10) {
-      modifiedDate = "0" + modifiedDate;
-    }
+    //modify dates to match the mysql date format
+    const modifiedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+    const modifiedDate = (date.getDate()).toString().padStart(2, '0');
     const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
-    if (allTasks.some((task) => task.date === thisDate)) {
-      return "has-tasks";
+    if(allTasks.some((task)=> task.date === thisDate)){
+      return 'has-tasks';
     }
-    return "";
+
   };
 
   // go to next or prev month
@@ -162,10 +154,7 @@ export default function Calendar({ size }) {
             {dates.map((date, index) => (
               <li
                 onClick={() => handleDateClick(date)}
-                // style={index === 0 ? { gridColumnStart: startingDay } : {}}
-                className={`
-                ${getActiveDateClass(convertDateSql(date))} 
-                ${hasTasks(convertDateSql(date))} `}
+              className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
                 key={index}
               >
                 {date !== "" && date.getDate()}
@@ -210,7 +199,6 @@ export default function Calendar({ size }) {
         <ol className="calendar-by-month-dates">
           {dates.map((date, index) => (
             <li
-              // style={index === 0 ? { gridColumnStart: startingDay } : {}}
               className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
               key={index}
             >
@@ -223,7 +211,6 @@ export default function Calendar({ size }) {
   };
 
   return (
-    //TODO: MAKE A TOOLBAR AND TO ADJUST THE VIEW , PUSH CALENDAR TO NAVIGATION BAR AND SHOW THE TABLE OF DAYS
     <div className={"calendar-wrapper " + size && size}>
       {size ? (
         <>

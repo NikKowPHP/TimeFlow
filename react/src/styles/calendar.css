@@ -268,7 +268,6 @@ CALENDAR BY MONTH
 }
 .calendar-by-month-dates li:hover{
   z-index: inherit;
-  background-color: rgba(233, 233, 233, 0.39);
 }
 .tasks-list ul {
   margin-top: 3px;
@@ -284,5 +283,8 @@ CALENDAR BY MONTH
   margin: 0;
   font-size: 13px;
 
+}
+.tasks-list ul li:hover {
+  background-color: rgba(204, 195, 204, 0.39);
 }
 

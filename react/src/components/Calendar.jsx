@@ -3,6 +3,7 @@ import "../styles/calendar.css";
 import axiosClient from "../axios-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
+import Tooltip from "./Tooltip";
 
 export default function Calendar({ size }) {
   const currentDate = new Date();
@@ -15,6 +16,8 @@ export default function Calendar({ size }) {
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
   const [showDates, setShowDates] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [openTooltipId, setOpenTooltipId] = useState(null);
 
   const [tasks, setTasks] = useState([]);
   const [allTasks, setAllTasks] = useState([]);
@@ -86,19 +89,18 @@ export default function Calendar({ size }) {
     return "";
   };
 
-    //modify dates to match the mysql date format
+  //modify dates to match the mysql date format
   const modifyDateSql = (date) => {
-    const modifiedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
-    const modifiedDate = (date.getDate()).toString().padStart(2, '0');
+    const modifiedMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const modifiedDate = date.getDate().toString().padStart(2, "0");
     return `${year}-${modifiedMonth}-${modifiedDate}`;
-  }
+  };
 
   const hasTasks = (date) => {
     const thisDate = modifyDateSql(date);
-    if(allTasks.some((task)=> task.date === thisDate)){
-      return 'has-tasks';
+    if (allTasks.some((task) => task.date === thisDate)) {
+      return "has-tasks";
     }
-
   };
 
   // go to next or prev month
@@ -130,6 +132,9 @@ export default function Calendar({ size }) {
     setMonth(selectedMonth);
     setShowMonths(!showMonths);
   };
+  const handleTaskClick = (taskId) => {
+    setOpenTooltipId(taskId);
+  }
 
   //toggle views
   const toggleShowMonths = () => {
@@ -158,7 +163,7 @@ export default function Calendar({ size }) {
             {dates.map((date, index) => (
               <li
                 onClick={() => handleDateClick(date)}
-              className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
+                className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
                 key={index}
               >
                 {date !== "" && date.getDate()}
@@ -187,39 +192,42 @@ export default function Calendar({ size }) {
     );
   };
 
-  const getDateTasks= (date) => {
+  const getDateTasks = (date) => {
     const modifiedDate = modifyDateSql(date);
     const filteredTasks = allTasks.filter((task) => task.date === modifiedDate);
-    if(filteredTasks.length > 3) {
-      return  filteredTasks.slice(0,3);
+    if (filteredTasks.length > 3) {
+      return filteredTasks.slice(0, 3);
     } else {
       return filteredTasks;
     }
-
-  }
+  };
   const renderDateTasks = (date) => {
     const dateTasks = getDateTasks(date);
 
     return (
       <div className="tasks-list">
         <ul>
-          {
-            dateTasks.map((task) => (
-          <li 
-          
-          key={task.id}
-          >
-            {`${task.title} ${task.time_start} ${task.time_end}`}
+          {dateTasks.map((task) => (
+            <Tooltip
+            key={task.id}
+              tooltipVisible={openTooltipId === task.id}
+              children={
+                <li onClick={() => handleTaskClick(task.id)}>
+                  {`${task.title} ${task.time_start} ${task.time_end}`}
+                </li>
+              }
+              content ={
+                <li>
+                  {`${task.title} ${task.time_start} ${task.time_end}`}
+                </li>
 
-          </li>
-
-            ))
-          }
+              }
+            />
+          ))}
         </ul>
       </div>
-    )
-
-  }
+    );
+  };
 
   const renderCalendarByMonth = () => {
     return (
@@ -236,10 +244,7 @@ export default function Calendar({ size }) {
 
         <ol className="calendar-by-month-dates">
           {dates.map((date, index) => (
-            <li
-              className={`${getActiveDateClass(date)} date`}
-              key={index}
-            >
+            <li className={`${getActiveDateClass(date)} date`} key={index}>
               {date.getDate()}
               {renderDateTasks(date)}
             </li>
@@ -321,17 +326,13 @@ export default function Calendar({ size }) {
         0
       ).getDate();
 
-      const nextMonth = month === 11 ? 0: month + 1;
+      const nextMonth = month === 11 ? 0 : month + 1;
       const nextMonthYear = month === 11 ? year + 1 : year;
-      const nextMonthDays = new Date(
-        nextMonthYear,
-        nextMonth + 1,
-        0
-      ).getDate();
+      const nextMonthDays = new Date(nextMonthYear, nextMonth + 1, 0).getDate();
 
       const startingDay = firstDayOfMonth.getDay();
 
-      for (let i = startingDay -1; i >= 0; i--) {
+      for (let i = startingDay - 1; i >= 0; i--) {
         const modifiedMonth =
           previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
         const modifiedDate = previousMonthDays - i;
@@ -348,10 +349,10 @@ export default function Calendar({ size }) {
       }
       let nextMonthDay = 0;
 
-      for (let i = currentMonthDates.length;  i < fullCalendarDates; i++ ) {
+      for (let i = currentMonthDates.length; i < fullCalendarDates; i++) {
         const modifiedMonth =
           nextMonth < 9 ? "0" + (nextMonth + 1) : nextMonth + 1;
-        nextMonthDay = nextMonthDay + 1; 
+        nextMonthDay = nextMonthDay + 1;
 
         const fullDate = `${nextMonthYear}-${modifiedMonth}-${nextMonthDay}`;
         const fullDateObj = new Date(fullDate);
@@ -363,7 +364,7 @@ export default function Calendar({ size }) {
   }
   function getLastDayOfMonth() {
     const nextMonthDate = new Date(year, month + 1, 1);
-    nextMonthDate.setDate(nextMonthDate.getDate() -1);
+    nextMonthDate.setDate(nextMonthDate.getDate() - 1);
     return nextMonthDate.getDate();
   }
   // get month names

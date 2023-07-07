@@ -86,11 +86,15 @@ export default function Calendar({ size }) {
     return "";
   };
 
-  const hasTasks = (date) => {
     //modify dates to match the mysql date format
+  const modifyDateSql = (date) => {
     const modifiedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
     const modifiedDate = (date.getDate()).toString().padStart(2, '0');
-    const thisDate = `${year}-${modifiedMonth}-${modifiedDate}`;
+    return `${year}-${modifiedMonth}-${modifiedDate}`;
+  }
+
+  const hasTasks = (date) => {
+    const thisDate = modifyDateSql(date);
     if(allTasks.some((task)=> task.date === thisDate)){
       return 'has-tasks';
     }
@@ -183,6 +187,40 @@ export default function Calendar({ size }) {
     );
   };
 
+  const getDateTasks= (date) => {
+    const modifiedDate = modifyDateSql(date);
+    const filteredTasks = allTasks.filter((task) => task.date === modifiedDate);
+    if(filteredTasks.length > 3) {
+      return  filteredTasks.slice(0,3);
+    } else {
+      return filteredTasks;
+    }
+
+  }
+  const renderDateTasks = (date) => {
+    const dateTasks = getDateTasks(date);
+
+    return (
+      <div className="tasks-list">
+        <ul>
+          {
+            dateTasks.map((task) => (
+          <li 
+          
+          key={task.id}
+          >
+            {`${task.title} ${task.time_start} ${task.time_end}`}
+
+          </li>
+
+            ))
+          }
+        </ul>
+      </div>
+    )
+
+  }
+
   const renderCalendarByMonth = () => {
     return (
       <div className="calendar-by-month-wrapper">
@@ -199,10 +237,11 @@ export default function Calendar({ size }) {
         <ol className="calendar-by-month-dates">
           {dates.map((date, index) => (
             <li
-              className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
+              className={`${getActiveDateClass(date)} date`}
               key={index}
             >
-              {date !== "" && date.getDate()}
+              {date.getDate()}
+              {renderDateTasks(date)}
             </li>
           ))}
         </ol>

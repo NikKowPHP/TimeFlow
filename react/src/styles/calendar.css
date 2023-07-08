@@ -288,3 +288,10 @@ CALENDAR BY MONTH
   background-color: rgba(204, 195, 204, 0.39);
 }
 
+@media screen and (max-width: 970px){
+  .calendar-by-month-dates .date{
+
+    height: 150px;
+  }
+  
+}

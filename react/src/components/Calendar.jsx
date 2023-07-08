@@ -16,7 +16,7 @@ export default function Calendar({ size }) {
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
   const [showDates, setShowDates] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [openTooltipId, setOpenTooltipId] = useState(null);
 
   const [tasks, setTasks] = useState([]);
@@ -134,6 +134,10 @@ export default function Calendar({ size }) {
   };
   const handleTaskClick = (taskId) => {
     setOpenTooltipId(taskId);
+  };
+
+  const handleActiveTaskState = (newState) => {
+    setIsTooltipVisible(newState);
   }
 
   //toggle views
@@ -163,7 +167,7 @@ export default function Calendar({ size }) {
             {dates.map((date, index) => (
               <li
                 onClick={() => handleDateClick(date)}
-                className={`${getActiveDateClass(date)} ${hasTasks(date)}`}
+                className={`${getActiveDateClass(date)} ${hasTasks(date)} `}
                 key={index}
               >
                 {date !== "" && date.getDate()}
@@ -209,18 +213,39 @@ export default function Calendar({ size }) {
         <ul>
           {dateTasks.map((task) => (
             <Tooltip
-            key={task.id}
+              classes="tooltip-task-description"
+              key={task.id}
               tooltipVisible={openTooltipId === task.id}
+              onVisibilityChange={handleActiveTaskState}
               children={
-                <li onClick={() => handleTaskClick(task.id)}>
+                <li className={`
+                ${openTooltipId && openTooltipId === task.id && isTooltipVisible &&  'task-active'}
+                `}
+                 onClick={() => handleTaskClick(task.id)}>
                   {`${task.title} ${task.time_start} ${task.time_end}`}
                 </li>
               }
-              content ={
-                <li>
-                  {`${task.title} ${task.time_start} ${task.time_end}`}
-                </li>
+              content={
+                // <li>
+                //   {`${task.title} ${task.time_start} ${task.time_end}`}
+                // </li>
 
+                <div>
+                  <div className="tooltip-tools"></div>
+                  <div className="tooltip-task">
+                    <h3>{task.title}</h3>
+                    <p>
+                      {task.date} ⋅ {task.time_start}-{task.time_end}
+                    </p>
+                  </div>
+                  <div className="tooltip-task-additional">
+                    {/* TODO: create notifications */}
+                    <div className="tooltip-task-notification">
+                      in 5 minutes before
+                    </div>
+                    <div className="tooltip-task-owner">{task.user_id}</div>
+                  </div>
+                </div>
               }
             />
           ))}

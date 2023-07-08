@@ -16,3 +16,30 @@
   opacity: 0.9;
   z-index: 1;
 }
+.tooltip-task-description {
+	position: absolute;
+	top: 50%;
+	left: 200%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  box-shadow: 5px 10px 20px 5px rgba(0, 0, 0, 0.411) ;
+  color: #000;
+  padding: 15px;
+  border-radius: 3px;
+  white-space: nowrap;
+  font-size: 14px;
+  opacity: 1;
+  z-index: 1;
+}
+.tooltip-tools {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.tooltip-tools > *:last-child {
+  margin-left: auto;
+  
+}
+.tooltip-tools > *:not(:last-child) {
+  margin-right: 10px;
+}

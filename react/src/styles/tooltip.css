@@ -24,7 +24,7 @@
   background-color: #fff;
   box-shadow: 5px 10px 20px 5px rgba(0, 0, 0, 0.411) ;
   color: #000;
-  padding: 15px;
+  padding: 15px 20px 15px 20px;
   border-radius: 3px;
   white-space: nowrap;
   font-size: 14px;
@@ -41,5 +41,37 @@
   
 }
 .tooltip-tools > *:not(:last-child) {
+  margin-right: 10px;
+}
+.tooltip-task-title {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+}
+.tooltip-task-title::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 4px;
+  width: 10px;
+  height: 10px;
+  background-color: rgb(206, 71, 206);
+}
+.tooltip-task-notification{
+  display: flex;
+  margin-bottom: 10px;
+}
+.tooltip-task-notification svg {
+  margin-right: 8px;
+}
+.tooltip-task-owner {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.tooltip-task-owner i {
+  align-items: center;
+  text-align: center;
+  margin-left: 3px;
   margin-right: 10px;
 }

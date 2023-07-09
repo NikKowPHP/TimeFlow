@@ -287,6 +287,10 @@ CALENDAR BY MONTH
 .tasks-list ul li:hover {
   background-color: rgba(204, 195, 204, 0.39);
 }
+.task-active {
+
+  background-color: rgba(204, 195, 204, 0.39);
+}
 
 @media screen and (max-width: 970px){
   .calendar-by-month-dates .date{

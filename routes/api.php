@@ -25,8 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('calendar')->group(function () {
 
-        Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
         Route::apiResource('/calendar', TaskController::class);
+
+        Route::get('/calendar/{date}', [TaskController::class, 'indexByDate']);
 
     });
 

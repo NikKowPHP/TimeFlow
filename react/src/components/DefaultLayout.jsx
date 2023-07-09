@@ -11,32 +11,39 @@ function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
 
+  const navigate = useNavigate();
+
+  // show calendar in aside section 
   const location = useLocation().pathname;
   const isCalendar = location.includes("calendar");
-  const navigate = useNavigate();
+  // show/hide aside 
   const [asideShown, setAsideShown] = useState(true);
 
 
   if (!token) {
     return <Navigate to="/login" />;
   }
+
+  // get user data
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);
     });
   }, []);
 
+  // hide/show aside
   const handleToggleAside = () => {
     setAsideShown(!asideShown);
   }
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 960) {
+      if (window.innerWidth < 970) {
         setAsideShown(false);
       } else {
         setAsideShown(true);
       }
     }
+    handleResize();
 
     window.addEventListener('resize', handleResize);
     return () => {
@@ -54,15 +61,17 @@ function DefaultLayout() {
     });
   };
 
+  // select type of calendar to show
   const handleOptionSelect = (option) => {
     navigate(`/calendar/${option}`);
   };
+
 
   return (
     <div id="defaultLayout">
       <ToastContainer />
       {asideShown && (
-        <aside className="default-aside ">
+        <aside className='default-aside'>
           <Link to={"/dashboard"}>Dashboard</Link>
           <Link to={"/users"}>Users</Link>
           <Link to={"/calendar"}>Calendar</Link>
@@ -91,6 +100,7 @@ function DefaultLayout() {
           </button>
           <div>{user && user.name}</div>
 
+            {/* show selection of calendar types */}
           {isCalendar && (
             <>
               <select onChange={(e) => handleOptionSelect(e.target.value)}>

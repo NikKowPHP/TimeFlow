@@ -16,6 +16,14 @@
   opacity: 0.9;
   z-index: 1;
 }
+.tooltip-right {
+	top: 110%;
+	left: 50%;
+}
+.tooltip-left {
+  top: 100% !important;
+  left: -130% !important;
+}
 .tooltip-task-description {
 	position: absolute;
 	top: 50%;

@@ -244,7 +244,6 @@ CALENDAR BY MONTH
   border-bottom: 1px solid black;
   /* border-left:1px solid black; */
   border-right: 1px solid black;
-  cursor: pointer;
  }
 
 .calendar-by-month-dates  li::before{
@@ -272,10 +271,11 @@ CALENDAR BY MONTH
 .tasks-list ul {
   margin-top: 3px;
   margin-left: 5px;
+  display: flex;
+  flex-direction: column;
   text-align: start;
   list-style-type: dotted;
   list-style-position: inside;
-
 }
 
 .tasks-list  ul li {
@@ -290,6 +290,9 @@ CALENDAR BY MONTH
 .task-active {
 
   background-color: rgba(204, 195, 204, 0.39);
+}
+.task-option {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 970px){

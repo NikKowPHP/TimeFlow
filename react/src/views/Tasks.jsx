@@ -77,7 +77,7 @@ export default function Tasks() {
                       <Link
                         className="btn-edit"
                         style={{ marginRight: "5px" }}
-                        to={"/users/" + task.id}
+                        to={"/tasks/" + task.id}
                       >
                         Edit
                       </Link>

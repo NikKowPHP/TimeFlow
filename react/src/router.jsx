@@ -10,6 +10,7 @@ import Calendar from "./components/Calendar";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
+import TaskForm from "./views/TaskForm";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/tasks",
         element: <Tasks />,
+      },
+      {
+        path: "/tasks/:id",
+        element : <TaskForm/>
       },
       {
         path: "/calendar",

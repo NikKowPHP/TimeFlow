@@ -123,16 +123,19 @@ header .current_date{
 
 .has-tasks::after {
   content: '';
-  display: block;
+  position: absolute;
   width: 6px;
   height: 6px;
+  bottom: -15%;
+    left: 25%;
+
   background-color: #9B59B6;
-  margin: 0 auto;
-  margin-top: 4px;
+  /* margin: 0 auto; */
   border-radius: 50%;
 }
 
 /* calendar small */
+
 .calendar-small {
   width: 100%;
 
@@ -158,14 +161,64 @@ header .current_date{
   border-radius: 50%;
 }
 .calendar-small .days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   justify-items: center;
-  align-items: center;
+  /* align-items: center; */
+  margin-top: 10px;
 }
-.calendar-small .days li{
-  color: #333;
-  width: calc(100% / 7);
+.calendar-small div {
+  margin-bottom: 15px;
+}
+
+.calendar-small .days div {
+  position: relative;
+  cursor: pointer;
   font-size: 0.8rem;
 }
+.calendar-small .days div::before{
+  position: absolute;
+  content: "";
+  left: 50%;
+  height: 25px;
+  width: 25px;
+  top: 50%;
+  z-index: -1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.calendar-small .days .current-date::before {
+  
+  z-index: inherit;
+  background-color: rgba(156, 89, 182, 0.39);
+
+}
+.calendar-small div.active::before{
+  border: 1px solid  #9c59b6;
+  z-index: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.calendar-small .days div:hover::before {
+  border: 1px solid  #9c59b6a8;
+  z-index: 1;
+  border-radius: 50%;
+
+}
+.calendar-by-month-dates li.current-date::before {
+  z-index: inherit;
+  background-color: rgba(156, 89, 182, 0.39);
+}
+/* .calendar-small .days {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  align-items: center;
+  display: block;
+  color: #333;
+  font-size: 0.8rem;
+} */
+
 .calendar .weeks {
 
   justify-content: space-around;
@@ -182,17 +235,6 @@ header .current_date{
   margin-top: 20px;
   margin-left: -10px;
   display: block;
-}
-.calendar-small .days li::before{
-  position: absolute;
-  content: "";
-  left: 50%;
-  top: 50%;
-  height: 25px;
-  width: 25px;
-  z-index: -1;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
 }
 .calendar .by-month .days li {
   color: #333;

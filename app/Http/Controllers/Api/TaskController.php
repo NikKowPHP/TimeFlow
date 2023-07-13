@@ -18,7 +18,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        Log::debug(Task::query()->orderBy('date', 'desc')->get());
+        log::debug('tasks', ['task'=> Task::query()->orderBy('date', 'desc')->get()]);
         return TaskResource::collection(
             Task::query()->orderBy('date', 'desc')->get()
         );
@@ -32,7 +32,12 @@ class TaskController extends Controller
     public function indexByDate($date)
     {
         $date = Task::whereDate('date', $date)->get();
-        return TaskResource::collection($date);
+        if($date->count() !== 0) {
+            log::debug('index by date', ['data'=> $date]);
+            return TaskResource::collection($date);
+        } else {
+            return [];
+        }
     }
 
     /**

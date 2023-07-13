@@ -4,6 +4,7 @@ import axiosClient from "../axios-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 import Tooltip from "./Tooltip";
+import { toast } from "react-toastify";
 
 export default function Calendar({ size }) {
   const currentDate = new Date();
@@ -61,11 +62,10 @@ export default function Calendar({ size }) {
     axiosClient
       .get(`/calendar/calendar/${convertDateSql(selectedDate)}`)
       .then(({ data }) => {
-        setTasks(data.data);
+          setTasks(data.data);
       })
       .catch((error) => {
-        console.error(error);
-        console.log(error);
+        toast.error('Failed to fetch tasks');
       });
   };
   useEffect(() => {

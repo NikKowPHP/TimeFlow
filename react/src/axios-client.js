@@ -25,8 +25,11 @@ axiosClient.interceptors.response.use(
       } else if (status === 422) {
         toast.error(data.message);
         console.error("Validation errors:", data.errors);
-      } else {
-        toast.error("An error occurred");
+      }else if (status === 500) {
+        console.error('internal server errors', data);
+      }
+       else {
+        console.log('there is no data from server')
       }
     } else {
 			toast.error('Request failed');

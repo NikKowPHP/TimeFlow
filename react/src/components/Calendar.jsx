@@ -134,7 +134,8 @@ export default function Calendar({ size }) {
     setMonth(selectedMonth);
     setShowMonths(!showMonths);
   };
-  const handleTaskClick = (taskId) => {
+  const handleTaskClick = (taskId,event) => {
+    event && event.stopPropagation();
     setOpenTooltipId(taskId);
   };
 
@@ -227,7 +228,7 @@ export default function Calendar({ size }) {
                   "task-active"
                 }
                 `}
-                  onClick={() => handleTaskClick(task.id)}
+                  onClick={(event) => handleTaskClick(task.id, event)}
                 >
                   {`${task.title} ${task.time_start} ${task.time_end}`}
                 </li>

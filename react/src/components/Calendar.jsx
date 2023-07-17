@@ -3,7 +3,7 @@ import "../styles/calendar.css";
 import axiosClient from "../axios-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
-import Tooltip from "./Tooltip";
+import Tooltip from "./tooltips/Tooltip";
 import { toast } from "react-toastify";
 
 export default function Calendar({ size }) {

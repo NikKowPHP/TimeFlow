@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
-import Tooltip from "../components/Tooltip";
+import Tooltip from "../components/tooltips/Tooltip";
 import CheckboxForm from "../components/CheckboxForm";
 import RoleForm from "./RoleForm";
 import { useStateContext } from "../contexts/ContextProvider";

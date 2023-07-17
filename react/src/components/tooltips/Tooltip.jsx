@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../styles/tooltip.css";
+import "../../styles/tooltip.css";
 import { useRef } from "react";
 
 export default function Tooltip({

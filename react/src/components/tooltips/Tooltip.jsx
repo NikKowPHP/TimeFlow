@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import "../../styles/tooltip.css";
 import { useRef } from "react";
 
@@ -86,4 +87,11 @@ export default function Tooltip({
       )}
     </div>
   );
+}
+Tooltip.propTypes = {
+  children: PropTypes.node,
+  content: PropTypes.node,
+  tooltipVisible: PropTypes.bool,
+  onVisibilityChange: PropTypes.func,
+  classes: PropTypes.string
 }

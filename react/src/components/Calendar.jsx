@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/calendar.css";
 import axiosClient from "../axios-client";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -12,11 +12,9 @@ export default function Calendar({ size }) {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [startingDay, setStartingDay] = useState(null);
 
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
-  const [showDates, setShowDates] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [openTooltipId, setOpenTooltipId] = useState(null);
 
@@ -35,8 +33,10 @@ export default function Calendar({ size }) {
     switch (layout) {
       case "month":
         return renderCalendarByMonth();
+        break;
       case "week":
-      //
+        break;
+      // break
       default:
         return renderCalendarByMonth();
     }
@@ -65,6 +65,7 @@ export default function Calendar({ size }) {
         setTasks(data.data);
       })
       .catch((error) => {
+        console.error(error);
         toast.error("Failed to fetch tasks");
       });
   };
@@ -218,21 +219,6 @@ export default function Calendar({ size }) {
               key={task.id}
               tooltipVisible={openTooltipId === task.id}
               onVisibilityChange={handleActiveTaskState}
-              children={
-                <li
-                  className={`task-option 
-                ${
-                  openTooltipId &&
-                  openTooltipId === task.id &&
-                  isTooltipVisible &&
-                  "task-active"
-                }
-                `}
-                  onClick={(event) => handleTaskClick(task.id, event)}
-                >
-                  {`${task.title} ${task.time_start} ${task.time_end}`}
-                </li>
-              }
               content={
                 <div>
                   <div className="tooltip-tools">
@@ -297,7 +283,23 @@ export default function Calendar({ size }) {
                   </div>
                 </div>
               }
-            />
+            >
+
+              <li
+                  className={`task-option 
+                ${
+                      openTooltipId &&
+                      openTooltipId === task.id &&
+                      isTooltipVisible &&
+                      "task-active"
+                  }
+                `}
+                  onClick={(event) => handleTaskClick(task.id, event)}
+              >
+                {`${task.title} ${task.time_start} ${task.time_end}`}
+              </li>
+
+            </Tooltip>
           ))}
         </ul>
       </div>
@@ -439,7 +441,6 @@ export default function Calendar({ size }) {
           </header>
           <div className="calendar">
             {showMonths && renderMonths()}
-            {showDates && renderDates()}
             {!showMonths && renderDates()}
           </div>
         </>
@@ -478,7 +479,6 @@ export default function Calendar({ size }) {
 
       const nextMonth = month === 11 ? 0 : month + 1;
       const nextMonthYear = month === 11 ? year + 1 : year;
-      const nextMonthDays = new Date(nextMonthYear, nextMonth + 1, 0).getDate();
 
       const startingDay = firstDayOfMonth.getDay();
 
@@ -509,7 +509,6 @@ export default function Calendar({ size }) {
         currentMonthDates.push(fullDateObj);
       }
       setDates(currentMonthDates);
-      setStartingDay(startingDay);
     }
   }
   function getLastDayOfMonth() {

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "../styles/calendar.css";
-import axiosClient from "../axios-client";
+import axiosClient from "../../axios-client";
 import { useLocation, useNavigate } from "react-router-dom";
-import TaskList from "./TaskList";
-import Tooltip from "./tooltips/Tooltip";
+import TaskList from "../TaskList";
+import Tooltip from "../tooltips/Tooltip";
+import CalendarMonthly from "./CalendarMonthly";
 import { toast } from "react-toastify";
 
 export default function Calendar({ size }) {
@@ -32,13 +33,23 @@ export default function Calendar({ size }) {
   const renderLayout = () => {
     switch (layout) {
       case "month":
-        return renderCalendarByMonth();
-        break;
+        return (
+          <CalendarMonthly
+            dates={dates}
+            openTooltipId={openTooltipId}
+            handleActiveTaskState={handleActiveTaskState}
+          />
+        );
       case "week":
         break;
-      // break
       default:
-        return renderCalendarByMonth();
+        return (
+          <CalendarMonthly
+            dates={dates}
+            openTooltipId={openTooltipId}
+            handleActiveTaskState={handleActiveTaskState}
+          />
+        );
     }
   };
   useEffect(() => {
@@ -135,7 +146,8 @@ export default function Calendar({ size }) {
     setMonth(selectedMonth);
     setShowMonths(!showMonths);
   };
-  const handleTaskClick = (taskId,event) => {
+  const handleTaskClick = (taskId, event) => {
+    console.log(taskId);
     event && event.stopPropagation();
     setOpenTooltipId(taskId);
   };
@@ -284,21 +296,19 @@ export default function Calendar({ size }) {
                 </div>
               }
             >
-
               <li
-                  className={`task-option 
+                className={`task-option 
                 ${
-                      openTooltipId &&
-                      openTooltipId === task.id &&
-                      isTooltipVisible &&
-                      "task-active"
-                  }
+                  openTooltipId &&
+                  openTooltipId === task.id &&
+                  isTooltipVisible &&
+                  "task-active"
+                }
                 `}
-                  onClick={(event) => handleTaskClick(task.id, event)}
+                onClick={(event) => handleTaskClick(task.id, event)}
               >
                 {`${task.title} ${task.time_start} ${task.time_end}`}
               </li>
-
             </Tooltip>
           ))}
         </ul>
@@ -326,16 +336,6 @@ export default function Calendar({ size }) {
               key={date}
               tooltipVisible={openTooltipId === date.toLocaleDateString()}
               onVisibilityChange={handleActiveTaskState}
-              children={
-                <li
-                  className={`${getActiveDateClass(date)} date`}
-                  onClick={() => handleTaskClick(date.toLocaleDateString())}
-                  key={index}
-                >
-                  {date.getDate()}
-                  {renderDateTasks(date)}
-                </li>
-              }
               content={
                 <div>
                   <div className="tooltip-tools">
@@ -375,9 +375,7 @@ export default function Calendar({ size }) {
                   </div>
                   <div className="tooltip-task-title">
                     <h2>Create a new event </h2>
-                    <p>
-                      a new event
-                    </p>
+                    <p>a new event</p>
                   </div>
                   <div className="tooltip-task-additional">
                     {/* TODO: create notifications */}
@@ -399,7 +397,16 @@ export default function Calendar({ size }) {
                   </div>
                 </div>
               }
-            />
+            >
+              <li
+                className={`${getActiveDateClass(date)} date`}
+                onClick={() => handleTaskClick(date.toLocaleDateString())}
+                key={index}
+              >
+                {date.getDate()}
+                {renderDateTasks(date)}
+              </li>
+            </Tooltip>
           ))}
         </ol>
       </div>

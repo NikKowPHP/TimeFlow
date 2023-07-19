@@ -1,29 +1,26 @@
-import { layout } from "./useCalendarState";
+import { useCalendarState } from "./useCalendarState";
+import CalendarMonthly from "./CalendarMonthly";
+import CalendarWeekly from "./CalendarWeekly";
+import CalendarAgenda from "./CalendarAgenda";
+
 export function Calendar() {
+  const { layout = "month", dates, openTooltipId, selectedDate} = useCalendarState();
 
-	  const renderCalendarLayout = () => {
-    switch (layout) {
-      case "month":
-        return (
-          <CalendarMonthly
-            dates={dates}
-            openTooltipId={openTooltipId}
-            handleActiveTaskState={handleActiveTaskState}
-          />
-        );
-      case "week":
-        break;
-      default:
-        return (
-          <CalendarMonthly
-            dates={dates}
-            openTooltipId={openTooltipId}
-            handleActiveTaskState={handleActiveTaskState}
-          />
-        );
-    }
-  };
+  let CalendarLayoutComponent;
+  if(layout === "week") {
+    CalendarLayoutComponent = CalendarWeekly;
+  } else if (layout === "agenda") {
+    CalendarLayoutComponent = CalendarAgenda;
+  } else {
+    CalendarLayoutComponent = CalendarMonthly;
+  }
 
-	return({renderCalendarLayout});
+	return (
+    <CalendarLayoutComponent
+      dates={dates}
+      openTooltipId={openTooltipId}
+      selectedDate={selectedDate}
+    />
+  )
 
 }

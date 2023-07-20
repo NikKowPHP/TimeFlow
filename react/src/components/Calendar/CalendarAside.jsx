@@ -1,13 +1,31 @@
+import { useState } from "react";
 import "../styles/calendar.css";
 
 export default function Calendar() {
 
-  // handle clicks
+  const [selectedDate,setSelectedDate] = useState('');
+
+  // handle click on date
   const handleDateClick = (date) => {
-    const selectedDate = date.toLocaleDateString();
+    const selectedDate = date.toLocaleDateString()  ;
     setSelectedDate(selectedDate);
   };
 
+  const renderMonths = () => {
+    return (
+      <ul className="months animated fadeInDown">
+        {months.map((month, index) => (
+          <li
+            onClick={() => handleMonthClick(month)}
+            className="month animated fadeInDown"
+            key={index}
+          >
+            {getMonthName(month)}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   // render dates of month
   const renderDates = () => {
@@ -26,7 +44,7 @@ export default function Calendar() {
           {dates.map((date, index) => (
             <div
               onClick={() => handleDateClick(date)}
-              className={`${getActiveDateClass(date)} ${hasTasks(date)} `}
+              className={`${getActiveDateClass(date)}`}
               key={index}
             >
               {date !== "" && date.getDate()}

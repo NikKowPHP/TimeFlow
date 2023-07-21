@@ -1,15 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import axiosClient from "../../axios-client";
 
-const CalendarApiContext =  createContext();
+const CalendarApiContext = createContext({
+  allTasks: [],
+  dayTasks: [],
+  setAllTasks: () => {},
+  setDayTasks: () => {},
+  getAllTasks: () => {},
+  getTasksOfSelectedDay: () => {},
+});
 
-export function useCalendarApi() {
-  return useContext(CalendarApiContext);
-}
-
-export function CalendarApiProvider({children}) {
-
+export function CalendarApiProvider({ children }) {
   const [allTasks, setAllTasks] = useState([]);
+  const [dayTasks, setDayTasks] = useState([]);
 
   const getAllTasks = () => {
     axiosClient
@@ -26,7 +29,7 @@ export function CalendarApiProvider({children}) {
     axiosClient
       .get(`/calendar/calendar/${selectedDate}`)
       .then(({ data }) => {
-        setTasks(data.data);
+        setDayTasks(data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -36,16 +39,18 @@ export function CalendarApiProvider({children}) {
 
   const calendarApiValue = {
     allTasks,
+    dayTasks,
+    setAllTasks,
+    setDayTasks,
     getAllTasks,
     getTasksOfSelectedDay,
-  }
+  };
 
   return (
     <CalendarApiContext.Provider value={calendarApiValue}>
       {children}
     </CalendarApiContext.Provider>
-  )
-
+  );
 }
 
-
+export const useCalendarApiContext = () => useContext(CalendarApiContext);

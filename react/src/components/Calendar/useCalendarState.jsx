@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useCalendarApi } from "./CalendarApiContext";
-import { generateMonthDates } from "./calendarUtils.js";
+import { useCalendarApiContext } from "./CalendarApiContext";
+import { calendarUtils } from "./calendarUtils.js";
 
 export function useCalendarState() {
 
-	// State for current date 
+	// State for current date
+  const currentDate = new Date();
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
@@ -13,12 +14,10 @@ export function useCalendarState() {
   const [openTooltipId, setOpenTooltipId] = useState(null);
 
   const [layout, setLayout] = useState('');
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toLocaleDateString()
-  );
-
+  const [selectedDate, setSelectedDate] = useState('');
+  
   // Use the useCalendarApi hook to access the functions
-  const {allTasks, getAllTasks, getTasksOfSelectedDay } = useCalendarApi();
+  const { getAllTasks, getTasksOfSelectedDay } = useCalendarApiContext();
 
   // Get url pathname
   const calendarLayout = useLocation().pathname;
@@ -31,7 +30,7 @@ export function useCalendarState() {
 
   // Fetch tasks for the selected date
   useEffect(() => {
-    fetchTasks(selectedDate);
+      fetchTasks(selectedDate);
   }, [selectedDate]);
 
   // Fetch tasks and generate month dates on year and month change
@@ -47,7 +46,7 @@ export function useCalendarState() {
   // Function to fetch tasks and generate month dates
   const fetchTasksAndGenerateDates = () => {
     getAllTasks();
-    generateMonthDates(year, month);
+    setDates(calendarUtils().generateMonthDates(year, month));
   }
 
   // Function to calculate the next month

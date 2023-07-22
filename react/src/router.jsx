@@ -6,7 +6,7 @@ import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import UserForm from "./views/UserForm";
-import Calendar from "./components/Calendar";
+import { Calendar } from "./components/Calendar/Calendar.jsx";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
@@ -56,10 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/calendar",
-        element: (
-          <CalendarApiProvider>
-            <Calendar/> 
-          </CalendarApiProvider>),
+        element: <Calendar/>,
         children: [
           {
             path: "/calendar/month",

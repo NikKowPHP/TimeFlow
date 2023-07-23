@@ -1,31 +1,27 @@
-import { useState } from "react";
-import "../styles/calendar.css";
+import { useCalendarState } from "./useCalendarState";
+import { calendarUtils } from "./calendarUtils";
 
-export default function Calendar() {
 
-  const [selectedDate,setSelectedDate] = useState('');
+export default function CalendarAside({handleDateClick }) {
 
-  // handle click on date
-  const handleDateClick = (date) => {
-    const selectedDate = date.toLocaleDateString()  ;
-    setSelectedDate(selectedDate);
-  };
+  const {dates, year, month, goToNextMonth, goToPrevMonth, currentDate, selectedDate } = useCalendarState();
 
-  const renderMonths = () => {
-    return (
-      <ul className="months animated fadeInDown">
-        {months.map((month, index) => (
-          <li
-            onClick={() => handleMonthClick(month)}
-            className="month animated fadeInDown"
-            key={index}
-          >
-            {getMonthName(month)}
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  // // render all months 
+  // const renderMonths = () => {
+  //   return (
+  //     <ul className="months animated fadeInDown">
+  //       {months.map((month, index) => (
+  //         <li
+  //           // onClick={() => handleMonthClick(month)}
+  //           className="month animated fadeInDown"
+  //           key={index}
+  //         >
+  //           {getMonthName(month)}
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   );
+  // };
 
   // render dates of month
   const renderDates = () => {
@@ -44,7 +40,7 @@ export default function Calendar() {
           {dates.map((date, index) => (
             <div
               onClick={() => handleDateClick(date)}
-              className={`${getActiveDateClass(date)}`}
+              className={`${calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}
               key={index}
             >
               {date !== "" && date.getDate()}
@@ -67,12 +63,12 @@ export default function Calendar() {
         <button
           className="current-month btn-transparent"
         >
-          {getMonthName(month)}
+          {calendarUtils().getMonthName(month)}
         </button>
 
         <div className="icons">
           <span
-            onClick={getPrevMonthDates}
+            onClick={goToPrevMonth}
             className="material-symbols-rounded"
           >
             chevron_left

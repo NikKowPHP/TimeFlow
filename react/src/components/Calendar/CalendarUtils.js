@@ -2,9 +2,14 @@
 export function calendarUtils() {
 
   // checks if a given date is the current date or the selected date and returns the appropriate class 
-  const getActiveDateClass = (date, presentDate, selectedDate) => {
+  function getActiveDateClass  (date, presentDate, selectedDate)  {
     const modifiedDate = new Date(date).toLocaleDateString();
-    if (presentDate === modifiedDate) {
+    const presentDateModified =  presentDate.toLocaleDateString();
+    console.log(selectedDate);
+    if(selectedDate) {
+      selectedDate.toLocaleDateString();
+    }
+    if (presentDateModified === modifiedDate) {
       return "current-date";
     } else if (selectedDate === modifiedDate) {
       return "active";

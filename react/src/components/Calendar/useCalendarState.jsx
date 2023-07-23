@@ -86,5 +86,6 @@ export function useCalendarState() {
 		setLayout,
 		selectedDate,
 		setSelectedDate,
+    currentDate
 	};
 }

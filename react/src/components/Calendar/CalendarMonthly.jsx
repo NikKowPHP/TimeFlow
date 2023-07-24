@@ -10,7 +10,7 @@ export default function CalendarMonthly({dates, openTooltipId, handleActiveTaskS
   const { isTooltipVisible } = useCalendarState();
 
   const renderDateTasks = (date) => {
-    const dateTasks = allTasks.filter((task) => task.date === dateUtils().convertDateSql(date));
+    const dateTasks = allTasks.filter((task) => task.date === dateUtils().convertDateSql(date.toLocaleDateString()));
     const maxTasksToShow = Math.min(dateTasks.length, 4);
 
     return (

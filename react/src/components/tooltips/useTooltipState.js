@@ -59,10 +59,21 @@ const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}})
     y: event.clientY,
   });
 
+  const handleTooltipToggle = (event) => {
+    handleMouseClick(event);
+    setIsTooltipVisible(!isTooltipVisible);
+    onVisibilityChange(!isTooltipVisible);
+  };
+  const handleContentClick = (event) => {
+    event.stopPropagation();
+  };
+
   return {
     isTooltipVisible,
     tooltipRef,
     handleMouseClick,
+    handleTooltipToggle,
+    handleContentClick,
   }
 
 }

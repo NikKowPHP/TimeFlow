@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}}) => {
+const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}} = {}) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(tooltipVisible);
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
   const [tooltipPositionClass, setTooltipPositionClass] =

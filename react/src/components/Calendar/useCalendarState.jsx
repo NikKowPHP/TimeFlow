@@ -10,7 +10,6 @@ export function useCalendarState() {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [openTooltipId, setOpenTooltipId] = useState(null);
 
   const [layout, setLayout] = useState('');
@@ -78,8 +77,6 @@ export function useCalendarState() {
 		goToPrevMonth,
 		dates,
 		setDates,
-		isTooltipVisible,
-		setIsTooltipVisible,
 		openTooltipId,
 		setOpenTooltipId,
 		layout,

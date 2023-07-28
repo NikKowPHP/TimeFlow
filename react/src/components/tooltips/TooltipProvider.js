@@ -1,11 +1,23 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, createContext, useRef, useEffect, useContext } from "react";
 
-const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}} = {}) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(tooltipVisible);
+const TooltipContext = createContext();
+
+export const useTooltipContext = () => {
+  return useContext(TooltipContext);
+};
+
+export const TooltipProvider = ({ children }) => {
+  const [tooltipVisible, setIsTooltipVisible] = useState(false);
+  const [tooltipContent, setTooltipContent] = useState('');
+
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
-  const [tooltipPositionClass, setTooltipPositionClass] =
-    useState("tooltip-right");
+  const [tooltipPositionClass, setTooltipPositionClass] = useState("tooltip-right");
   const tooltipRef = useRef(null);
+
+  const showTooltip = (content) => {
+    setIsTooltipVisible(true);
+    setTooltipContent(content);
+  };
 
   useEffect(() => {
     const calculateScreenCenter = () => {
@@ -43,16 +55,14 @@ const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}} 
     };
   }, [onVisibilityChange]);
 
-
-  const handleMouseClick = (event) => {
+  const adjustTooltipPosition = (event) => {
     const mouseCoordinates = getMouseClickCoordinates(event);
-
     if (mouseCoordinates.x > screenCenter.x) {
       setTooltipPositionClass("tooltip-left");
     } else {
       setTooltipPositionClass("tooltip-right");
     }
-  };
+  }
 
   const getMouseClickCoordinates = (event) => ({
     x: event.clientX,
@@ -60,9 +70,10 @@ const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}} 
   });
 
   const handleTooltipToggle = (event) => {
-    handleMouseClick(event);
+    event.stopPropagation();
     setIsTooltipVisible(!isTooltipVisible);
     onVisibilityChange(!isTooltipVisible);
+    adjustTooltipPosition(event);
   };
   const handleContentClick = (event) => {
     event.stopPropagation();
@@ -70,10 +81,12 @@ const useTooltipState = ({tooltipVisible = false,onVisibilityChange = () => {}} 
 
   return {
     isTooltipVisible,
+    setIsTooltipVisible,
     tooltipRef,
-    handleMouseClick,
     handleTooltipToggle,
     handleContentClick,
+    tooltipPositionClass,
+
   }
 
 }

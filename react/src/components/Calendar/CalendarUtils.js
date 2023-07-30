@@ -5,7 +5,6 @@ export function calendarUtils() {
   function getActiveDateClass  (date, presentDate, selectedDate)  {
     const modifiedDate = new Date(date).toLocaleDateString();
     const presentDateModified =  presentDate.toLocaleDateString();
-    console.log(selectedDate);
     if(selectedDate) {
       selectedDate.toLocaleDateString();
     }

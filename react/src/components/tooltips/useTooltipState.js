@@ -12,7 +12,7 @@ export function useTooltipState() {
 
 	// Function to explicitly set the visibility of the tooltip
   const setTooltipVisibility = (isVisible) => {
-    isTooltipVisible(isVisible);
+    setIsTooltipVisible(isVisible);
   };
 
 	// Calculate the center of the screen and update on window resize
@@ -29,15 +29,17 @@ export function useTooltipState() {
     };
     window.addEventListener("resize", handleResize);
 
+    // Clean up the event listener on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
 
+  // Event listener to handle clicks outside the tooltip
   useEffect(() => {
     const handleClickOutside = (event) => {
-			debugger
+      // Check if the tooltip is visible and the click is not the opened tooltip
       if (isTooltipVisible && event.target.dataset.tooltipId !== openedTooltipId) {
         hideTooltip();
       }
@@ -46,9 +48,10 @@ export function useTooltipState() {
     return () => {
       document.addEventListener("click", handleClickOutside);
     };
-  }, [isTooltipVisible]);
+  }, [isTooltipVisible, openedTooltipId]);
 
-  const adjustTooltipPosition = () => {
+  // Adjust the tooltip position based on the mouse click coordinates
+  const adjustTooltipPosition = (event) => {
     const mouseCoordinates = getMouseClickCoordinates(event);
     if (mouseCoordinates.x > screenCenter.x) {
       setTooltipPositionClass("tooltip-left");
@@ -57,21 +60,26 @@ export function useTooltipState() {
     }
   };
 
+  // Get the mouse click coordinates
   const getMouseClickCoordinates = (event) => ({
     x: event.clientX,
     y: event.clientY,
   });
 
+  // Show the tooltip with the specified tooltipId
   const showTooltip = (tooltipId) => {
     setIsTooltipVisible(true);
     setOpenedTooltipId(tooltipId);
+    // Adjust the tooltip position based on the click event
     adjustTooltipPosition();
   };
+  // Hide the tooltip
   const hideTooltip = () => {
     setIsTooltipVisible(false);
     setOpenedTooltipId(null);
   };
 
+  // Return the state and functions to be used by the component
   return {
     openedTooltipId,
     setOpenedTooltipId,

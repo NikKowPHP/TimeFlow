@@ -5,11 +5,13 @@ import axiosClient from "../axios-client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
-import Calendar from "./Calendar";
+import CalendarAside from "./Calendar/CalendarAside.jsx";
+import { useCalendarState } from "./Calendar/useCalendarState";
 
 function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
+  const { currentDate, selectedDate } = useCalendarState();
 
   const navigate = useNavigate();
 
@@ -86,7 +88,8 @@ function DefaultLayout() {
               </>
             )}
 
-          {isCalendar && <Calendar size={"calendar-small"} />}
+          {isCalendar && 
+          <CalendarAside currentDate={currentDate} selectedDate={selectedDate} />}
         </aside>
       )}
 

@@ -55,7 +55,7 @@ export default function CalendarMonthly({ dates, currentDate, selectedDate }) {
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
         <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
       </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+      <svg style={{cursor: 'pointer'}} onClick={() => hideTooltip()} focusable="false" width="20" height="20" viewBox="0 0 24 24">
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
       </svg>
     </div>

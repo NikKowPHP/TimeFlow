@@ -51,7 +51,7 @@ export function useTooltipState() {
   }, [isTooltipVisible, openedTooltipId]);
 
   // Adjust the tooltip position based on the mouse click coordinates
-  const adjustTooltipPosition = (event) => {
+  const adjustTooltipPosition = () => {
     const mouseCoordinates = getMouseClickCoordinates(event);
     if (mouseCoordinates.x > screenCenter.x) {
       setTooltipPositionClass("tooltip-left");

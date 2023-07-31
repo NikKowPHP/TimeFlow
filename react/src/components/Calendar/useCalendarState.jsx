@@ -3,6 +3,24 @@ import { useLocation } from "react-router-dom";
 import { useCalendarApiContext } from "./CalendarApiContext";
 import { calendarUtils } from "./calendarUtils.js";
 
+/**
+ * useCalendarState Hook
+ * 
+ * This hook manages the state and behavior of a calendar.
+ * 
+ * @returns {object} - An object containing calendar state and functions.
+ * @property {Date} currentDate - represents the current date.
+ * @property {number} year - represents the current year.
+ * @property {number} month - represents the current month.
+ * @property {Date[]} dates - contains dates of current month which are dynamically filled.
+ * @property {string} selectedDate - contains the user's selected date in 'YYYY-MM-DD' format.
+ * @property {string} layout - represents layout of the calendar ('month', 'week', 'agenda').
+ * @function goToNextMonth - Function to navigate to the next month.
+ * @function goToPrevMonth - Function to navigate to the previous month.
+ * @function fetchTasksAndGenerateDates - Function to fetch tasks and generate dates for the current month.
+ * @function fetchTasks - Function to fetch tasks for the selected date.
+ * 
+ */
 export function useCalendarState() {
 
 	// State for current date
@@ -10,11 +28,11 @@ export function useCalendarState() {
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [openTooltipId, setOpenTooltipId] = useState(null);
-
-  const [layout, setLayout] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
-  
+
+  // Select calendar layout
+  const [layout, setLayout] = useState('');
+
   // Use the useCalendarApi hook to access the functions
   const { getAllTasks, getTasksOfSelectedDay } = useCalendarApiContext();
 
@@ -77,8 +95,6 @@ export function useCalendarState() {
 		goToPrevMonth,
 		dates,
 		setDates,
-		openTooltipId,
-		setOpenTooltipId,
 		layout,
 		setLayout,
 		selectedDate,

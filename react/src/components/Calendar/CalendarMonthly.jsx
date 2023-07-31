@@ -5,6 +5,20 @@ import { calendarUtils } from "./calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import { useTooltipState } from "../tooltips/useTooltipState";
 
+/**
+ * CalendarMonthly Component
+ * 
+ * This component represents a monthly calendar view with tasks and tooltips.
+ * It fetches tasks using a custom context API and renders them in a monthly layout.
+ * It uses the Tooltip component to display task details when clicked on a task or date.
+ * 
+ * @param {object} props - The component props.
+ * @param {Date[]} props.dates - An array of Date objects representing each day in the month.
+ * @param {Date} props.currentDate - The current date.
+ * @param {Date} props.selectedDate - The selected date.
+ * @returns {JSX.Element} - The JSX element representing the CalendarMonthly component.
+ */
+
 export default function CalendarMonthly({ dates, currentDate, selectedDate }) {
   // Fetch data using custom context API
   const { allTasks, getAllTasks } = useCalendarApiContext();

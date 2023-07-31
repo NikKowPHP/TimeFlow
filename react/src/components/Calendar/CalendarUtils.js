@@ -81,6 +81,15 @@ export function calendarUtils() {
       return currentMonthDates;
   }
 
+  // Generate the array of month numbers (0-11) representing january - december.
+  function generateMonthNumbers() {
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      months.push(i);
+    }
+    return months;
+  }
+
   //  Returns the name of the month based on the month index
   function getMonthName(month) {
     const months = [
@@ -105,6 +114,7 @@ export function calendarUtils() {
     getActiveDateClass,
     generateMonths,
     generateMonthDates,
+    generateMonthNumbers,
     getMonthName,
   }
 }

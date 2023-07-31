@@ -1,5 +1,19 @@
 import { useState, useEffect} from "react";
 
+/**
+ * useTooltipState Hook
+ *
+ * This hook manages the state and behavior of a tooltip.
+ *
+ * @returns {object} - An object containing tooltip state and functions.
+ * @property {boolean} isTooltipVisible - Whether the tooltip is visible or not.
+ * @property {string|null} openedTooltipId - The ID of the currently opened tooltip.
+ * @property {string} tooltipPositionClass - The class name for tooltip positioning (e.g., "tooltip-left" or "tooltip-right").
+ * @property {function} setTooltipVisibility - Function to explicitly set the visibility of the tooltip.
+ * @property {function} showTooltip - Function to show the tooltip with the specified tooltipId.
+ * @property {function} hideTooltip - Function to hide the tooltip.
+ */
+
 export function useTooltipState() {
   // State of the tooltip
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);

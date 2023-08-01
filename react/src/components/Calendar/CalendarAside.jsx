@@ -1,27 +1,38 @@
 import { useCalendarState } from "./useCalendarState";
 import { calendarUtils } from "./calendarUtils";
+import { useState } from "react";
 
 
 export default function CalendarAside({handleDateClick }) {
 
-  const {dates, year, month, goToNextMonth, goToPrevMonth, currentDate, selectedDate } = useCalendarState();
+  const {dates, year, month, setMonth, goToNextMonth, goToPrevMonth, currentDate, selectedDate } = useCalendarState();
+  const [showMonths, setShowMonths] = useState(false);
 
-  // // render all months 
-  // const renderMonths = () => {
-  //   return (
-  //     <ul className="months animated fadeInDown">
-  //       {months.map((month, index) => (
-  //         <li
-  //           // onClick={() => handleMonthClick(month)}
-  //           className="month animated fadeInDown"
-  //           key={index}
-  //         >
-  //           {getMonthName(month)}
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   );
-  // };
+  const toggleMonthsView = () => {
+    setShowMonths((prevShowMonth)=> !prevShowMonth)
+  }
+  // Switch month by selecting month
+  const handleMonthClick = (month) => {
+    setMonth(month);
+  }
+
+  // render all months view selection instead of the dates
+  const renderMonths = () => {
+    const months = calendarUtils().generateMonthNumbers();
+    return (
+      <ul className="months animated fadeInDown">
+        {months.map((month, index) => (
+          <li
+            onClick={() => handleMonthClick(month)}
+            className="month animated fadeInDown"
+            key={index}
+          >
+            {calendarUtils().getMonthName(month)}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   // render dates of month
   const renderDates = () => {
@@ -61,6 +72,7 @@ export default function CalendarAside({handleDateClick }) {
           {year}
         </button>
         <button
+        onClick={toggleMonthsView}
           className="current-month btn-transparent"
         >
           {calendarUtils().getMonthName(month)}
@@ -78,7 +90,9 @@ export default function CalendarAside({handleDateClick }) {
           </span>
         </div>
       </header>
-        {renderDates()}
+      {
+        showMonths ? renderMonths() : renderDates()
+      }
     </div>
   );
 }

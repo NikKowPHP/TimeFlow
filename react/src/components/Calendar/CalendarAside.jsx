@@ -14,6 +14,7 @@ export default function CalendarAside({handleDateClick }) {
   // Switch month by selecting month
   const handleMonthClick = (month) => {
     setMonth(month);
+    toggleMonthsView();
   }
 
   // render all months view selection instead of the dates

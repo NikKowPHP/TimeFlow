@@ -65,8 +65,9 @@
   z-index: -1;
   border-radius: 50%;
   border: 1px solid rgba(156, 89, 182, 0.6);
+  transition: background 0.2s ease;
 }
-.calendar-aside__date-block:not(.active):hover::before {
+.calendar-aside__date-block:not(.date-active):hover::before {
   opacity: 1;
   border: none;
   background: #f2f2f2;
@@ -74,26 +75,32 @@
 .calendar-aside__date-block.current-date::before {
   opacity: 1;
 }
+
+.calendar-aside__date-block.date-active::before {
+  opacity: 1;
+  background-color: #9c59b66d;
+  border: none;
+}
 .calendar-aside__month-list {
   display: grid;
     align-items: center;
     justify-items: center;
     grid-template-columns: repeat(3, 1fr);
+    list-style: none;
+}
+.calendar-aside__month-block {
+  cursor: pointer;
+  border: 1px solid;
+  width: 70px;
+  text-align: center;
+  padding: 5px 15px;
+  margin-top: 5px;
+  transition: border-color 0.2s ease;
 }
 
-.calendar-aside__date-block.inactive {
-  color: #aaa;
+.calendar-aside__month-block:hover {
+  border-color:rgba(0, 0, 0, 0.12);
 }
-.calendar-aside__date-block.active {
-  color: #fff;
-}
-.calendar-aside__date-block .active::before {
-  background: #9b59b6;
-}
-.calendar-aside__date-block .current-date::before {
-  background-color: rgba(156, 89, 182, 0.39);
-}
-
 .has-tasks::after {
   content: "";
   position: absolute;

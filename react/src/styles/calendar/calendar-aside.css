@@ -1,0 +1,114 @@
+.calendar-aside__container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 10 15px 30px rgba(0, 0, 0, 0.12);
+}
+.calendar-aside__header {
+  display: flex;
+  align-items: center;
+  padding: 25px 30px 10px;
+  justify-content: space-between;
+}
+.calendar-aside__header .icons {
+  display: flex;
+}
+.calendar-aside__header .icons span {
+  height: 38px;
+  width: 38px;
+  margin: 0 1px;
+  cursor: pointer;
+  color: #878787;
+  text-align: center;
+  line-height: 38px;
+  font-size: 1.9rem;
+  user-select: none;
+  border-radius: 50%;
+}
+.calendar-aside__header .icons span:hover {
+  background: #f2f2f2;
+}
+.calendar-aside__header .current_date {
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+.calendar-aside__body-container{
+  padding-bottom: 10px;
+  padding: 10px;
+}
+.calendar-aside__week-list {
+  font-weight: 500;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  margin-bottom: 10px;
+}
+.calendar-aside__date-list {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+}
+.calendar-aside__date-block {
+  margin-bottom: 5px;
+  position: relative;
+  cursor: pointer;
+}
+/* Define pseudo-element for dates */
+.calendar-aside__date-block::before {
+  position: absolute;
+  content: "";
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 25px;
+  width: 25px;
+  z-index: -1;
+  border-radius: 50%;
+  border: 1px solid rgba(156, 89, 182, 0.6);
+}
+.calendar-aside__date-block.current-date::before {
+  opacity: 1;
+}
+.calendar-aside__month-list {
+  display: grid;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: repeat(3, 1fr);
+}
+.calendar-aside__month-block:hover {
+  border-color: #22222254;
+}
+
+.calendar-aside__date-block.inactive {
+  color: #aaa;
+}
+.calendar-aside__date-block.active {
+  color: #fff;
+}
+.calendar-aside__date-block .active::before {
+  background: #9b59b6;
+}
+.calendar-aside__date-block .current-date::before {
+  background-color: rgba(156, 89, 182, 0.39);
+}
+.calendar-aside__date-block:not(.active):hover::before {
+  background: #f2f2f2;
+}
+
+.has-tasks::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  bottom: -15%;
+  left: 25%;
+
+  background-color: #9b59b6;
+  /* margin: 0 auto; */
+  border-radius: 50%;
+}
+
+
+
+
+

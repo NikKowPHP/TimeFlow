@@ -12,13 +12,14 @@ export function calendarUtils() {
   function getActiveDateClass  (date, presentDate, selectedDate)  {
     const modifiedDate = new Date(date).toLocaleDateString();
     const presentDateModified =  presentDate.toLocaleDateString();
+    let selectedDateModified = selectedDate;
     if(selectedDate) {
-      selectedDate.toLocaleDateString();
+      selectedDateModified = selectedDate.toLocaleDateString();
     }
     if (presentDateModified === modifiedDate) {
       return "current-date";
-    } else if (selectedDate === modifiedDate) {
-      return "active";
+    } else if (selectedDateModified === modifiedDate)  {
+      return "date-active";
     }
     return "";
   };

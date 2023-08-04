@@ -34,7 +34,12 @@ export function useCalendarState() {
   const [layout, setLayout] = useState('');
 
   // Use the useCalendarApi hook to access the functions
-  const { getAllTasks, getTasksOfSelectedDay } = useCalendarApiContext();
+  const { allTasks, getAllTasks, getTasksOfSelectedDay, loading } = useCalendarApiContext();
+
+  // Fetch tasks when component mounts
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
   // Get url pathname
   const calendarLayout = useLocation().pathname;
@@ -99,6 +104,8 @@ export function useCalendarState() {
 		setLayout,
 		selectedDate,
 		setSelectedDate,
-    currentDate
+    currentDate,
+    allTasks,
+    loading,
 	};
 }

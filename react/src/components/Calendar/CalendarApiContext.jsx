@@ -38,6 +38,7 @@ const CalendarApiContext = createContext({
 export function CalendarApiProvider({ children }) {
   const [allTasks, setAllTasks] = useState([]);
   const [dayTasks, setDayTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch all tasks from the API and update the allTasks state.
   const getAllTasks = () => {
@@ -45,6 +46,7 @@ export function CalendarApiProvider({ children }) {
       .get(`/calendar/calendar`)
       .then(({ data }) => {
         setAllTasks(data.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -62,6 +64,7 @@ export function CalendarApiProvider({ children }) {
       .get(`/calendar/calendar/${selectedDate}`)
       .then(({ data }) => {
         setDayTasks(data.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
@@ -76,6 +79,7 @@ export function CalendarApiProvider({ children }) {
     setDayTasks,
     getAllTasks,
     getTasksOfSelectedDay,
+    loading
   };
 
   return (

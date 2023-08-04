@@ -1,17 +1,24 @@
+/* calendar-aside__container: Container for the calendar aside section */
 .calendar-aside__container {
   background: #fff;
   border-radius: 10px;
   box-shadow: 10 15px 30px rgba(0, 0, 0, 0.12);
 }
+
+/* calendar-aside__header: Header section of the container aside */
 .calendar-aside__header {
   display: flex;
   align-items: center;
   padding: 25px 30px 10px;
   justify-content: space-between;
 }
+
+/* Icons for navigating months */
 .calendar-aside__header .icons {
   display: flex;
 }
+
+/* Individual icon */
 .calendar-aside__header .icons span {
   height: 38px;
   width: 38px;
@@ -23,18 +30,27 @@
   font-size: 1.9rem;
   user-select: none;
   border-radius: 50%;
+  transition: background 0.2s ease;
 }
+
+/* Icon hover effect */
 .calendar-aside__header .icons span:hover {
   background: #f2f2f2;
 }
+
+/* Current date display in the header */
 .calendar-aside__header .current_date {
   font-size: 1.45rem;
   font-weight: 500;
 }
+
+/* calendar-aside__body-container: Container for the body content of the calendar aside */
 .calendar-aside__body-container{
   padding-bottom: 10px;
   padding: 10px;
 }
+
+/* calendar-aside__week-list: List of days of the week */
 .calendar-aside__week-list {
   font-weight: 500;
   display: grid;
@@ -42,17 +58,21 @@
   justify-items: center;
   margin-bottom: 10px;
 }
+
+/* calendar-aside__date-list: List of dates */
 .calendar-aside__date-list {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   justify-items: center;
 }
+
+/* calendar-aside__date-block: Individual date block */
 .calendar-aside__date-block {
   margin-bottom: 5px;
   position: relative;
   cursor: pointer;
 }
-/* Define pseudo-element for dates */
+/* Pseudo-element for dates */
 .calendar-aside__date-block::before {
   position: absolute;
   content: "";
@@ -67,20 +87,27 @@
   border: 1px solid rgba(156, 89, 182, 0.6);
   transition: background 0.2s ease;
 }
+
+/* Date block hover effect */
 .calendar-aside__date-block:not(.date-active):hover::before {
   opacity: 1;
   border: none;
   background: #f2f2f2;
 }
+
+/* Pseudo-element for current date */
 .calendar-aside__date-block.current-date::before {
   opacity: 1;
 }
 
+/* Pseudo-element for date with active tasks */
 .calendar-aside__date-block.date-active::before {
   opacity: 1;
   background-color: #9c59b66d;
   border: none;
 }
+
+/* calendar-aside__month-list: List of months for selection */
 .calendar-aside__month-list {
   display: grid;
     align-items: center;
@@ -88,6 +115,8 @@
     grid-template-columns: repeat(3, 1fr);
     list-style: none;
 }
+
+/* calendar-aside__month-block: Individual month block for selection */
 .calendar-aside__month-block {
   cursor: pointer;
   border: 1px solid;
@@ -98,23 +127,7 @@
   transition: border-color 0.2s ease;
 }
 
+/* calendar-aside__month-block: Individual month block for selection */
 .calendar-aside__month-block:hover {
   border-color:rgba(0, 0, 0, 0.12);
 }
-.has-tasks::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  bottom: -15%;
-  left: 25%;
-
-  background-color: #9b59b6;
-  /* margin: 0 auto; */
-  border-radius: 50%;
-}
-
-
-
-
-

@@ -1,9 +1,10 @@
-import React, { useEffect }  from "react";
+import "../../styles/calendar/calendar-monthly.css";
+import React from "react";
 import Tooltip from "../tooltips/Tooltip";
-import { useCalendarApiContext } from "./CalendarApiContext";
 import { calendarUtils } from "./calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import { useTooltipState } from "../tooltips/useTooltipState";
+import { useCalendarState } from "./useCalendarState";
 
 /**
  * CalendarMonthly Component
@@ -20,13 +21,9 @@ import { useTooltipState } from "../tooltips/useTooltipState";
  */
 
 export default function CalendarMonthly({ dates, currentDate, selectedDate }) {
-  // Fetch data using custom context API
-  const { allTasks, getAllTasks } = useCalendarApiContext();
-  
-  // Fetch tasks when component mounts
-  useEffect(() => {
-    getAllTasks();
-  }, []);
+
+  // Get tasks from custom hook
+  const {allTasks} = useCalendarState();
 
   // Get tooltip's state from custom hook
   const {

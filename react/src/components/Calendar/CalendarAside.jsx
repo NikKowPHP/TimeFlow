@@ -3,7 +3,18 @@ import { useCalendarState } from "./useCalendarState";
 import { calendarUtils } from "./calendarUtils";
 import { useState } from "react";
 
-export default function CalendarAside({ handleDateClick }) {
+/**
+ * CalendarAside Component
+ *
+ * This component represents the aside section of the calendar that displays the navigation controls,
+ * current date, and month view selection.
+ *
+ * @returns {JSX.Element} - The JSX element representing the CalendarAside component.
+ */
+
+export default function CalendarAside() {
+
+  // Using the custom hook to access calendar state and functions
   const {
     dates,
     year,
@@ -13,19 +24,29 @@ export default function CalendarAside({ handleDateClick }) {
     goToPrevMonth,
     currentDate,
     selectedDate,
+    setSelectedDate,
   } = useCalendarState();
+
+  // State to manage month view selection
   const [showMonths, setShowMonths] = useState(false);
 
+  // Function to toggle between month view and date view
   const toggleMonthsView = () => {
     setShowMonths((prevShowMonth) => !prevShowMonth);
   };
+
   // Switch month by selecting month
   const handleMonthClick = (month) => {
     setMonth(month);
     toggleMonthsView();
   };
 
-  // render all months view selection instead of the dates
+  // Function to handle month selection
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+  };
+
+  // Function to render  month view selection
   const renderMonths = () => {
     const months = calendarUtils().generateMonthNumbers();
     return (
@@ -45,7 +66,7 @@ export default function CalendarAside({ handleDateClick }) {
     );
   };
 
-  // render dates of month
+  // Function to render date view
   const renderDates = () => {
     return (
       <>
@@ -59,26 +80,26 @@ export default function CalendarAside({ handleDateClick }) {
           <div>Sun</div>
         </div>
         <div className="calendar-aside__date-list animated fadeInDown">
-  {dates.map((date, index) => (
-    <div
-      onClick={() => handleDateClick(date)}
-      className={`calendar-aside__date-block ${calendarUtils().getActiveDateClass(
+          {dates.map((date, index) => (
+            <div
+              onClick={() => handleDateClick(date)}
+              className={`calendar-aside__date-block 
+      ${calendarUtils().getActiveDateClass(
         date,
         currentDate,
         selectedDate
       )}`}
-      key={index}
-    >
-      {date !== "" && date.getDate()}
-    </div>
-  ))}
-</div>
-
-        </>
+              key={index}
+            >
+              {date !== "" && date.getDate()}
+            </div>
+          ))}
+        </div>
+      </>
     );
   };
 
-  // render calendar view
+  // Function to render the CalendarAside component
   return (
     <div className="calendar-aside__container">
       <div className="calendar-aside__header">

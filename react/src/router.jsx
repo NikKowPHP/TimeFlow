@@ -11,7 +11,7 @@ import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
 import TaskForm from "./views/TaskForm";
-import { CalendarApiProvider } from "./components/Calendar/CalendarApiContext";
+
 
 const router = createBrowserRouter([
   {
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/calendar",
-        element: <Calendar/>,
+        element: <Calendar layout={'month'}/>,
         children: [
           {
             path: "/calendar/month",

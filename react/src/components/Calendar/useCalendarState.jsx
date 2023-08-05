@@ -31,7 +31,7 @@ export function useCalendarState() {
   const [selectedDate, setSelectedDate] = useState('');
 
   // Select calendar layout
-  const [layout, setLayout] = useState('');
+  const [layout, setLayout] = useState('month');
 
   // Use the useCalendarApi hook to access the functions
   const { allTasks, getAllTasks, getTasksOfSelectedDay, loading } = useCalendarApiContext();

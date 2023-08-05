@@ -11,7 +11,7 @@ import { useCalendarState } from "./Calendar/useCalendarState";
 function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
-  const { currentDate, selectedDate } = useCalendarState();
+  const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
 
   const navigate = useNavigate();
 
@@ -65,9 +65,10 @@ function DefaultLayout() {
 
   // select type of calendar to show
   const handleOptionSelect = (option) => {
+    setLayout(option);
     navigate(`/calendar/${option}`);
   };
-
+  console.log(layout);
 
   return (
     <div id="defaultLayout">
@@ -106,9 +107,9 @@ function DefaultLayout() {
             {/* show selection of calendar types */}
           {isCalendar && (
             <>
-              <select onChange={(e) => handleOptionSelect(e.target.value)}>
-                <option value="week">Week</option>
+              <select value={layout} onChange={(e) => handleOptionSelect(e.target.value)}>
                 <option value="month">Month</option>
+                <option value="week">Week</option>
                 <option value="agenda">Agenda</option>
               </select>
             </>

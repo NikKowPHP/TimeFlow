@@ -87,7 +87,7 @@ export function calendarUtils() {
   }
 
   // Function to get the current week dates array based on the current date 
-	const getCurrentWeekDates = () => {
+	const getCurrentWeekDates = (dates, currentDate) => {
 		const weeks = 6; // Is always 6 weeks based on the type of the calendar
 		let currentWeekIndex = -1; // Initialize with an invalid value
 		let currentWeekDates = [];
@@ -103,10 +103,11 @@ export function calendarUtils() {
 			if(currentWeekIndex !== -1) {
 				const startIndex = currentWeekIndex * 7;
 				const endIndex = startIndex + 7;
-				const currentWeekDates = dates.slice(startIndex, endIndex);
+				currentWeekDates = dates.slice(startIndex, endIndex);
 			}
 			return currentWeekDates;
 		}
+  }
 
   // Generates the array of month numbers (0-11) representing january - december.
   function generateMonthNumbers() {
@@ -142,5 +143,6 @@ export function calendarUtils() {
     generateMonthDates,
     generateMonthNumbers,
     getMonthName,
+    getCurrentWeekDates,
   };
 }

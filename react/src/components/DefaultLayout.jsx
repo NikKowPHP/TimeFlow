@@ -68,7 +68,6 @@ function DefaultLayout() {
     setLayout(option);
     navigate(`/calendar/${option}`);
   };
-  console.log(layout);
 
   return (
     <div id="defaultLayout">

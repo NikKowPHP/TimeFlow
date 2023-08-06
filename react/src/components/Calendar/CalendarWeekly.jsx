@@ -5,7 +5,7 @@ import { calendarUtils } from './calendarUtils';
 
 
 export default function CalendarWeekly() {
-	const [currentWeekDates, setCurrentWeekDates] = useState();
+	const [currentWeekDates, setCurrentWeekDates] = useState('');
 	const {
 		dates,
 		currentDate,
@@ -20,14 +20,27 @@ useEffect(() => {
 	}
 }, [dates])
 
+useEffect(() => {
+	console.log(currentWeekDates)
+
+}, [currentWeekDates])
+
+
+const renderCurrentWeekDates = () => (
+	<div className='calendar-weekly__dates-container'>
+		{
+			currentWeekDates.map((date) => (
+				<div>{date.getDate()}</div>
+			))
+		}
+	</div>
+)
+
 	return (
-		// <div className='calendar-weekly__container'>
-		// 	{renderCurrentWeek}
+		<div className='calendar-weekly__container'>
+			{renderCurrentWeekDates()}
 			
 			
-		// </div>
-		<div>
-			nig
 		</div>
 	)
 }

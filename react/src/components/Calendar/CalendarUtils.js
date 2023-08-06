@@ -105,8 +105,8 @@ export function calendarUtils() {
 				const endIndex = startIndex + 7;
 				currentWeekDates = dates.slice(startIndex, endIndex);
 			}
-			return currentWeekDates;
 		}
+			return currentWeekDates;
   }
 
   // Generates the array of month numbers (0-11) representing january - december.

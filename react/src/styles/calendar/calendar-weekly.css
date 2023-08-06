@@ -1,0 +1,47 @@
+.calendar-weekly__container {
+	font-size: 1rem;
+}
+
+.calendar-weekly__dates-list {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	justify-items: center;
+}
+.calendar-weekly__date-block {
+	text-align: center;
+}
+.calendar-weekly__date-block__date {
+	position: relative;
+	margin-top: 10px;
+	cursor: pointer;
+
+}
+.calendar-weekly__date-block__date::before {
+  position: absolute;
+  content: "";
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 25px;
+  width: 25px;
+  z-index: -1;
+  border-radius: 50%;
+  border: 1px solid rgba(156, 89, 182, 0.6);
+  transition: background 0.2s ease;
+}
+
+/* Pseudo-element for current date */
+.calendar-weekly__date-block__date.current-date::before {
+  opacity: 1;
+}
+.calendar-weekly__date-block__date.date-active::before {
+  opacity: 1;
+  background-color: #9c59b66d;
+  border: none;
+}
+.calendar-weekly__date-block__date:not(.date-active):hover::before {
+  opacity: 1;
+  border: none;
+  background: #dbdada;
+}

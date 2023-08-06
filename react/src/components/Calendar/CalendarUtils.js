@@ -54,7 +54,7 @@ export function calendarUtils() {
     const currentMonthDates = [];
 
     // Generates dates from the previous month
-    for (let i = startingDay - 1; i >= 0; i--) {
+    for (let i = startingDay - 2; i >= 0; i--) {
       const modifiedMonth =
         previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
       const modifiedDate = previousMonthDays - i;

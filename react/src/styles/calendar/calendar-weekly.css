@@ -1,20 +1,22 @@
 .calendar-weekly__container {
-	font-size: 1rem;
+  font-size: 1rem;
+  padding: 10px;
 }
 
 .calendar-weekly__dates-list {
-	display: grid;
-	grid-template-columns: repeat(7, 1fr);
-	justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  margin-bottom: 15px;
+  margin-left: 35px;
 }
 .calendar-weekly__date-block {
-	text-align: center;
+  text-align: center;
 }
 .calendar-weekly__date-block__date {
-	position: relative;
-	margin-top: 10px;
-	cursor: pointer;
-
+  position: relative;
+  margin-top: 10px;
+  cursor: pointer;
 }
 .calendar-weekly__date-block__date::before {
   position: absolute;
@@ -45,3 +47,21 @@
   border: none;
   background: #dbdada;
 }
+
+.calendar-weekly__time-block {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+}
+.time-cells-list {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: row;
+}
+.calendar-weekly__time-cell {
+  border: 1px solid black;
+  padding: 30px;
+  flex-grow: 1;
+}
+/* .hour-label {
+	margin: 0 px;
+} */

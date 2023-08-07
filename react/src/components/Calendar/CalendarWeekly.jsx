@@ -5,8 +5,13 @@ import { calendarUtils } from "./calendarUtils";
 
 export default function CalendarWeekly() {
   const [currentWeekDates, setCurrentWeekDates] = useState("");
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
-    useCalendarState();
+
+  const [clickedCellIndex, setClickedCellIndex] = useState(null);
+  const [clickedHalfPosition, setClickedHalfPosition] = useState(null);
+  const [clickedHalf, setClickedHalf] = useState(null);
+
+  const { dates, currentDate, allTasks, selectedDate, setSelectedDate } = useCalendarState();
+
 
   useEffect(() => {
     if (dates.length != 0) {
@@ -36,36 +41,54 @@ export default function CalendarWeekly() {
     return hoursOfDay;
   };
 
-  const handleDateHourClick = (date, hour, isFirstHalf) => {
-    const startHour = hour;
-    const endHour = isFirstHalf ? hour + 0.5 : hour+1;
+  const handleDateHourClick = (date, hour, isFirstHalf, e, dateIndex, hourIndex) => {
+    const startHour = !isFirstHalf ? hour + 0.5 : hour;
+    const endHour = !isFirstHalf ? hour + 1.5 : hour+1;
 
     // Convert decimal fractions to minutes
     const startMinutes = Math.floor((startHour % 1) * 60);
     const endMinutes = Math.floor((endHour % 1) * 60);
-
+    // console.log('clicked on cell: ', ());
 
     const startTime = new Date(date);
     const endTime = new Date(date);
     startTime.setHours(Math.floor(startHour), startMinutes,0,0);
     endTime.setHours(Math.floor(endHour), endMinutes,0,0);
+
+    const rect = e.target.getBoundingClientRect();
+    const clickedY = e.clientY - rect.top;
+    const cellHeight = rect.height;
+
+    const clickedHalfPosition = (clickedY / cellHeight) * 100;
+    const clickedHalf = clickedY < cellHeight / 2 ? 'first' : 'second';
+    const clickedCellIndex = hourIndex.toString()+dateIndex.toString();
+    
+    setClickedCellIndex(clickedCellIndex);
+    setClickedHalf(clickedHalf);
+    setClickedHalfPosition(clickedHalfPosition);
+
     console.log('clicked period ', startTime, 'to ', endTime);
+  }
+  const getCellClassName = (hourIndex, dateIndex) => {
+    const cellIndex = hourIndex.toString() + dateIndex.toString();
+    return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   }
 
   const renderTimeGrid = () => {
     const hoursOfDay = generateHoursOfDay();
     return (
       <div className="calendar-weekly__time-list">
-        {hoursOfDay.map((hour) => (
-          <div className="calendar-weekly__time-block" key={hour}>
+        {hoursOfDay.map((hour, hourIndex) => (
+          <div className="calendar-weekly__time-block" key={hourIndex}>
             <div className="hour-label">{hour}</div>
 						<div className="time-cells-list">
-							{currentWeekDates && currentWeekDates.map((date, index) => (
+							{currentWeekDates && currentWeekDates.map((date, dateIndex) => (
+                // a cell
 								<div
-									key={index}
-									className={ `calendar-weekly__time-cell ${
-										calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}
-										onClick={(e) => handleDateHourClick(date, hour, e.nativeEvent.offsetY < 30)}
+									key={dateIndex}
+									className={`calendar-weekly__time-cell ${getCellClassName(hourIndex, dateIndex)} ${clickedHalf === "first" ? "first-half" : "second-half"}`}
+
+										onClick={(e) => handleDateHourClick(date, hour, e.nativeEvent.offsetY < 30, e, dateIndex, hourIndex)}
 								>
 								</div>
 							))}

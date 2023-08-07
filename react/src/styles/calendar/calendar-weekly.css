@@ -62,6 +62,10 @@
   padding: 30px;
   flex-grow: 1;
 }
+
+.clicked-cell.first-half {
+  border-color: aquamarine;
+}
 /* .hour-label {
 	margin: 0 px;
 } */

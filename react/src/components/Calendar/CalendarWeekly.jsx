@@ -30,7 +30,8 @@ export default function CalendarWeekly() {
   const generateHoursOfDay = () => {
     const hoursOfDay = [];
     for (let i = 1; i <= 24; i++) {
-      hoursOfDay.push(i);
+      const formattedHour = i.toString().padStart(2, '0');
+      hoursOfDay.push(formattedHour);
     }
     return hoursOfDay;
   };
@@ -44,6 +45,7 @@ export default function CalendarWeekly() {
 						<div className="time-cells-list">
 							{currentWeekDates && currentWeekDates.map((date, index) => (
 								<div
+                
 									key={index}
 									className={ `calendar-weekly__time-cell ${
 										calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}

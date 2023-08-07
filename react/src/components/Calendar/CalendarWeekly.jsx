@@ -30,11 +30,28 @@ export default function CalendarWeekly() {
   const generateHoursOfDay = () => {
     const hoursOfDay = [];
     for (let i = 1; i <= 24; i++) {
-      const formattedHour = i.toString().padStart(2, '0');
-      hoursOfDay.push(formattedHour);
+      // const formattedHour = i.toString().padStart(2, '0');
+      hoursOfDay.push(i);
     }
     return hoursOfDay;
   };
+
+  const handleDateHourClick = (date, hour, isFirstHalf) => {
+    const startHour = hour;
+    const endHour = isFirstHalf ? hour + 0.5 : hour+1;
+
+    // Convert decimal fractions to minutes
+    const startMinutes = Math.floor((startHour % 1) * 60);
+    const endMinutes = Math.floor((endHour % 1) * 60);
+
+
+    const startTime = new Date(date);
+    const endTime = new Date(date);
+    startTime.setHours(Math.floor(startHour), startMinutes,0,0);
+    endTime.setHours(Math.floor(endHour), endMinutes,0,0);
+    console.log('clicked period ', startTime, 'to ', endTime);
+  }
+
   const renderTimeGrid = () => {
     const hoursOfDay = generateHoursOfDay();
     return (
@@ -45,11 +62,10 @@ export default function CalendarWeekly() {
 						<div className="time-cells-list">
 							{currentWeekDates && currentWeekDates.map((date, index) => (
 								<div
-                
 									key={index}
 									className={ `calendar-weekly__time-cell ${
 										calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}
-										onClick={() => handleDateClick(date)}
+										onClick={(e) => handleDateHourClick(date, hour, e.nativeEvent.offsetY < 30)}
 								>
 								</div>
 							))}

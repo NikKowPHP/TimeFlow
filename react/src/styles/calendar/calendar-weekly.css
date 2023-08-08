@@ -61,11 +61,28 @@
   border: 1px solid black;
   padding: 30px;
   flex-grow: 1;
+  position: relative;
 }
 
-.clicked-cell.first-half {
-  border-color: aquamarine;
+.clicked-new-task-tooltip {
+  position: absolute;
+  text-align: center;
+  color: rgb(252, 252, 252);
+  font-size: 0.7rem;
+  font-weight: 700;
+  top: 50%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 100%;
+  background-color: rgb(173, 114, 196);
+  box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
+  border-radius: 10%;
 }
-/* .hour-label {
-	margin: 0 px;
-} */
+.clicked-new-task-tooltip__text {
+  font-weight: 500;
+}
+.second-half .clicked-new-task-tooltip {
+  top: 100%;
+  z-index: 1;
+}

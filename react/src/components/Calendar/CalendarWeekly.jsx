@@ -24,9 +24,6 @@ export default function CalendarWeekly() {
     }
   }, [dates]);
 
-  useEffect(() => {
-    console.log(selectedDate);
-  }, [selectedDate]);
 
   const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -46,10 +43,8 @@ export default function CalendarWeekly() {
   const convertTimePeriod = (startTime, endTime) => {
     const startTimeString = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTimeString = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const startTimeConverted = startTimeString.slice(0, -6) + startTimeString.slice(-3);
 
-    const endTimeConverted = endTimeString.slice(0, -6) + endTimeString.slice(-3);
-    return startTimeConverted + "-" + endTimeConverted;
+    return startTimeString + "-" + endTimeString;
   }
 
   const handleDateHourClick = (
@@ -66,7 +61,6 @@ export default function CalendarWeekly() {
     // Convert decimal fractions to minutes
     const startMinutes = Math.floor((startHour % 1) * 60);
     const endMinutes = Math.floor((endHour % 1) * 60);
-    // console.log('clicked on cell: ', ());
 
     const startTime = new Date(date);
     const endTime = new Date(date);
@@ -86,13 +80,13 @@ export default function CalendarWeekly() {
     setClickedHalfPosition(clickedHalfPosition);
 
 
-    setClickedPeriod(convertTimePeriod);
-    console.log("clicked period ", startTime, "to ", endTime);
+    setClickedPeriod(convertTimePeriod(startTime, endTime));
   };
   const getCellClassName = (hourIndex, dateIndex) => {
     const cellIndex = hourIndex.toString() + dateIndex.toString();
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   };
+
   const getCellHalfClassName = () => {
     switch (clickedHalf) {
       case "first":
@@ -132,10 +126,13 @@ export default function CalendarWeekly() {
                       )
                     }
                   >
-                    <div>
-                      <h6>Untitled</h6>
-                      <p>{clickedPeriod}</p>
+                    {getCellClassName(hourIndex, dateIndex) === 'clicked-cell' && (
+                    <div className="clicked-new-task-tooltip">
+                      <h4>(Untitled)</h4>
+                      <p className="clicked-new-task-tooltip__text"
+                      >{getCellClassName(hourIndex, dateIndex) === 'clicked-cell' &&clickedPeriod}</p>
                       </div>
+                    )}
                   </div>
                 ))}
             </div>

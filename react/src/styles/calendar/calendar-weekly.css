@@ -87,5 +87,30 @@
 }
 .second-half .clicked-new-task-tooltip {
   top: 100%;
+  z-index: 3;
+}
+
+.calendar-weekly__time-cell .tasks-list .tooltip-container{
+  position: relative;
+}
+.calendar-weekly__time-cell .tasks-list .task-option {
+  position: absolute;
+  background-color: rgb(0 255 149 / 96%);
+  box-shadow: 3px 3px 15px 3px;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 3px;
+  top: -35px;
+  left: -32px;
+  right: -21px;
   z-index: 1;
+}
+
+.task-period-background {
+  background-color: lightblue; /* Change this to your desired background color */
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: -1;
 }

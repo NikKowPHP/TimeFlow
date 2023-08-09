@@ -23,29 +23,9 @@ export default function CalendarWeekly() {
     }
   }, [dates]);
 
-  const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
-  };
-
-
-  const convertHour = (hour) => {
-    const date = new Date();
-    date.setHours(hour);
-    const options = {
-      hour: 'numeric',
-      hour12: true
-    };
-    return date.toLocaleTimeString(undefined, options );
-  }
-  
-  const generateHoursOfDay = () => {
-    const hoursOfDay = [];
-    for (let i = 1; i <= 24; i++) {
-      hoursOfDay.push(i);
-    }
-    return hoursOfDay;
   };
 
   const convertTimePeriod = (startTime, endTime) => {
@@ -93,6 +73,7 @@ export default function CalendarWeekly() {
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
   };
+
   const getCellClassName = (hourIndex, dateIndex) => {
     const cellIndex = hourIndex.toString() + dateIndex.toString();
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
@@ -110,12 +91,12 @@ export default function CalendarWeekly() {
   };
 
   const renderTimeGrid = () => {
-    const hoursOfDay = generateHoursOfDay();
+    const hoursOfDay = calendarUtils().generateHoursOfDay();
     return (
       <div className="calendar-weekly__time-list">
         {hoursOfDay.map((hour, hourIndex) => (
           <div className="calendar-weekly__time-block" key={hourIndex}>
-            <div className="hour-label">{convertHour(hour)}</div>
+            <div className="hour-label">{calendarUtils().convertHour(hour)}</div>
             <div className="time-cells-list">
               {currentWeekDates &&
                 currentWeekDates.map((date, dateIndex) => {
@@ -164,7 +145,7 @@ export default function CalendarWeekly() {
       {currentWeekDates.map((date, index) => (
         <div key={index} className="calendar-weekly__date-block">
           <div className="calendar-weekly__date-block__weekday">
-            {weekDays()[index]}
+            {calendarUtils().weekDays()[index]}
           </div>
           <div
             className={`calendar-weekly__date-block__date

@@ -137,6 +137,28 @@ export function calendarUtils() {
     return months[month];
   }
 
+  const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+
+  const convertHour = (hour) => {
+    const date = new Date();
+    date.setHours(hour);
+    const options = {
+      hour: 'numeric',
+      hour12: true
+    };
+    return date.toLocaleTimeString(undefined, options );
+  }
+
+
+  const generateHoursOfDay = () => {
+    const hoursOfDay = [];
+    for (let i = 1; i <= 24; i++) {
+      hoursOfDay.push(i);
+    }
+    return hoursOfDay;
+  };
+
   return {
     getActiveDateClass,
     generateMonths,
@@ -144,5 +166,8 @@ export function calendarUtils() {
     generateMonthNumbers,
     getMonthName,
     getCurrentWeekDates,
+    weekDays,
+    convertHour,
+    generateHoursOfDay
   };
 }

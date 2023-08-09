@@ -7,7 +7,6 @@ export default function CalendarWeekly() {
   const [currentWeekDates, setCurrentWeekDates] = useState("");
 
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
-  const [clickedHalfPosition, setClickedHalfPosition] = useState(null);
   const [clickedHalf, setClickedHalf] = useState(null);
   const [clickedPeriod, setClickedPeriod] = useState(null);
 
@@ -24,28 +23,43 @@ export default function CalendarWeekly() {
     }
   }, [dates]);
 
-
   const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
   };
+
+
+  const convertHour = (hour) => {
+    const date = new Date();
+    date.setHours(hour);
+    const options = {
+      hour: 'numeric',
+      hour12: true
+    };
+    return date.toLocaleTimeString(undefined, options );
+  }
+  
   const generateHoursOfDay = () => {
     const hoursOfDay = [];
     for (let i = 1; i <= 24; i++) {
-      // const formattedHour = i.toString().padStart(2, '0');
       hoursOfDay.push(i);
     }
     return hoursOfDay;
   };
 
-
   const convertTimePeriod = (startTime, endTime) => {
-    const startTimeString = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTimeString = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const startTimeString = startTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTimeString = endTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     return startTimeString + "-" + endTimeString;
-  }
+  };
 
   const handleDateHourClick = (
     date,
@@ -71,14 +85,11 @@ export default function CalendarWeekly() {
     const clickedY = e.clientY - rect.top;
     const cellHeight = rect.height;
 
-    const clickedHalfPosition = (clickedY / cellHeight) * 100;
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const clickedCellIndex = hourIndex.toString() + dateIndex.toString();
 
     setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
-    setClickedHalfPosition(clickedHalfPosition);
-
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
   };
@@ -104,37 +115,43 @@ export default function CalendarWeekly() {
       <div className="calendar-weekly__time-list">
         {hoursOfDay.map((hour, hourIndex) => (
           <div className="calendar-weekly__time-block" key={hourIndex}>
-            <div className="hour-label">{hour}</div>
+            <div className="hour-label">{convertHour(hour)}</div>
             <div className="time-cells-list">
               {currentWeekDates &&
-                currentWeekDates.map((date, dateIndex) => (
+                currentWeekDates.map((date, dateIndex) => {
+                  const cellClassNameSelected = getCellClassName(
+                    hourIndex,
+                    dateIndex
+                  );
+                  const cellHalfClassName = getCellHalfClassName();
                   // a cell
-                  <div
-                    key={dateIndex}
-                    className={`calendar-weekly__time-cell ${getCellClassName(
-                      hourIndex,
-                      dateIndex
-                    )} ${getCellHalfClassName()}`}
-                    onClick={(e) =>
-                      handleDateHourClick(
-                        date,
-                        hour,
-                        e.nativeEvent.offsetY < 30,
-                        e,
-                        dateIndex,
-                        hourIndex
-                      )
-                    }
-                  >
-                    {getCellClassName(hourIndex, dateIndex) === 'clicked-cell' && (
-                    <div className="clicked-new-task-tooltip">
-                      <h4>(Untitled)</h4>
-                      <p className="clicked-new-task-tooltip__text"
-                      >{getCellClassName(hourIndex, dateIndex) === 'clicked-cell' &&clickedPeriod}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  return (
+                    <div
+                      key={dateIndex}
+                      className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
+                      onClick={(e) =>
+                        handleDateHourClick(
+                          date,
+                          hour,
+                          e.nativeEvent.offsetY < 30,
+                          e,
+                          dateIndex,
+                          hourIndex
+                        )
+                      }
+                    >
+                      {cellClassNameSelected === "clicked-cell" && (
+                        <div className="clicked-new-task-tooltip">
+                          <h4>(Untitled)</h4>
+                          <p className="clicked-new-task-tooltip__text">
+                            {cellClassNameSelected === "clicked-cell" &&
+                              clickedPeriod}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           </div>
         ))}

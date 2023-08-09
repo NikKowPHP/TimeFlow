@@ -146,58 +146,38 @@ export default function CalendarWeekly() {
       </svg>
     </div>
   );
-  const compareTimeStamps = (timeStamp1, timeStamp2) => {
-    const [hours1, minutes1] = timeStamp1.split(":");
-    const [hours2, minutes2] = timeStamp2.split(":");
-
-    const date1 = new Date();
-    date1.setHours(hours1);
-    date1.setMinutes(minutes1);
-
-    const date2 = new Date();
-    date2.setHours(hours2);
-    date2.setMinutes(minutes2);
-
-    if (date1 <= date2) {
-      return -1;
-    } else if (date1 >= date2) {
-      return 1;
-    } else {
-      return 0;
-    }
-  };
 
   const renderDateTasks = (date, hourIndex) => {
-    const convertedHourIndex = `${hourIndex + 1}:00`;
-    const convertedHourIndexPlusOne = `${hourIndex + 2}:00`;
+    const convertedHourIndex = hourIndex.toString().padStart(2, '0');
+    console.log(convertedHourIndex)
     const convertedDate = dateUtils().convertDateSql(date.toLocaleDateString());
-    const dateTasks = allTasks.filter((task) => {
-      debugger
-      if (task.date === convertedDate) {
-        const startTimeComparison = compareTimeStamps(
-          task.time_start,
-          convertedHourIndex
-        );
-        const endTimeComparison = compareTimeStamps(
-          task.time_end,
-          convertedHourIndexPlusOne
-        );
-        return startTimeComparison === -1 && endTimeComparison === 1;
-      } else {
-        return false;
 
+
+
+    const dateTasks = allTasks.filter((task) => {
+      if(task.date === convertedDate) {
+        const slicedTaskTime = task.time_start.split(':')[0];
+        if(slicedTaskTime === convertedHourIndex) {
+          return true;
+        }
       }
     });
 
     const maxTasksToShow = Math.min(dateTasks.length, 4);
-
-
 
     return (
       <div className="tasks-list">
         <ul>
           {dateTasks.slice(0, maxTasksToShow).map((task) => {
             // Calculate cell indexes for task period
+
+            const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
+            const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
+            const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+            debugger
+            const expandedElementStyle = {
+              height: `${taskDurationMinutes + 35}px`,
+            }
           
           return (
             <Tooltip
@@ -236,12 +216,16 @@ export default function CalendarWeekly() {
                 </div>
               }
             >
+
               <li
                 className={`task-option ${toggleTaskActiveClass(task.id)} `}
                 onClick={(event) => handleOnClick(event, task.id)}
+                style={expandedElementStyle}
               >
                 {`${task.title} ${task.time_start} ${task.time_end}`}
               </li>
+
+
             </Tooltip>
           )})}
         </ul>

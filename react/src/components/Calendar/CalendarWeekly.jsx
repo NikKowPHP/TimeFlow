@@ -5,6 +5,7 @@ import { calendarUtils } from "./calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import Tooltip from "../tooltips/Tooltip";
 import { useTooltipState } from "../tooltips/useTooltipState";
+import svgPaths from "../svgPaths";
 
 export default function CalendarWeekly() {
 
@@ -24,6 +25,16 @@ export default function CalendarWeekly() {
     selectedDate, 
     setSelectedDate 
   } = useCalendarState();
+
+  // Destructure functions from calendarUtils
+  const {
+    getCurrentWeekDates,
+    generateHoursOfDay,
+    convertHour,
+    weekDays,
+    getActiveDateClass,
+    convertTimePeriod
+  } = calendarUtils();
 
   const [currentWeekDates, setCurrentWeekDates] = useState("");
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
@@ -47,7 +58,7 @@ export default function CalendarWeekly() {
 
   useEffect(() => {
     if (dates.length != 0) {
-      const currentWeekDates = calendarUtils().getCurrentWeekDates(
+      const currentWeekDates = getCurrentWeekDates(
         dates,
         currentWeekStartDate
       );
@@ -59,17 +70,6 @@ export default function CalendarWeekly() {
     setSelectedDate(date);
   };
 
-  const convertTimePeriod = (startTime, endTime) => {
-    const startTimeString = startTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const endTimeString = endTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return `${startTimeString}-${endTimeString}`;
-  };
 
   const handleDateHourClick = (
     date,
@@ -140,18 +140,18 @@ export default function CalendarWeekly() {
     showTooltip(id);
   };
 
+
   // Render the header of the tooltip content
   const tooltipContentHeader = () => (
     <div className="tooltip-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
+        {svgPaths.edit}
       </svg>
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"></path>
-        <path d="M9 8h2v9H9zm4 0h2v9h-2z"></path>
+        {svgPaths.delete}
       </svg>
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
+        {svgPaths.envelope}
       </svg>
       <svg
         style={{ cursor: "pointer" }}
@@ -161,7 +161,7 @@ export default function CalendarWeekly() {
         height="20"
         viewBox="0 0 24 24"
       >
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path>
+        {svgPaths.close}
       </svg>
     </div>
   );
@@ -186,6 +186,9 @@ export default function CalendarWeekly() {
         <ul>
           {dateTasks.slice(0, maxTasksToShow).map((task) => {
             // Calculate cell indexes for task period
+            const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
+            const isTooltipVisible = () => openedTooltipId === task.id;
+
 
             const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
             const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
@@ -198,7 +201,7 @@ export default function CalendarWeekly() {
               <Tooltip
                 classes={`tooltip-task-description ${tooltipPositionClass} `}
                 key={task.id}
-                isTooltipVisible={openedTooltipId === task.id}
+                isTooltipVisible={isTooltipVisible()}
                 tooltipPositionClass={tooltipPositionClass}
                 tooltipId={openedTooltipId}
                 content={
@@ -219,7 +222,7 @@ export default function CalendarWeekly() {
                           height="20"
                           viewBox="0 0 24 24"
                         >
-                          <path d="M18 17v-6c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v6H4v2h16v-2h-2zm-2 0H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zm-4 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></path>
+                          {svgPaths.notification}
                         </svg>
                         <p>in 5 minutes before</p>
                       </div>
@@ -232,7 +235,7 @@ export default function CalendarWeekly() {
                 }
               >
                 <li
-                  className={`task-option ${toggleTaskActiveClass(task.id)} `}
+                  className={`task-option ${toggledTaskActiveClass}`}
                   onClick={(event) => handleOnClick(event, task.id)}
                   style={expandedElementStyle}
                 >
@@ -247,14 +250,14 @@ export default function CalendarWeekly() {
   };
 
   const renderTimeGrid = () => {
-    const hoursOfDay = calendarUtils().generateHoursOfDay();
+    const hoursOfDay = generateHoursOfDay();
 
     return (
       <div className="calendar-weekly__time-list">
         {hoursOfDay.map((hour, hourIndex) => (
           <div className="calendar-weekly__time-block" key={hourIndex}>
             <div className="hour-label">
-              {calendarUtils().convertHour(hour)}
+              {convertHour(hour)}
             </div>
             <div className="time-cells-list">
               {currentWeekDates &&
@@ -311,11 +314,11 @@ export default function CalendarWeekly() {
         {currentWeekDates.map((date, index) => (
           <div key={index} className="calendar-weekly__date-block">
             <div className="calendar-weekly__date-block__weekday">
-              {calendarUtils().weekDays()[index]}
+              {weekDays()[index]}
             </div>
             <div
               className={`calendar-weekly__date-block__date
-      ${calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}
+      ${getActiveDateClass(date, currentDate, selectedDate)}`}
               onClick={() => handleDateClick(date)}
             >
               {date.getDate()}

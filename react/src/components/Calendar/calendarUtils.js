@@ -137,6 +137,19 @@ export function calendarUtils() {
     return months[month];
   }
 
+
+  const convertTimePeriod = (startTime, endTime) => {
+    const startTimeString = startTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const endTimeString = endTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${startTimeString}-${endTimeString}`;
+  };
+
   const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 
@@ -168,6 +181,7 @@ export function calendarUtils() {
     getCurrentWeekDates,
     weekDays,
     convertHour,
-    generateHoursOfDay
+    generateHoursOfDay,
+    convertTimePeriod
   };
 }

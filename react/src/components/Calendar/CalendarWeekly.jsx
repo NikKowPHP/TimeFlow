@@ -7,14 +7,6 @@ import Tooltip from "../tooltips/Tooltip";
 import { useTooltipState } from "../tooltips/useTooltipState";
 
 export default function CalendarWeekly() {
-  const [currentWeekDates, setCurrentWeekDates] = useState("");
-
-  const [clickedCellIndex, setClickedCellIndex] = useState(null);
-  const [clickedHalf, setClickedHalf] = useState(null);
-  const [clickedPeriod, setClickedPeriod] = useState(null);
-
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
-    useCalendarState();
 
   // Get tooltip's state from custom hook
   const {
@@ -25,15 +17,43 @@ export default function CalendarWeekly() {
     hideTooltip,
   } = useTooltipState();
 
+  const { 
+    dates, 
+    currentDate, 
+    allTasks, 
+    selectedDate, 
+    setSelectedDate 
+  } = useCalendarState();
+
+  const [currentWeekDates, setCurrentWeekDates] = useState("");
+  const [clickedCellIndex, setClickedCellIndex] = useState(null);
+  const [clickedHalf, setClickedHalf] = useState(null);
+  const [clickedPeriod, setClickedPeriod] = useState(null);
+
+  const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
+
+  const handlePreviousWeek = () => {
+    const previousWeekStartDate = new Date(currentWeekStartDate);
+    previousWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
+    setCurrentWeekStartDate(previousWeekStartDate);
+  };
+
+  const handleNextWeek = () => {
+    const nextWeekStartDate = new Date(currentWeekStartDate);
+    nextWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
+    setCurrentWeekStartDate(nextWeekStartDate);
+  };
+
+
   useEffect(() => {
     if (dates.length != 0) {
       const currentWeekDates = calendarUtils().getCurrentWeekDates(
         dates,
-        currentDate
+        currentWeekStartDate
       );
       setCurrentWeekDates(currentWeekDates);
     }
-  }, [dates]);
+  }, [dates, currentWeekStartDate]);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -48,8 +68,7 @@ export default function CalendarWeekly() {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    return startTimeString + "-" + endTimeString;
+    return `${startTimeString}-${endTimeString}`;
   };
 
   const handleDateHourClick = (
@@ -148,16 +167,13 @@ export default function CalendarWeekly() {
   );
 
   const renderDateTasks = (date, hourIndex) => {
-    const convertedHourIndex = hourIndex.toString().padStart(2, '0');
-    console.log(convertedHourIndex)
+    const convertedHourIndex = hourIndex.toString().padStart(2, "0");
     const convertedDate = dateUtils().convertDateSql(date.toLocaleDateString());
 
-
-
     const dateTasks = allTasks.filter((task) => {
-      if(task.date === convertedDate) {
-        const slicedTaskTime = task.time_start.split(':')[0];
-        if(slicedTaskTime === convertedHourIndex) {
+      if (task.date === convertedDate) {
+        const slicedTaskTime = task.time_start.split(":")[0];
+        if (slicedTaskTime === convertedHourIndex) {
           return true;
         }
       }
@@ -174,60 +190,57 @@ export default function CalendarWeekly() {
             const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
             const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
             const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
-            debugger
             const expandedElementStyle = {
               height: `${taskDurationMinutes + 35}px`,
-            }
-          
-          return (
-            <Tooltip
-              classes={`tooltip-task-description ${tooltipPositionClass} `}
-              key={task.id}
-              isTooltipVisible={openedTooltipId === task.id}
-              tooltipPositionClass={tooltipPositionClass}
-              tooltipId={openedTooltipId}
-              content={
-                <div>
-                  {tooltipContentHeader()}
-                  <div className="tooltip-task-title">
-                    <h2>{task.title}</h2>
-                    <p>
-                      {task.date} ⋅ {task.time_start}-{task.time_end}
-                    </p>
-                  </div>
-                  <div className="tooltip-task-additional">
-                    {/* TODO: create notifications */}
-                    <div className="tooltip-task-notification">
-                      <svg
-                        focusable="false"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M18 17v-6c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v6H4v2h16v-2h-2zm-2 0H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zm-4 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></path>
-                      </svg>
-                      <p>in 5 minutes before</p>
-                    </div>
-                    <div className="tooltip-task-owner">
-                      <i className="fa fa-calendar"></i>
-                      {task.user.name}
-                    </div>
-                  </div>
-                </div>
-              }
-            >
+            };
 
-              <li
-                className={`task-option ${toggleTaskActiveClass(task.id)} `}
-                onClick={(event) => handleOnClick(event, task.id)}
-                style={expandedElementStyle}
+            return (
+              <Tooltip
+                classes={`tooltip-task-description ${tooltipPositionClass} `}
+                key={task.id}
+                isTooltipVisible={openedTooltipId === task.id}
+                tooltipPositionClass={tooltipPositionClass}
+                tooltipId={openedTooltipId}
+                content={
+                  <div>
+                    {tooltipContentHeader()}
+                    <div className="tooltip-task-title">
+                      <h2>{task.title}</h2>
+                      <p>
+                        {task.date} ⋅ {task.time_start}-{task.time_end}
+                      </p>
+                    </div>
+                    <div className="tooltip-task-additional">
+                      {/* TODO: create notifications */}
+                      <div className="tooltip-task-notification">
+                        <svg
+                          focusable="false"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M18 17v-6c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v6H4v2h16v-2h-2zm-2 0H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zm-4 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></path>
+                        </svg>
+                        <p>in 5 minutes before</p>
+                      </div>
+                      <div className="tooltip-task-owner">
+                        <i className="fa fa-calendar"></i>
+                        {task.user.name}
+                      </div>
+                    </div>
+                  </div>
+                }
               >
-                {`${task.title} ${task.time_start} ${task.time_end}`}
-              </li>
-
-
-            </Tooltip>
-          )})}
+                <li
+                  className={`task-option ${toggleTaskActiveClass(task.id)} `}
+                  onClick={(event) => handleOnClick(event, task.id)}
+                  style={expandedElementStyle}
+                >
+                  {`${task.title} ${task.time_start} ${task.time_end}`}
+                </li>
+              </Tooltip>
+            );
+          })}
         </ul>
       </div>
     );
@@ -235,6 +248,7 @@ export default function CalendarWeekly() {
 
   const renderTimeGrid = () => {
     const hoursOfDay = calendarUtils().generateHoursOfDay();
+
     return (
       <div className="calendar-weekly__time-list">
         {hoursOfDay.map((hour, hourIndex) => (
@@ -266,7 +280,6 @@ export default function CalendarWeekly() {
                         )
                       }
                     >
-
                       {renderDateTasks(date, hourIndex)}
 
                       {cellClassNameSelected === "clicked-cell" && (
@@ -289,22 +302,28 @@ export default function CalendarWeekly() {
   };
 
   const renderCurrentWeekDates = () => (
-    <div className="calendar-weekly__dates-list">
-      {currentWeekDates.map((date, index) => (
-        <div key={index} className="calendar-weekly__date-block">
-          <div className="calendar-weekly__date-block__weekday">
-            {calendarUtils().weekDays()[index]}
-          </div>
-          <div
-            className={`calendar-weekly__date-block__date
+    <>
+      <div className="calendar-navigation">
+        <button onClick={handlePreviousWeek}>Previous Week</button>
+        <button onClick={handleNextWeek}>Next Week</button>
+      </div>
+      <div className="calendar-weekly__dates-list">
+        {currentWeekDates.map((date, index) => (
+          <div key={index} className="calendar-weekly__date-block">
+            <div className="calendar-weekly__date-block__weekday">
+              {calendarUtils().weekDays()[index]}
+            </div>
+            <div
+              className={`calendar-weekly__date-block__date
       ${calendarUtils().getActiveDateClass(date, currentDate, selectedDate)}`}
-            onClick={() => handleDateClick(date)}
-          >
-            {date.getDate()}
+              onClick={() => handleDateClick(date)}
+            >
+              {date.getDate()}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 
   return (

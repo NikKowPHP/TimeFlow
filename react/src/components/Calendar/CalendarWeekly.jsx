@@ -181,6 +181,7 @@ export default function CalendarWeekly() {
 
     const maxTasksToShow = Math.min(dateTasks.length, 4);
 
+
     return (
       <div className="tasks-list">
         <ul>
@@ -188,7 +189,6 @@ export default function CalendarWeekly() {
             // Calculate cell indexes for task period
             const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
             const isTooltipVisible = () => openedTooltipId === task.id;
-
 
             const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
             const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
@@ -306,9 +306,13 @@ export default function CalendarWeekly() {
 
   const renderCurrentWeekDates = () => (
     <>
-      <div className="calendar-navigation">
-        <button onClick={handlePreviousWeek}>Previous Week</button>
-        <button onClick={handleNextWeek}>Next Week</button>
+      <div className="calendar-weekly__dates-switcher-container">
+          <span onClick={handlePreviousWeek} className="material-symbols-rounded calendar-weekly__dates-switcher_block">
+            chevron_left
+          </span>
+          <span onClick={handleNextWeek} className="material-symbols-rounded calendar-weekly__dates-switcher_block">
+            chevron_right
+          </span>
       </div>
       <div className="calendar-weekly__dates-list">
         {currentWeekDates.map((date, index) => (

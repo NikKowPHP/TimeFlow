@@ -2,6 +2,29 @@
   font-size: 1rem;
   padding: 10px;
 }
+.calendar-weekly__dates-switcher-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+.calendar-weekly__dates-switcher_block {
+  height: 38px;
+  width: 38px;
+  margin: 0 1px;
+  cursor: pointer;
+  color: #878787;
+  text-align: center;
+  line-height: 38px;
+  font-size: 1.9rem;
+  user-select: none;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+/* Icon hover effect */
+.calendar-weekly__dates-switcher_block:hover {
+  background: #e1e0e0;
+}
 
 .calendar-weekly__dates-list {
   display: grid;

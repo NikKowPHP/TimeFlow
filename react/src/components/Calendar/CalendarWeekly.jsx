@@ -6,6 +6,9 @@ import { dateUtils } from "../../utils/dateUtils";
 import Tooltip from "../tooltips/Tooltip";
 import { useTooltipState } from "../tooltips/useTooltipState";
 import svgPaths from "../svgPaths";
+import { newTaskHandler } from "./newTaskHandler";
+import TruncatedText from "../TruncatedText";
+import DateSelection from "../DateSelection";
 
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
@@ -17,6 +20,7 @@ export default function CalendarWeekly() {
     hideTooltip,
   } = useTooltipState();
 
+  const { setTitle, title } = newTaskHandler();
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
     useCalendarState();
 
@@ -29,11 +33,14 @@ export default function CalendarWeekly() {
     getActiveDateClass,
     convertTimePeriod,
   } = calendarUtils();
+  const { convertDateSql } = dateUtils();
 
   const [currentWeekDates, setCurrentWeekDates] = useState("");
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
   const [clickedHalf, setClickedHalf] = useState(null);
   const [clickedPeriod, setClickedPeriod] = useState(null);
+
+  const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
 
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
 
@@ -68,7 +75,8 @@ export default function CalendarWeekly() {
     dateIndex,
     hourIndex
   ) => {
-    const tooltipId = `${dateIndex}${hourIndex}`;
+    const tooltipId = `${hourIndex}${dateIndex}`;
+    // const tooltipId = `${dateIndex}${hourIndex}`;
     const startHour = !isFirstHalf ? hour + 0.5 : hour;
     const endHour = !isFirstHalf ? hour + 1.5 : hour + 1;
 
@@ -86,15 +94,44 @@ export default function CalendarWeekly() {
     const cellHeight = rect.height;
 
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
-    const clickedCellIndex = hourIndex.toString() + dateIndex.toString();
+    const clickedCellIndex = `${hourIndex}${dateIndex}`;
+
+    console.log(clickedCellIndex);
 
     setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
-    setSelectedDate(date)
+    setSelectedDate(date);
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
 
     handleOnClick(e, tooltipId);
+  };
+
+  useEffect(() => {
+    const initialDatesByCells = {};
+    const hoursOfDay = generateHoursOfDay();
+    hoursOfDay.map((hour, hourIndex) => {
+      currentWeekDates &&
+        currentWeekDates.map((date, dateIndex) => {
+          const dateWithHours = new Date(date);
+          dateWithHours.setHours(hour);
+          const cellId = `${hourIndex}${dateIndex}`;
+          initialDatesByCells[cellId]= dateWithHours;
+        });
+    });
+    setSelectedDatesByCell(initialDatesByCells);
+  }, [currentWeekDates]);
+
+  useEffect(() => {
+    console.log(selectedDatesByCell);
+  }, [selectedDatesByCell]);
+
+  const handleDateSelection = (newSelectedDate) => {
+    const formattedSelectedDate = new Date(newSelectedDate);
+    const cellId = selectedDatesByCell[newSelectedDate];
+    console.log(cellId);
+    setClickedCellIndex();
+    setSelectedDate(formattedSelectedDate);
   };
 
   const getCellClassName = (hourIndex, dateIndex) => {
@@ -251,14 +288,26 @@ export default function CalendarWeekly() {
             <div className="time-cells-list">
               {currentWeekDates &&
                 currentWeekDates.map((date, dateIndex) => {
-                  const cellId = `${dateIndex}${hourIndex}`;
+                  // const cellId = `${dateIndex}${hourIndex}`;
+                  const cellId = `${hourIndex}${dateIndex}`;
+
+                  // TODO: change cell index when you change the date from dateSelection
                   const cellClassNameSelected = getCellClassName(
                     hourIndex,
                     dateIndex
                   );
                   const cellHalfClassName = getCellHalfClassName();
-
                   const dayName = weekDays()[date.getDay()];
+
+                  const dateSelection = (
+                    <DateSelection
+                      onSelectDate={(newSelectedDate, cellId) =>
+                        handleDateSelection(newSelectedDate, cellId)
+                      }
+                      defaultDate={selectedDate}
+                      cellId={cellId}
+                    />
+                  );
 
                   // Tooltip content
                   const tooltipContent = (
@@ -267,11 +316,18 @@ export default function CalendarWeekly() {
                       {tooltipContentHeader()}
                       <div className="tooltip-task-title">
                         <h2>Create a new event </h2>
-                        <input type="text" placeholder="Add a name" />
+                        <input
+                          type="text"
+                          placeholder="Add a name"
+                          onChange={(event) => setTitle(event.target.value)}
+                        />
                         <div className="tooltip-task-time">
-                          <span>{dayName}</span>
+                          {dateSelection}
+                          <span className="tooltip-task-time__day">
+                            {dayName}
+                          </span>
+
                           <span>{clickedPeriod}</span>
-                          {/* <input  type="time" value={} name="" id="" /> */}
                         </div>
                       </div>
                       <div className="tooltip-task-additional">
@@ -297,35 +353,40 @@ export default function CalendarWeekly() {
 
                   // Cell content
                   const cellContent = (
-                      <div
-                        key={dateIndex}
-                        className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
-                        onClick={(e) =>
-                          handleDateHourClick(
-                            date,
-                            hour,
-                            e.nativeEvent.offsetY < 30,
-                            e,
-                            dateIndex,
-                            hourIndex
-                          )
-                        }
-                      >
-                        {renderDateTasks(date, hourIndex)}
+                    <div
+                      key={dateIndex}
+                      className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
+                      onClick={(e) =>
+                        handleDateHourClick(
+                          date,
+                          hour,
+                          e.nativeEvent.offsetY < 30,
+                          e,
+                          dateIndex,
+                          hourIndex
+                        )
+                      }
+                    >
+                      {renderDateTasks(date, hourIndex)}
 
-                        {/* Click on cell content */}
-                        {cellClassNameSelected === "clicked-cell" && (
-                          <div className="clicked-new-task-tooltip">
-                            <h4>(Untitled)</h4>
-                            <p className="clicked-new-task-tooltip__text">
-                              {cellClassNameSelected === "clicked-cell" &&
-                                clickedPeriod}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                  )
-
+                      {/* Click on cell content */}
+                      {cellClassNameSelected === "clicked-cell" && (
+                        <div className="clicked-new-task-tooltip">
+                          <h4>
+                            {title ? (
+                              <TruncatedText text={title} maxCharacters={10} />
+                            ) : (
+                              "(Untitled)"
+                            )}
+                          </h4>
+                          <p className="clicked-new-task-tooltip__text">
+                            {cellClassNameSelected === "clicked-cell" &&
+                              clickedPeriod}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
 
                   // Tooltip wrapper
 
@@ -340,7 +401,7 @@ export default function CalendarWeekly() {
                       {/* Children */}
                       {cellContent}
                     </Tooltip>
-                  )
+                  );
 
                   return tooltip;
                 })}

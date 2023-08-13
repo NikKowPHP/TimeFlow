@@ -1,0 +1,12 @@
+.date-selection-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.date-selection-input {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

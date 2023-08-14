@@ -39,6 +39,7 @@ export default function CalendarWeekly() {
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
   const [clickedHalf, setClickedHalf] = useState(null);
   const [clickedPeriod, setClickedPeriod] = useState(null);
+  const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
 
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
 
@@ -103,6 +104,7 @@ export default function CalendarWeekly() {
     setSelectedDate(date);
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
+    setClickedPeriodStart(hour);
 
     handleOnClick(e, tooltipId);
   };
@@ -128,9 +130,18 @@ export default function CalendarWeekly() {
 
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
-    const cellId = selectedDatesByCell[newSelectedDate];
+    formattedSelectedDate.setHours(clickedPeriodStart);
+    console.log(formattedSelectedDate.getTime())
+    let cellId = null;
+    for(const [key, value] of Object.entries(selectedDatesByCell)){
+      debugger
+      if(value.getTime() == formattedSelectedDate.getTime()) {
+        cellId = key;
+        break;
+      }
+    }
     console.log(cellId);
-    setClickedCellIndex();
+    setClickedCellIndex(cellId);
     setSelectedDate(formattedSelectedDate);
   };
 

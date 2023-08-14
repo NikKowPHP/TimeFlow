@@ -32,6 +32,7 @@ export default function Tooltip({
   const handleContentClick = (event) => {
     event.stopPropagation();
   };
+  // TODO: create a movable tooltip
 
   return (
     <div className="tooltip-container">

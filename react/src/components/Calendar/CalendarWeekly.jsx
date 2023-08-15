@@ -9,6 +9,7 @@ import svgPaths from "../svgPaths";
 import { newTaskHandler } from "./newTaskHandler";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
+import TimeSelection from "../TimeSelection";
 
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
@@ -40,6 +41,7 @@ export default function CalendarWeekly() {
   const [clickedHalf, setClickedHalf] = useState(null);
   const [clickedPeriod, setClickedPeriod] = useState(null);
   const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
+  const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
 
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
 
@@ -105,6 +107,7 @@ export default function CalendarWeekly() {
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
     setClickedPeriodStart(hour);
+    setClickedPeriodEnd(endHour);
 
     handleOnClick(e, tooltipId);
   };
@@ -118,7 +121,7 @@ export default function CalendarWeekly() {
           const dateWithHours = new Date(date);
           dateWithHours.setHours(hour);
           const cellId = `${hourIndex}${dateIndex}`;
-          initialDatesByCells[cellId]= dateWithHours;
+          initialDatesByCells[cellId] = dateWithHours;
         });
     });
     setSelectedDatesByCell(initialDatesByCells);
@@ -131,11 +134,11 @@ export default function CalendarWeekly() {
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate.setHours(clickedPeriodStart);
-    console.log(formattedSelectedDate.getTime())
+    console.log(formattedSelectedDate.getTime());
     let cellId = null;
-    for(const [key, value] of Object.entries(selectedDatesByCell)){
-      debugger
-      if(value.getTime() == formattedSelectedDate.getTime()) {
+    for (const [key, value] of Object.entries(selectedDatesByCell)) {
+      debugger;
+      if (value.getTime() == formattedSelectedDate.getTime()) {
         cellId = key;
         break;
       }
@@ -288,6 +291,8 @@ export default function CalendarWeekly() {
     );
   };
 
+  const handleTimeSelection = (selectedTime) => {};
+
   const renderTimeGrid = () => {
     const hoursOfDay = generateHoursOfDay();
 
@@ -320,6 +325,17 @@ export default function CalendarWeekly() {
                     />
                   );
 
+                  const timeSelection = (time) => (
+                    <div className="time-selection-block">
+                    <TimeSelection
+                      onSelectTime={(selectedTime) =>
+                        handleTimeSelection(selectedTime)
+                      }
+                      defaultTime={time}
+                    />
+                    </div>
+                  );
+
                   // Tooltip content
                   const tooltipContent = (
                     <div>
@@ -334,11 +350,21 @@ export default function CalendarWeekly() {
                         />
                         <div className="tooltip-task-time">
                           {dateSelection}
+
+                          <div className="tooltip-task-time_time-selection-container">
+                          {timeSelection(clickedPeriodStart)}
+                          -
+                          {timeSelection(clickedPeriodEnd)}
+
+                          </div>
+                        </div>
+                        <div className="tooltip-task__time-period">
                           <span className="tooltip-task-time__day">
                             {dayName}
                           </span>
-
                           <span>{clickedPeriod}</span>
+
+
                         </div>
                       </div>
                       <div className="tooltip-task-additional">

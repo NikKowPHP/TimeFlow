@@ -1,17 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosClient from "../../axios-client";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { useCalendarState } from "./useCalendarState";
 
 export function newTaskHandler() {
-	const [title, setTitle] = useState(null);
-	const [startTimePeriod, setStartTimePeriod] = useState(null);
-	const [endTimePeriod, setEndTimePeriod] = useState(null);
+	const {user} = useStateContext();
+	const {refreshTasks} = useCalendarState();
+
+	const [task, setTask] = useState({
+		id: null,
+		user_id: user.id,
+		title: '',
+		time_start: '',
+		time_end: '',
+		date: '',
+		// description: ''
+	})
+	useEffect(() => {
+		setTask({...task, user_id: user.id});
+	}, [user])
+
+	const handleTaskCreation = (ev) => {
+		ev.preventDefault();
+
+		axiosClient.post(`/calendar/calendar`, task)
+		.then(({data}) => {
+			refreshTasks();
+		})
+	}
 
 
 	return {
-		title,
-		setTitle,
-		startTimePeriod,
-		setStartTimePeriod,
-		endTimePeriod,
-		setEndTimePeriod
+		task,
+		setTask, 
+		handleTaskCreation
 	}
 }

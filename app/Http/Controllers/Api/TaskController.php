@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
+use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
@@ -18,7 +19,6 @@ class TaskController extends Controller
      */
     public function index()
     {
-        log::debug('tasks', ['task'=> Task::query()->orderBy('date', 'desc')->get()]);
         return TaskResource::collection(
             Task::query()->orderBy('date', 'desc')->get()
         );
@@ -43,9 +43,11 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreTaskRequest $request)
     {
-        //
+        $task_data_validated = $request->validated();
+        $task = Task::create($task_data_validated);
+        return response(new TaskResource($task), 201);
     }
 
     /**

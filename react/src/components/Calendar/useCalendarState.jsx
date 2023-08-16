@@ -41,6 +41,12 @@ export function useCalendarState() {
     getAllTasks();
   }, []);
 
+
+  // Refresh list of tasks
+  const refreshTasks = () => {
+    getAllTasks();
+  }
+
   // Get url pathname
   const calendarLayout = useLocation().pathname;
 
@@ -106,6 +112,7 @@ export function useCalendarState() {
 		setSelectedDate,
     currentDate,
     allTasks,
+    refreshTasks,
     loading,
 	};
 }

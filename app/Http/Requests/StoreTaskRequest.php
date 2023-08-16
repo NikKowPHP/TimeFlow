@@ -22,7 +22,11 @@ class StoreTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string',
+            'time_start' => 'required|string',
+            'time_end' => 'required|string',
+            'user_id' => 'required',
+            'date' => 'required'
         ];
     }
 }

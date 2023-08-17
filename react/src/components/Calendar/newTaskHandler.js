@@ -3,7 +3,7 @@ import axiosClient from "../../axios-client";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useCalendarState } from "./useCalendarState";
 
-export function newTaskHandler() {
+export function newTaskHandler({ onDataReceived }) {
 	const {user} = useStateContext();
 	const {refreshTasks} = useCalendarState();
 
@@ -26,6 +26,9 @@ export function newTaskHandler() {
 		axiosClient.post(`/calendar/calendar`, task)
 		.then(({data}) => {
 			refreshTasks();
+
+			onDataReceived(data)
+
 		})
 	}
 

@@ -21,7 +21,10 @@ export default function CalendarWeekly() {
     hideTooltip,
   } = useTooltipState();
 
-  const { task, setTask, handleTaskCreation } = newTaskHandler();
+  const { task, setTask, handleTaskCreation } = newTaskHandler({
+    onDataReceived: handleDataFromChild,
+  });
+
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
     useCalendarState();
 
@@ -47,6 +50,12 @@ export default function CalendarWeekly() {
 
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
 
+  function handleDataFromChild (data)  {
+    if(data) {
+      hideTooltip();
+      setClickedCellIndex(null);
+    }
+  }
   const handlePreviousWeek = () => {
     const previousWeekStartDate = new Date(currentWeekStartDate);
     previousWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
@@ -73,6 +82,31 @@ export default function CalendarWeekly() {
   useEffect(() => {
     console.log(task);
   }, [task]);
+
+
+
+  const convertDecimalToTime =(decimalTime) => {
+    const hours = Math.floor(decimalTime);
+    const minutes = Math.round((decimalTime - hours) * 60);
+
+    return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2, '0')}`;
+  }
+
+  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
+    const formattedTimeStart = convertDecimalToTime(timeStart);
+    const formattedTimeEnd = convertDecimalToTime(timeEnd);
+    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
+    const newTask = {
+		id: null,
+		title: '',
+		time_start: formattedTimeStart,
+		time_end: formattedTimeEnd,
+		date: formattedDate,
+    }
+    debugger
+    setTask({...task, ...newTask});
+
+  }
 
   const handleDateHourClick = (
     date,
@@ -103,7 +137,6 @@ export default function CalendarWeekly() {
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const clickedCellIndex = `${hourIndex}${dateIndex}`;
 
-    console.log(clickedCellIndex);
 
     setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
@@ -114,6 +147,7 @@ export default function CalendarWeekly() {
     setClickedPeriodEnd(endHour);
 
     handleOnClick(e, tooltipId);
+    initiateNewTask(hour, endHour, date);
   };
 
   useEffect(() => {

@@ -145,3 +145,12 @@
 .tooltip-task-time__day {
   margin-right: 10px;
 }
+
+.tooltip-task-time_time-selection-container {
+  display: flex;
+  align-items: center;
+}
+.tooltip-task-time_time-selection-container .time-selection-block {
+  flex-grow: 1;
+}
+

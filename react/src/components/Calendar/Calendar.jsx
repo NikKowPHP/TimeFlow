@@ -1,5 +1,5 @@
 import "../../styles/calendar.css";
-import { useCalendarState } from "./useCalendarState";
+import { useCalendarState } from "../customHooks/useCalendarState";
 import CalendarMonthly from "./CalendarMonthly";
 import CalendarWeekly from "./CalendarWeekly";
 import CalendarAgenda from "./CalendarAgenda";

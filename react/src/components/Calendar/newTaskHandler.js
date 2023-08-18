@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../../contexts/ContextProvider";
-import { useCalendarState } from "./useCalendarState";
+import { useCalendarState } from "../customHooks/useCalendarState";
 
 export function newTaskHandler({ onDataReceived }) {
 	const {user} = useStateContext();

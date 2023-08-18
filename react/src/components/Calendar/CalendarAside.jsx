@@ -1,6 +1,6 @@
 import "../../styles/calendar/calendar-aside.css";
-import { useCalendarState } from "./useCalendarState";
-import { calendarUtils } from "./calendarUtils";
+import { useCalendarState } from "../customHooks/useCalendarState";
+import { calendarUtils } from "../../utils/calendarUtils";
 import { useState } from "react";
 
 /**

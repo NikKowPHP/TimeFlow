@@ -1,15 +1,16 @@
 import "../../styles/calendar/calendar-weekly.css";
 import React, { useEffect, useState } from "react";
-import { useCalendarState } from "./useCalendarState";
-import { calendarUtils } from "./calendarUtils";
+import { useCalendarState } from "../customHooks/useCalendarState";
+import { useTooltipState } from "../customHooks/useTooltipState";
+import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import Tooltip from "../tooltips/Tooltip";
-import { useTooltipState } from "../tooltips/useTooltipState";
 import svgPaths from "../svgPaths";
 import { newTaskHandler } from "./newTaskHandler";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
+
 
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
@@ -252,6 +253,19 @@ export default function CalendarWeekly() {
 
     const maxTasksToShow = Math.min(dateTasks.length, 4);
 
+    const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+      const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
+      const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
+      const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+      const cellTimeAvailableMinutes = 60;
+      const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+      const cellHeight = 64.83;
+      const taskHeight = cellHeight * heightRatio;
+      return {
+        height: `${taskHeight}px`,
+      }
+    };
+
     return (
       <div className="tasks-list">
         <ul>
@@ -260,16 +274,6 @@ export default function CalendarWeekly() {
             const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
             const isTooltipVisible = () => openedTooltipId === task.id;
 
-            const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
-            const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
-            const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
-            const cellTimeAvailableMinutes = 60;
-            const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
-            const cellHeight = 64.83;
-            const taskHeight = cellHeight * heightRatio;
-            const expandedElementStyle = {
-              height: `${taskHeight}px`,
-            };
 
             const tooltipContent = () => (
               <div>
@@ -305,7 +309,7 @@ export default function CalendarWeekly() {
               <li
                 className={`task-option ${toggledTaskActiveClass}`}
                 onClick={(event) => handleOnClick(event, task.id)}
-                style={expandedElementStyle}
+                style={calculateTaskHeight(task.time_start,task.time_end)}
               >
                 {`${task.title} ${task.time_start}-${task.time_end}`}
               </li>
@@ -321,14 +325,6 @@ export default function CalendarWeekly() {
                 content={tooltipContent()}
               >
                 {tooltipChildren()}
-
-                {/* <li
-                  className={`task-option ${toggledTaskActiveClass}`}
-                  onClick={(event) => handleOnClick(event, task.id)}
-                  style={expandedElementStyle}
-                >
-                  {`${task.title} ${task.time_start}-${task.time_end}`}
-                </li> */}
               </Tooltip>
             );
           })}
@@ -358,10 +354,8 @@ export default function CalendarWeekly() {
             <div className="time-cells-list">
               {currentWeekDates &&
                 currentWeekDates.map((date, dateIndex) => {
-                  // const cellId = `${dateIndex}${hourIndex}`;
                   const cellId = `${hourIndex}${dateIndex}`;
 
-                  // TODO: change cell index when you change the date from dateSelection
                   const cellClassNameSelected = getCellClassName(
                     hourIndex,
                     dateIndex
@@ -415,7 +409,6 @@ export default function CalendarWeekly() {
                               {timeSelection(clickedPeriodEnd, false)}
                             </div>
                             <div className="tooltip-task-description-container">
-                              {/* <input type="text" onChange={(event)=> setTask({...task, description: event.target.value})} placeholder="Enter task description" /> */}
                             </div>
                           </div>
                           <div className="tooltip-task__time-period">

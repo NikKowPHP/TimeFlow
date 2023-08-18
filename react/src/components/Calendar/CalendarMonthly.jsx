@@ -1,10 +1,10 @@
 import "../../styles/calendar/calendar-monthly.css";
 import React from "react";
 import Tooltip from "../tooltips/Tooltip";
-import { calendarUtils } from "./calendarUtils";
+import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
-import { useTooltipState } from "../tooltips/useTooltipState";
-import { useCalendarState } from "./useCalendarState";
+import { useCalendarState } from "../customHooks/useCalendarState";
+import { useTooltipState } from "../customHooks/useTooltipState";
 
 /**
  * CalendarMonthly Component

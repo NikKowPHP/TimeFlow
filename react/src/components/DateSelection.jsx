@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import "../styles/dateSelection.css"
 
-export default function DateSelection({onSelectDate, defaultDate, cellId}) {
+export default function DateSelection({onSelectDate, defaultDate}) {
 	const [selectedDate, setSelectedDate] = useState(defaultDate);
 	useEffect(() =>{
-		// console.log(defaultDate);
-		console.log(cellId);
 		const formattedDate = defaultDate.toISOString().slice(0,10);
 		setSelectedDate(formattedDate);
 
@@ -14,7 +12,7 @@ export default function DateSelection({onSelectDate, defaultDate, cellId}) {
 	const handleDateChange = (event) => {
 		const  newSelectedDate = event.target.value;
 		setSelectedDate(newSelectedDate);
-		onSelectDate(newSelectedDate, cellId);
+		onSelectDate(newSelectedDate);
 	}
 	return (
 

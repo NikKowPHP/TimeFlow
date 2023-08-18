@@ -50,8 +50,8 @@ export default function CalendarWeekly() {
 
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
 
-  function handleDataFromChild (data)  {
-    if(data) {
+  function handleDataFromChild(data) {
+    if (data) {
       hideTooltip();
       setClickedCellIndex(null);
     }
@@ -83,30 +83,28 @@ export default function CalendarWeekly() {
     console.log(task);
   }, [task]);
 
-
-
-  const convertDecimalToTime =(decimalTime) => {
+  const convertDecimalToTime = (decimalTime) => {
     const hours = Math.floor(decimalTime);
     const minutes = Math.round((decimalTime - hours) * 60);
 
-    return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2, '0')}`;
-  }
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
     const formattedTimeStart = convertDecimalToTime(timeStart);
     const formattedTimeEnd = convertDecimalToTime(timeEnd);
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
     const newTask = {
-		id: null,
-		title: '',
-		time_start: formattedTimeStart,
-		time_end: formattedTimeEnd,
-		date: formattedDate,
-    }
-    debugger
-    setTask({...task, ...newTask});
-
-  }
+      id: null,
+      title: "",
+      time_start: formattedTimeStart,
+      time_end: formattedTimeEnd,
+      date: formattedDate,
+    };
+    setTask({ ...task, ...newTask });
+  };
 
   const handleDateHourClick = (
     date,
@@ -117,7 +115,6 @@ export default function CalendarWeekly() {
     hourIndex
   ) => {
     const tooltipId = `${hourIndex}${dateIndex}`;
-    // const tooltipId = `${dateIndex}${hourIndex}`;
     const startHour = !isFirstHalf ? hour + 0.5 : hour;
     const endHour = !isFirstHalf ? hour + 1.5 : hour + 1;
 
@@ -136,7 +133,6 @@ export default function CalendarWeekly() {
 
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const clickedCellIndex = `${hourIndex}${dateIndex}`;
-
 
     setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
@@ -165,7 +161,6 @@ export default function CalendarWeekly() {
     setSelectedDatesByCell(initialDatesByCells);
   }, [currentWeekDates]);
 
-
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate.setHours(clickedPeriodStart);
@@ -178,7 +173,7 @@ export default function CalendarWeekly() {
     }
     setClickedCellIndex(cellId);
     setSelectedDate(formattedSelectedDate);
-    setTask({...task, date: newSelectedDate})
+    setTask({ ...task, date: newSelectedDate });
   };
 
   const getCellClassName = (hourIndex, dateIndex) => {
@@ -268,9 +263,53 @@ export default function CalendarWeekly() {
             const startTimestamp = new Date(`2000-01-01 ${task.time_start}`);
             const endTimestamp = new Date(`2000-01-01 ${task.time_end}`);
             const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+            const cellTimeAvailableMinutes = 60;
+            const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+            const cellHeight = 64.83;
+            const taskHeight = cellHeight * heightRatio;
             const expandedElementStyle = {
-              height: `${taskDurationMinutes + 35}px`,
+              height: `${taskHeight}px`,
             };
+
+            const tooltipContent = () => (
+              <div>
+                {tooltipContentHeader()}
+                <div className="tooltip-task-title">
+                  <h2>{task.title}</h2>
+                  <p>
+                    {task.date} ⋅ {task.time_start}-{task.time_end}
+                  </p>
+                </div>
+                <div className="tooltip-task-additional">
+                  {/* TODO: create notifications */}
+                  <div className="tooltip-task-notification">
+                    <svg
+                      focusable="false"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                    >
+                      {svgPaths.notification}
+                    </svg>
+                    <p>in 5 minutes before</p>
+                  </div>
+                  <div className="tooltip-task-owner">
+                    <i className="fa fa-calendar"></i>
+                    {task.user.name}
+                  </div>
+                </div>
+              </div>
+            );
+
+            const tooltipChildren = () => (
+              <li
+                className={`task-option ${toggledTaskActiveClass}`}
+                onClick={(event) => handleOnClick(event, task.id)}
+                style={expandedElementStyle}
+              >
+                {`${task.title} ${task.time_start}-${task.time_end}`}
+              </li>
+            );
 
             return (
               <Tooltip
@@ -279,43 +318,17 @@ export default function CalendarWeekly() {
                 isTooltipVisible={isTooltipVisible()}
                 tooltipPositionClass={tooltipPositionClass}
                 tooltipId={openedTooltipId}
-                content={
-                  <div>
-                    {tooltipContentHeader()}
-                    <div className="tooltip-task-title">
-                      <h2>{task.title}</h2>
-                      <p>
-                        {task.date} ⋅ {task.time_start}-{task.time_end}
-                      </p>
-                    </div>
-                    <div className="tooltip-task-additional">
-                      {/* TODO: create notifications */}
-                      <div className="tooltip-task-notification">
-                        <svg
-                          focusable="false"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                        >
-                          {svgPaths.notification}
-                        </svg>
-                        <p>in 5 minutes before</p>
-                      </div>
-                      <div className="tooltip-task-owner">
-                        <i className="fa fa-calendar"></i>
-                        {task.user.name}
-                      </div>
-                    </div>
-                  </div>
-                }
+                content={tooltipContent()}
               >
-                <li
+                {tooltipChildren()}
+
+                {/* <li
                   className={`task-option ${toggledTaskActiveClass}`}
                   onClick={(event) => handleOnClick(event, task.id)}
                   style={expandedElementStyle}
                 >
-                  {`${task.title} ${task.time_start} ${task.time_end}`}
-                </li>
+                  {`${task.title} ${task.time_start}-${task.time_end}`}
+                </li> */}
               </Tooltip>
             );
           })}
@@ -324,14 +337,13 @@ export default function CalendarWeekly() {
     );
   };
 
-
   const handleTimeSelection = (selectedTime, isStart) => {
-    if(isStart ) {
+    if (isStart) {
       setClickedPeriodStart(selectedTime);
-      setTask({...task, time_start: selectedTime})
-    }else {
+      setTask({ ...task, time_start: selectedTime });
+    } else {
       setClickedPeriodEnd(selectedTime);
-      setTask({...task, time_end: selectedTime})
+      setTask({ ...task, time_end: selectedTime });
     }
   };
 
@@ -463,7 +475,10 @@ export default function CalendarWeekly() {
                         <div className="clicked-new-task-tooltip">
                           <h4>
                             {task.title ? (
-                              <TruncatedText text={task.title} maxCharacters={10} />
+                              <TruncatedText
+                                text={task.title}
+                                maxCharacters={10}
+                              />
                             ) : (
                               "(Untitled)"
                             )}

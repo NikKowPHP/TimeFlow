@@ -11,7 +11,6 @@ import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 
-
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
   const {
@@ -21,10 +20,6 @@ export default function CalendarWeekly() {
     showTooltip,
     hideTooltip,
   } = useTooltipState();
-
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
-    onDataReceived: handleDataFromChild,
-  });
 
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
     useCalendarState();
@@ -37,7 +32,9 @@ export default function CalendarWeekly() {
     weekDays,
     getActiveDateClass,
     convertTimePeriod,
+    convertTime,
   } = calendarUtils();
+
   const { convertDateSql } = dateUtils();
 
   const [currentWeekDates, setCurrentWeekDates] = useState("");
@@ -50,6 +47,10 @@ export default function CalendarWeekly() {
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
 
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
+
+  const { task, setTask, handleTaskCreation } = newTaskHandler({
+    onDataReceived: handleDataFromChild,
+  });
 
   function handleDataFromChild(data) {
     if (data) {
@@ -79,10 +80,6 @@ export default function CalendarWeekly() {
   const handleDateClick = (date) => {
     setSelectedDate(date);
   };
-
-  useEffect(() => {
-    console.log(task);
-  }, [task]);
 
   const convertDecimalToTime = (decimalTime) => {
     const hours = Math.floor(decimalTime);
@@ -140,8 +137,8 @@ export default function CalendarWeekly() {
     setSelectedDate(date);
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
-    setClickedPeriodStart(hour);
-    setClickedPeriodEnd(endHour);
+    setClickedPeriodStart(convertTime(startTime));
+    setClickedPeriodEnd(convertTime(endTime));
 
     handleOnClick(e, tooltipId);
     initiateNewTask(hour, endHour, date);
@@ -238,83 +235,69 @@ export default function CalendarWeekly() {
     </div>
   );
 
+  const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+    const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
+    const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
+    const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+    const cellTimeAvailableMinutes = 60;
+    const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+    const cellHeight = 64.83;
+    const taskHeight = cellHeight * heightRatio;
+    return {
+      height: `${taskHeight}px`,
+    };
+  };
+
+  const filterTasksForDateAndHour = (convertedDate, convertedHourIndex) => {
+    return allTasks.filter((task) => {
+      const slicedTaskTime = task.time_start.split(":")[0];
+      return (
+        task.date === convertedDate && slicedTaskTime === convertedHourIndex
+      );
+    });
+  };
+
+  const renderTooltipContent = (task) => (
+    <div>
+      {tooltipContentHeader()}
+      <div className="tooltip-task-title">
+        <h2>{task.title}</h2>
+        <p>
+          {task.date} ⋅ {task.time_start}-{task.time_end}
+        </p>
+      </div>
+      <div className="tooltip-task-additional">
+        {/* TODO: create notifications */}
+        <div className="tooltip-task-notification">
+          <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+            {svgPaths.notification}
+          </svg>
+          <p>in 5 minutes before</p>
+        </div>
+        <div className="tooltip-task-owner">
+          <i className="fa fa-calendar"></i>
+          {task.user.name}
+        </div>
+      </div>
+    </div>
+  );
+
+
   const renderDateTasks = (date, hourIndex) => {
     const convertedHourIndex = hourIndex.toString().padStart(2, "0");
     const convertedDate = dateUtils().convertDateSql(date.toLocaleDateString());
-
-    const dateTasks = allTasks.filter((task) => {
-      if (task.date === convertedDate) {
-        const slicedTaskTime = task.time_start.split(":")[0];
-        if (slicedTaskTime === convertedHourIndex) {
-          return true;
-        }
-      }
-    });
-
-    const maxTasksToShow = Math.min(dateTasks.length, 4);
-
-    const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
-      const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
-      const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
-      const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
-      const cellTimeAvailableMinutes = 60;
-      const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
-      const cellHeight = 64.83;
-      const taskHeight = cellHeight * heightRatio;
-      return {
-        height: `${taskHeight}px`,
-      }
-    };
+    const filteredTasks = filterTasksForDateAndHour(
+      convertedDate,
+      convertedHourIndex
+    );
+    const maxTasksToShow = Math.min(filteredTasks.length, 4);
 
     return (
       <div className="tasks-list">
         <ul>
-          {dateTasks.slice(0, maxTasksToShow).map((task) => {
-            // Calculate cell indexes for task period
+          {filteredTasks.slice(0, maxTasksToShow).map((task) => {
             const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
             const isTooltipVisible = () => openedTooltipId === task.id;
-
-
-            const tooltipContent = () => (
-              <div>
-                {tooltipContentHeader()}
-                <div className="tooltip-task-title">
-                  <h2>{task.title}</h2>
-                  <p>
-                    {task.date} ⋅ {task.time_start}-{task.time_end}
-                  </p>
-                </div>
-                <div className="tooltip-task-additional">
-                  {/* TODO: create notifications */}
-                  <div className="tooltip-task-notification">
-                    <svg
-                      focusable="false"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                    >
-                      {svgPaths.notification}
-                    </svg>
-                    <p>in 5 minutes before</p>
-                  </div>
-                  <div className="tooltip-task-owner">
-                    <i className="fa fa-calendar"></i>
-                    {task.user.name}
-                  </div>
-                </div>
-              </div>
-            );
-
-            const tooltipChildren = () => (
-              <li
-                className={`task-option ${toggledTaskActiveClass}`}
-                onClick={(event) => handleOnClick(event, task.id)}
-                style={calculateTaskHeight(task.time_start,task.time_end)}
-              >
-                {`${task.title} ${task.time_start}-${task.time_end}`}
-              </li>
-            );
-
             return (
               <Tooltip
                 classes={`tooltip-task-description ${tooltipPositionClass} `}
@@ -322,9 +305,15 @@ export default function CalendarWeekly() {
                 isTooltipVisible={isTooltipVisible()}
                 tooltipPositionClass={tooltipPositionClass}
                 tooltipId={openedTooltipId}
-                content={tooltipContent()}
+                content={renderTooltipContent(task)}
               >
-                {tooltipChildren()}
+              <li
+                className={`task-option ${toggledTaskActiveClass}`}
+                onClick={(event) => handleOnClick(event, task.id)}
+                style={calculateTaskHeight(task.time_start, task.time_end)}
+              >
+                {`${task.title} ${task.time_start}-${task.time_end}`}
+              </li>
               </Tooltip>
             );
           })}
@@ -408,8 +397,7 @@ export default function CalendarWeekly() {
                               {timeSelection(clickedPeriodStart, true)}-
                               {timeSelection(clickedPeriodEnd, false)}
                             </div>
-                            <div className="tooltip-task-description-container">
-                            </div>
+                            <div className="tooltip-task-description-container"></div>
                           </div>
                           <div className="tooltip-task__time-period">
                             <span className="tooltip-task-time__day">

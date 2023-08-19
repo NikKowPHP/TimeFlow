@@ -137,6 +137,16 @@ export function calendarUtils() {
     return months[month];
   }
 
+  
+  // Function to convert time to 'HH:mm' 24 hour format
+  const convertTime = (time) => {
+    return time.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
 
   const convertTimePeriod = (startTime, endTime) => {
     const startTimeString = startTime.toLocaleTimeString([], {
@@ -182,6 +192,7 @@ export function calendarUtils() {
     weekDays,
     convertHour,
     generateHoursOfDay,
-    convertTimePeriod
+    convertTimePeriod,
+    convertTime,
   };
 }

@@ -10,6 +10,7 @@ import { newTaskHandler } from "./newTaskHandler";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
+import { toast } from "react-toastify";
 
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
@@ -56,6 +57,7 @@ export default function CalendarWeekly() {
     if (data) {
       hideTooltip();
       setClickedCellIndex(null);
+      toast.success(`The task '${data.title}' was successfully created`);
     }
   }
   const handlePreviousWeek = () => {

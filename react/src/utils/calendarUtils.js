@@ -182,6 +182,15 @@ export function calendarUtils() {
     return hoursOfDay;
   };
 
+
+  const convertDecimalToTime = (decimalTime) => {
+    const hours = Math.floor(decimalTime);
+    const minutes = Math.round((decimalTime - hours) * 60);
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   return {
     getActiveDateClass,
     generateMonths,
@@ -194,5 +203,6 @@ export function calendarUtils() {
     generateHoursOfDay,
     convertTimePeriod,
     convertTime,
+    convertDecimalToTime
   };
 }

@@ -34,9 +34,13 @@ export default function CalendarWeekly() {
     getActiveDateClass,
     convertTimePeriod,
     convertTime,
+    convertDecimalToTime,
   } = calendarUtils();
 
   const { convertDateSql } = dateUtils();
+  const { task, setTask, handleTaskCreation } = newTaskHandler({
+    onDataReceived: handleDataFromChild,
+  });
 
   const [currentWeekDates, setCurrentWeekDates] = useState("");
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
@@ -44,16 +48,12 @@ export default function CalendarWeekly() {
   const [clickedPeriod, setClickedPeriod] = useState(null);
   const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
-
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
-
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
 
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
-    onDataReceived: handleDataFromChild,
-  });
 
-  function handleDataFromChild(data) {
+  // Event handlers
+  function handleDataFromChild (data)  {
     if (data) {
       hideTooltip();
       setClickedCellIndex(null);
@@ -71,39 +71,8 @@ export default function CalendarWeekly() {
     nextWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
     setCurrentWeekStartDate(nextWeekStartDate);
   };
-
-  useEffect(() => {
-    if (dates.length != 0) {
-      const currentWeekDates = getCurrentWeekDates(dates, currentWeekStartDate);
-      setCurrentWeekDates(currentWeekDates);
-    }
-  }, [dates, currentWeekStartDate]);
-
   const handleDateClick = (date) => {
     setSelectedDate(date);
-  };
-
-  const convertDecimalToTime = (decimalTime) => {
-    const hours = Math.floor(decimalTime);
-    const minutes = Math.round((decimalTime - hours) * 60);
-
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
-  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
-    const formattedTimeStart = convertDecimalToTime(timeStart);
-    const formattedTimeEnd = convertDecimalToTime(timeEnd);
-    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
-    const newTask = {
-      id: null,
-      title: "",
-      time_start: formattedTimeStart,
-      time_end: formattedTimeEnd,
-      date: formattedDate,
-    };
-    setTask({ ...task, ...newTask });
   };
 
   const handleDateHourClick = (
@@ -146,6 +115,49 @@ export default function CalendarWeekly() {
     initiateNewTask(hour, endHour, date);
   };
 
+  const handleDateSelection = (newSelectedDate) => {
+    const formattedSelectedDate = new Date(newSelectedDate);
+    formattedSelectedDate.setHours(clickedPeriodStart);
+    let cellId = null;
+    for (const [key, value] of Object.entries(selectedDatesByCell)) {
+      if (value.getTime() == formattedSelectedDate.getTime()) {
+        cellId = key;
+        break;
+      }
+    }
+    setClickedCellIndex(cellId);
+    setSelectedDate(formattedSelectedDate);
+    setTask({ ...task, date: newSelectedDate });
+  };
+
+  // Handle click on a task or a date to show the tooltip
+  const handleOnClick = (event, id) => {
+    // Close opened tooltip
+    if (openedTooltipId !== null) {
+      hideTooltip();
+    }
+    event.stopPropagation();
+    showTooltip(id);
+  };
+
+  const handleTimeSelection = (selectedTime, isStart) => {
+    if (isStart) {
+      setClickedPeriodStart(selectedTime);
+      setTask({ ...task, time_start: selectedTime });
+    } else {
+      setClickedPeriodEnd(selectedTime);
+      setTask({ ...task, time_end: selectedTime });
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    if (dates.length != 0) {
+      const currentWeekDates = getCurrentWeekDates(dates, currentWeekStartDate);
+      setCurrentWeekDates(currentWeekDates);
+    }
+  }, [dates, currentWeekStartDate]);
+
   useEffect(() => {
     const initialDatesByCells = {};
     const hoursOfDay = generateHoursOfDay();
@@ -161,20 +173,20 @@ export default function CalendarWeekly() {
     setSelectedDatesByCell(initialDatesByCells);
   }, [currentWeekDates]);
 
-  const handleDateSelection = (newSelectedDate) => {
-    const formattedSelectedDate = new Date(newSelectedDate);
-    formattedSelectedDate.setHours(clickedPeriodStart);
-    let cellId = null;
-    for (const [key, value] of Object.entries(selectedDatesByCell)) {
-      if (value.getTime() == formattedSelectedDate.getTime()) {
-        cellId = key;
-        break;
-      }
-    }
-    setClickedCellIndex(cellId);
-    setSelectedDate(formattedSelectedDate);
-    setTask({ ...task, date: newSelectedDate });
+  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
+    const formattedTimeStart = convertDecimalToTime(timeStart);
+    const formattedTimeEnd = convertDecimalToTime(timeEnd);
+    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
+    const newTask = {
+      id: null,
+      title: "",
+      time_start: formattedTimeStart,
+      time_end: formattedTimeEnd,
+      date: formattedDate,
+    };
+    setTask({ ...task, ...newTask });
   };
+
 
   const getCellClassName = (hourIndex, dateIndex) => {
     const cellIndex = hourIndex.toString() + dateIndex.toString();
@@ -202,15 +214,7 @@ export default function CalendarWeekly() {
     );
   };
 
-  // Handle click on a task or a date to show the tooltip
-  const handleOnClick = (event, id) => {
-    // Close opened tooltip
-    if (openedTooltipId !== null) {
-      hideTooltip();
-    }
-    event.stopPropagation();
-    showTooltip(id);
-  };
+
 
   // Render the header of the tooltip content
   const tooltipContentHeader = () => (
@@ -324,15 +328,6 @@ export default function CalendarWeekly() {
     );
   };
 
-  const handleTimeSelection = (selectedTime, isStart) => {
-    if (isStart) {
-      setClickedPeriodStart(selectedTime);
-      setTask({ ...task, time_start: selectedTime });
-    } else {
-      setClickedPeriodEnd(selectedTime);
-      setTask({ ...task, time_end: selectedTime });
-    }
-  };
 
   const renderTimeGrid = () => {
     const hoursOfDay = generateHoursOfDay();

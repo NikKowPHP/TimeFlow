@@ -4,9 +4,9 @@ import { useCalendarState } from "../customHooks/useCalendarState";
 import { useTooltipState } from "../customHooks/useTooltipState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
-import Tooltip from "../tooltips/Tooltip";
 import svgPaths from "../svgPaths";
 import { newTaskHandler } from "./newTaskHandler";
+import Tooltip from "../tooltips/Tooltip";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
@@ -384,10 +384,14 @@ export default function CalendarWeekly() {
     </div>
   );
 
-  const renderTooltipContentNewTask = (dayName,cellId) => (
+  const renderTooltipContentNewTask = (
+    dayName,
+    cellId,
+    tooltipContentHeader
+  ) => (
     <div>
       {/* render header of tooltip */}
-      {tooltipContentHeader()}
+      {tooltipContentHeader}
       <form onSubmit={handleTaskCreation}>
         <div className="tooltip-task-title">
           <h2>Create a new event </h2>
@@ -433,7 +437,7 @@ export default function CalendarWeekly() {
     </div>
   );
 
-  const renderTooltipWrapper = (cellId,tooltipContent, cellContent) => (
+  const renderTooltipWrapper = (cellId, tooltipContent, cellContent) => (
     <Tooltip
       isTooltipVisible={openedTooltipId === cellId}
       tooltipPositionClass={tooltipPositionClass}
@@ -460,11 +464,24 @@ export default function CalendarWeekly() {
                 currentWeekDates.map((date, dateIndex) => {
                   const cellId = `${hourIndex}${dateIndex}`;
                   const dayName = weekDays()[date.getDay()];
-                  const cellContent = renderCellContent(date, hour, dateIndex, hourIndex);
-                  const tooltipContent = renderTooltipContentNewTask(dayName, cellId);
+                  const cellContent = renderCellContent(
+                    date,
+                    hour,
+                    dateIndex,
+                    hourIndex
+                  );
+                  const tooltipContent = renderTooltipContentNewTask(
+                    dayName,
+                    cellId,
+                    tooltipContentHeader()
+                  );
 
                   // return tooltip new task creation
-                  return renderTooltipWrapper(cellId, tooltipContent,cellContent)
+                  return renderTooltipWrapper(
+                    cellId,
+                    tooltipContent,
+                    cellContent
+                  );
                 })}
             </div>
           </div>

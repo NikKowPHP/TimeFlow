@@ -118,13 +118,14 @@ export default function CalendarWeekly() {
    * @param {number} hourIndex - The index of the hour within a day.
    * @returns {any}
    */
-  const handleDateHourClick = (
+  const handleDateHourClick = ({
     date,
     hour,
     isFirstHalf,
     e,
     dateIndex,
     hourIndex
+  }
   ) => {
     const tooltipId = `${hourIndex}${dateIndex}`;
     const startHour = !isFirstHalf ? hour + 0.5 : hour;
@@ -448,14 +449,16 @@ export default function CalendarWeekly() {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
     const cellHalfClassName = getCellHalfClassName();
 
+
     const handleCellClick = (e) =>
-      handleDateHourClick(
-        date,
-        hour,
-        e.nativeEvent.offSetY < 30,
-        e,
-        dateIndex,
-        hourIndex
+      handleDateHourClick({
+        date: date,
+        hour: hour,
+        isFirstHalf: e.nativeEvent.offSetY < 30,
+        e: e,
+        dateIndex: dateIndex,
+        hourIndex: hourIndex
+      }
       );
 
     return (

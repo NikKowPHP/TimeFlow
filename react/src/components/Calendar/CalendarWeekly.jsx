@@ -1,17 +1,21 @@
 import "../../styles/calendar/calendar-weekly.css";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import { useTooltipState } from "../customHooks/useTooltipState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import svgPaths from "../svgPaths";
-import { newTaskHandler } from "./newTaskHandler";
+import  newTaskHandler from "./newTaskHandler";
 import Tooltip from "../tooltips/Tooltip";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
-import { toast } from "react-toastify";
 
+/**
+ * CalendarWeekly component for displaying a weekly calendar view.
+ * @component
+ */
 export default function CalendarWeekly() {
   // Get tooltip's state from custom hook
   const {
@@ -52,6 +56,12 @@ export default function CalendarWeekly() {
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
 
   // Event handlers
+
+  /**
+   * Handles data received from a child component (newTaskHandler)
+   * @param {Object} data - Data received from the child component
+   * @returns {any}
+   */
   function handleDataFromChild(data) {
     if (data) {
       hideTooltip();
@@ -59,21 +69,43 @@ export default function CalendarWeekly() {
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
+
+  /**
+   * Handles the action to move to the previous week
+   */
   const handlePreviousWeek = () => {
     const previousWeekStartDate = new Date(currentWeekStartDate);
     previousWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
     setCurrentWeekStartDate(previousWeekStartDate);
   };
 
+  /**
+   * Handles the action to move to the next week
+   */
   const handleNextWeek = () => {
     const nextWeekStartDate = new Date(currentWeekStartDate);
     nextWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
     setCurrentWeekStartDate(nextWeekStartDate);
   };
+
+  /**
+   * Handles the click on a specific date.
+   * @param {Date} date - The clicked date.
+   */
   const handleDateClick = (date) => {
     setSelectedDate(date);
   };
 
+  /**
+   * Handles the click on a specific date-hour cell.
+   * @param {Date} date - The clicked date.
+   * @param {number} hour - The clicked hour.
+   * @param {boolean} isFirstHalf - Whether the clicked cell is in the first half-hour slot.
+   * @param {Object} e - The event object.
+   * @param {number} dateIndex - The index of the date in the current week's dates.
+   * @param {number} hourIndex - The index of the hour within a day.
+   * @returns {any}
+   */
   const handleDateHourClick = (
     date,
     hour,
@@ -114,6 +146,10 @@ export default function CalendarWeekly() {
     initiateNewTask(hour, endHour, date);
   };
 
+  /**
+   * Handles date selection and sets states
+   * @param {Date} newSelectedDate - The selected date
+   */
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate.setHours(clickedPeriodStart);
@@ -129,7 +165,11 @@ export default function CalendarWeekly() {
     setTask({ ...task, date: newSelectedDate });
   };
 
-  // Handle click on a task or a date to show the tooltip
+  /**
+   * Handle click on a task or a date to show the tooltip
+   * @param {Object} event - The event object
+   * @param {number} id - The id of the tooltip
+   */
   const handleOnClick = (event, id) => {
     // Close opened tooltip
     if (openedTooltipId !== null) {
@@ -139,6 +179,11 @@ export default function CalendarWeekly() {
     showTooltip(id);
   };
 
+  /**
+   * Hadles time selection and sets state
+   * @param {Date} selectedTime - The selected time
+   * @param {boolean} isStart - Whether is start of the time period or the end
+   */
   const handleTimeSelection = (selectedTime, isStart) => {
     if (isStart) {
       setClickedPeriodStart(selectedTime);
@@ -149,7 +194,13 @@ export default function CalendarWeekly() {
     }
   };
 
-  // Effects
+  /**
+   * A React effect hook that updates the current week's dates based on the selected week's start date and the available dates.
+   * It triggers whenever the available dates or the current week's start date changes.
+   * @effect
+   * @param {Date[]} dates - An array of available dates.
+   * @param {Date} currentWeekStartDate - The start date of the currently displayed week.
+   */
   useEffect(() => {
     if (dates.length != 0) {
       const currentWeekDates = getCurrentWeekDates(dates, currentWeekStartDate);
@@ -157,6 +208,13 @@ export default function CalendarWeekly() {
     }
   }, [dates, currentWeekStartDate]);
 
+  /**
+   * A React effect hook that generates the current week's dates by cell ids based on the selected week dates.
+   * It triggers whenever the available dates or the current week's start date changes.
+   * @effect
+   * @param {Date[]} dates - An array of available dates.
+   * @param {Date} currentWeekStartDate - The start date of the currently displayed week.
+   */
   useEffect(() => {
     const initialDatesByCells = {};
     const hoursOfDay = generateHoursOfDay();
@@ -172,6 +230,12 @@ export default function CalendarWeekly() {
     setSelectedDatesByCell(initialDatesByCells);
   }, [currentWeekDates]);
 
+  /**
+   * Initiates a default new task state based on selected time and date and sets state.
+   * @param {Date} timeStart - represents starting time.
+   * @param {Date} timeEnd - represents ending time.
+   * @param {Date} clickedDate - represents the clicked date.
+   */
   const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
     const formattedTimeStart = convertDecimalToTime(timeStart);
     const formattedTimeEnd = convertDecimalToTime(timeEnd);
@@ -186,11 +250,21 @@ export default function CalendarWeekly() {
     setTask({ ...task, ...newTask });
   };
 
+  /**
+   * Determines whether a cell has been clicked or not based on the hour and date indices.
+   * @param {number} hourIndex - The hour index representing the hour of the clicked date in 'H' format.
+   * @param {number} dateIndex - The date index representing the day of the clicked date in 'd' format.
+   * @returns {string} - A string indicating whether the cell is clicked ("clicked-cell") or not ("").
+   */
   const getCellClassName = (hourIndex, dateIndex) => {
-    const cellIndex = hourIndex.toString() + dateIndex.toString();
+    const cellIndex = `${hourIndex}${dateIndex}`;
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   };
 
+  /**
+   * Determines whether a cell has been clicked on the first half of the cell or not based on the clickedHalf state variable.
+   * @returns {string} - A string indicating whether the cell is clicked on the first half ("first-half") or second half ("second-half") or neither ("").
+   */
   const getCellHalfClassName = () => {
     switch (clickedHalf) {
       case "first":
@@ -202,17 +276,20 @@ export default function CalendarWeekly() {
     }
   };
 
-  // Get the class name for an active task
+  /**
+   * Determines the class name for an active task based on the tooltip's state and the provided task ID.
+   * @param {string} taskId - The ID of the task being evaluated.
+   * @returns {string} - The class name "task-active" if the task is active; otherwise, an empty string.
+   */
   const toggleTaskActiveClass = (taskId) => {
-    return (
-      openedTooltipId &&
-      openedTooltipId === taskId &&
-      isTooltipVisible &&
-      "task-active"
-    );
+    const isActive = openedTooltipId === taskId && isTooltipVisible;
+    return isActive ? "task-active" : "";
   };
 
-  // Render the header of the tooltip content
+  /**
+   * Renders the header content for the tooltip.
+   * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the tooltip.
+   */
   const tooltipContentHeader = () => (
     <div className="tooltip-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
@@ -237,6 +314,12 @@ export default function CalendarWeekly() {
     </div>
   );
 
+  /**
+   * Calculates the height of a task in pixels based on its start and end times.
+   * @param {string} taskTimeStart - The start time of the task.
+   * @param {string} taskTimeEnd - The end time of the task.
+   * @returns {Object} CSS style object with the calculated height.
+   */
   const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
     const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
     const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
@@ -250,6 +333,12 @@ export default function CalendarWeekly() {
     };
   };
 
+  /**
+   * Filters allTasks array to extract specific tasks based on date and hour.
+   * @param {string} convertedDate - The convertedDate in format 'yyyy-mm-dd'
+   * @param {string} convertedHourIndex - The convertedHourIndex in format 'h'.
+   * @returns {Array} - An array of task objects that correspond to the filter criteria.
+   */
   const filterTasksForDateAndHour = (convertedDate, convertedHourIndex) => {
     return allTasks.filter((task) => {
       const slicedTaskTime = task.time_start.split(":")[0];
@@ -259,6 +348,11 @@ export default function CalendarWeekly() {
     });
   };
 
+  /**
+   * Renders the content for the tooltip of the selected task.
+   * @param {Object} task - The task object for which the tooltip content is being rendered.
+   * @returns {JSX.Element} - JSX element containing the selected task data.
+   */
   const renderTooltipContent = (task) => (
     <div>
       {tooltipContentHeader()}
@@ -284,6 +378,12 @@ export default function CalendarWeekly() {
     </div>
   );
 
+  /**
+   * Renders tasks associated with a specific date and hour.
+   * @param {Date} date - The date for which tasks should be rendered.
+   * @param {number} hourIndex - Index of the hour within the day.
+   * @returns {JSX.Element[]} Array of JSX elements representing tasks.
+   */
   const renderDateTasks = (date, hourIndex) => {
     const convertedHourIndex = hourIndex.toString().padStart(2, "0");
     const convertedDate = dateUtils().convertDateSql(date.toLocaleDateString());
@@ -323,6 +423,15 @@ export default function CalendarWeekly() {
     );
   };
 
+  /**
+   * Renders the cell content for a particular date and hour.
+   *
+   * @param {Date} date - The date for which tasks should be rendered.
+   * @param {Date} hour - The hour for which tasks should be rendered.
+   * @param {number} hourIndex - Index of the hour within the day.
+   * @param {number} dateIndex - Index of the date within the day.
+   * @returns {JSX.Element}  JSX element representing the cell content.
+   */
   const renderCellContent = (date, hour, dateIndex, hourIndex) => {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
     const cellHalfClassName = getCellHalfClassName();
@@ -364,6 +473,11 @@ export default function CalendarWeekly() {
     );
   };
 
+  /**
+   * Renders DateSelection component with specified props.
+   * @param {string} cellId - The unique id of the cell.
+   * @returns {JSX.Element} JSX element representing the DateSelection component.
+   */
   const renderDateSelection = (cellId) => (
     <DateSelection
       onSelectDate={(newSelectedDate, cellId) =>
@@ -373,6 +487,13 @@ export default function CalendarWeekly() {
       cellId={cellId}
     />
   );
+
+  /**
+   * Renders TimeSelection component with specified props.
+   * @param {string} time - The time string of the selected cell in format 'HH:MM'.
+   * @param {boolean} isStart - A flag indicating if the time selection is for the start time.
+   * @returns {JSX.Element} JSX element representing the TimeSelection component.
+   */
   const renderTimeSelection = (time, isStart) => (
     <div className="time-selection-block">
       <TimeSelection
@@ -384,6 +505,13 @@ export default function CalendarWeekly() {
     </div>
   );
 
+  /**
+   * Renders the tooltip content for creating a new task with specified parameters.
+   * @param {string} dayName - The name of the day.
+   * @param {string} cellId - The unique ID of the cell.
+   * @param {JSX.Element} tooltipContentHeader - The JSX element representing the header of the tooltip with icons and layout.
+   * @returns {JSX.Element} - The JSX element representing the tooltip content for creating a new task.
+   */
   const renderTooltipContentNewTask = (
     dayName,
     cellId,
@@ -437,6 +565,14 @@ export default function CalendarWeekly() {
     </div>
   );
 
+  /**
+   * Renders a wrapper around the Tooltip component with the provided content.
+   *
+   * @param {string} cellId - The unique ID of the cell.
+   * @param {JSX.Element} tooltipContent - The JSX element representing the content of the tooltip.
+   * @param {JSX.Element} cellContent - The JSX element representing the content of the cell.
+   * @returns {JSX.Element} JSX element representing the wrapped Tooltip component with content.
+   */
   const renderTooltipWrapper = (cellId, tooltipContent, cellContent) => (
     <Tooltip
       isTooltipVisible={openedTooltipId === cellId}
@@ -450,10 +586,13 @@ export default function CalendarWeekly() {
     </Tooltip>
   );
 
-  // Main renderTimeGrid function
+  /**
+   * Renders the time grid containing cells for each hour and date within the week.
+   *
+   * @returns {JSX.Element} JSX element representing the time grid.
+   */
   const renderTimeGrid = () => {
     const hoursOfDay = generateHoursOfDay();
-
     return (
       <div className="calendar-weekly__time-list">
         {hoursOfDay.map((hour, hourIndex) => (
@@ -476,7 +615,6 @@ export default function CalendarWeekly() {
                     tooltipContentHeader()
                   );
 
-                  // return tooltip new task creation
                   return renderTooltipWrapper(
                     cellId,
                     tooltipContent,
@@ -490,6 +628,11 @@ export default function CalendarWeekly() {
     );
   };
 
+  /**
+   * Renders the list of dates for the current week along with their corresponding weekday labels.
+   *
+   * @returns {JSX.Element} JSX element representing the list of dates for the current week.
+   */
   const renderCurrentWeekDates = () => (
     <>
       <div className="calendar-weekly__dates-switcher-container">

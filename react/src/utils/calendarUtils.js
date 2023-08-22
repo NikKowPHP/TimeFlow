@@ -1,8 +1,8 @@
 /**
  *
  * @returns {object} - An object containing calendar utility functions.
- * @porperty {function} getActiveDateClass - Determines the appropriate CSS class for a given date based on the current date and the selected date.
- * @porperty {function} generateMonths - Generates an array of month indices (0 to 11) representing the months of the year.
+ * @property {function} getActiveDateClass - Determines the appropriate CSS class for a given date based on the current date and the selected date.
+ * @property {function} generateMonths - Generates an array of month indices (0 to 11) representing the months of the year.
  * @property {function} generateMonthDates - Generates an array of dates for the specified month and year to fill the calendar grid.
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
@@ -160,7 +160,13 @@ export function calendarUtils() {
     return `${startTimeString}-${endTimeString}`;
   };
 
+  //TODO: change to the full name e.g. 'mon'-> monday and then slice it where it is needed
   const weekDays = () => ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  const getDayName = (dayIndex) => {
+    return weekDays()[dayIndex];
+
+  }
 
 
   const convertHour = (hour) => {
@@ -203,6 +209,7 @@ export function calendarUtils() {
     generateHoursOfDay,
     convertTimePeriod,
     convertTime,
-    convertDecimalToTime
+    convertDecimalToTime,
+    getDayName
   };
 }

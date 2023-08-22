@@ -1,17 +1,29 @@
-import "../../styles/calendar/calendar-weekly.css";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+import "../../styles/calendar/calendar-weekly.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import { useTooltipState } from "../customHooks/useTooltipState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import svgPaths from "../svgPaths";
-import  newTaskHandler from "./newTaskHandler";
+import newTaskHandler from "./newTaskHandler";
 import Tooltip from "../tooltips/Tooltip";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 
+/**
+ * TODO: REFACTORING:
+ * 1) split into smaller components: 
+ * Date Header: Responsible for rendering the date labels and navigation buttons.
+   Time Grid: Renders the time slots and associated tasks.
+    Task Tooltip: Handles the rendering and interaction of task tooltips.
+   Task Form: Manages the form for creating new tasks.
+  2) Consolidate Effect Hooks: combining related effect hooks into a single effect
+  3) Component Separation: Instead of having utility functions (calculateTaskHeight, filterTasksForDateAndHour) general functions move to a utility
+ * 
+ */
 /**
  * CalendarWeekly component for displaying a weekly calendar view.
  * @component

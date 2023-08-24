@@ -4,12 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreTaskRequest;
-use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
@@ -23,10 +21,11 @@ class TaskController extends Controller
             Task::query()->orderBy('date', 'desc')->get()
         );
     }
-    public function indexByUser($user_id)
+    public function indexByUser(User $user)
     {
-        $user = User::where('user_id', $user_id);
-        $tasks = $user->tasks;
+        $user = auth()->user();
+        // TODO: fix bug with relationship
+        $tasks = Task::where('user_id', $user->id)->get();
         return TaskResource::collection($tasks);
     }
     public function indexByDate($date)

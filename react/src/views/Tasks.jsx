@@ -8,7 +8,7 @@ export default function Tasks() {
   const [allTasks, setAllTasks] = useState([]);
 
   const getAllTasks = () => {
-    axiosClient.get("/calendar/calendar").then(({ data: { data } }) => {
+    axiosClient.get("/calendar/calendar/3").then(({ data: { data } }) => {
       setAllTasks(data);
     });
   };

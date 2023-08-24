@@ -193,11 +193,7 @@ class TestResponse implements ArrayAccess
             $this->statusMessageWithDetails('201, 301, 302, 303, 307, 308', $this->getStatusCode()),
         );
 
-        $request = Request::create($this->headers->get('Location'));
-
-        PHPUnit::assertEquals(
-            app('url')->to($uri), $request->fullUrl()
-        );
+        $this->assertLocation($uri);
 
         return $this;
     }
@@ -667,6 +663,20 @@ class TestResponse implements ArrayAccess
     }
 
     /**
+     * Assert that the given path in the response contains all of the expected values without looking at the order.
+     *
+     * @param  string  $path
+     * @param  array  $expect
+     * @return $this
+     */
+    public function assertJsonPathCanonicalizing($path, array $expect)
+    {
+        $this->decodeResponseJson()->assertPathCanonicalizing($path, $expect);
+
+        return $this;
+    }
+
+    /**
      * Assert that the response has the exact given JSON.
      *
      * @param  array  $data
@@ -894,7 +904,7 @@ class TestResponse implements ArrayAccess
     /**
      * Assert that the given key is a JSON array.
      *
-     * @param $key
+     * @param  string|null  $key
      * @return $this
      */
     public function assertJsonIsArray($key = null)
@@ -915,7 +925,7 @@ class TestResponse implements ArrayAccess
     /**
      * Assert that the given key is a JSON object.
      *
-     * @param $key
+     * @param  string|null  $key
      * @return $this
      */
     public function assertJsonIsObject($key = null)
@@ -1656,8 +1666,6 @@ class TestResponse implements ArrayAccess
     protected function appendMessageToException($message, $exception)
     {
         $property = new ReflectionProperty($exception, 'message');
-
-        $property->setAccessible(true);
 
         $property->setValue(
             $exception,

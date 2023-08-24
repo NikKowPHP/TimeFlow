@@ -226,15 +226,13 @@ if (! function_exists('cache')) {
      *
      * If an array is passed, we'll assume you want to put to the cache.
      *
-     * @param  dynamic  key|key,default|data,expiration|null
+     * @param  mixed  ...$arguments  key|key,default|data,expiration|null
      * @return mixed|\Illuminate\Cache\CacheManager
      *
      * @throws \InvalidArgumentException
      */
-    function cache()
+    function cache(...$arguments)
     {
-        $arguments = func_get_args();
-
         if (empty($arguments)) {
             return app('cache');
         }
@@ -729,10 +727,13 @@ if (! function_exists('rescue')) {
     /**
      * Catch a potential exception and return a default value.
      *
-     * @param  callable  $callback
-     * @param  mixed  $rescue
+     * @template TRescueValue
+     * @template TRescueFallback
+     *
+     * @param  callable(): TRescueValue  $callback
+     * @param  (callable(\Throwable): TRescueFallback)|TRescueFallback  $rescue
      * @param  bool|callable  $report
-     * @return mixed
+     * @return TRescueValue|TRescueFallback
      */
     function rescue(callable $callback, $rescue = null, $report = true)
     {

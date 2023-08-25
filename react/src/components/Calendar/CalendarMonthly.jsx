@@ -32,8 +32,8 @@ export default function CalendarMonthly() {
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
     useCalendarState();
 
-    const {convertDecimalToTime} = calendarUtils();
-    const {convertDateSql} = dateUtils();
+  const { convertDecimalToTime } = calendarUtils();
+  const { convertDateSql } = dateUtils();
 
   // Get tooltip's state from custom hook
   const {
@@ -44,8 +44,8 @@ export default function CalendarMonthly() {
     hideTooltip,
   } = useTooltipState();
 
-  const [clickedPeriodStart, setClickedPeriodStart] = useState('07:00');
-  const [clickedPeriodEnd, setClickedPeriodEnd] = useState('08:00');
+  const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
+  const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
 
   /**
    * Handles data received from a child component (newTaskHandler)
@@ -76,19 +76,26 @@ export default function CalendarMonthly() {
       time_end: timeEnd,
       date: formattedDate,
     };
-    console.log(newTask);
     setTask({ ...task, ...newTask });
   };
-  
+
+  const handleOnDateClick = ({ event, tooltipId, selectedDate }) => {
+
+    setSelectedDate(selectedDate);
+    initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
+    handleOnClick({
+      event: event,
+      tooltipId: tooltipId,
+      selectedDate: selectedDate,
+    });
+  };
 
   // Handle click on a task or a date to show the tooltip
-  const handleOnClick = ({ event, tooltipId, selectedDate }) => {
+  const handleOnClick = ({ event, tooltipId }) => {
     // Close opened tooltip
     if (openedTooltipId !== null) {
       hideTooltip();
     }
-    setSelectedDate(selectedDate);
-    initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate)
     event.stopPropagation();
     showTooltip(tooltipId);
   };
@@ -205,9 +212,9 @@ export default function CalendarMonthly() {
             >
               <li
                 className={`task-option ${toggleTaskActiveClass(task.id)} `}
-                onClick={(event) => handleOnClick(event, task.id)}
+                onClick={(event) => handleOnClick({event:event, tooltipId:task.id})}
               >
-                {`${task.title} ${task.time_start} ${task.time_end}`}
+                {`${task.title} ${task.time_start}-${task.time_end}`}
               </li>
             </Tooltip>
           ))}
@@ -239,7 +246,7 @@ export default function CalendarMonthly() {
    * @returns {JSX.Element} JSX element representing the TimeSelection component.
    */
   const renderTimeSelection = ({ isStart }) => {
-    const defaultTime = isStart ? '07:00' : '08:00';
+    const defaultTime = isStart ? "07:00" : "08:00";
     return (
       <div className="time-selection-block">
         <TimeSelection
@@ -342,8 +349,8 @@ export default function CalendarMonthly() {
                         {renderDateSelection(id, date)}
 
                         <div className="tooltip-task-time_time-selection-container">
-                          {renderTimeSelection({isStart:true})}-
-                          {renderTimeSelection({isStart:false})}
+                          {renderTimeSelection({ isStart: true })}-
+                          {renderTimeSelection({ isStart: false })}
                         </div>
                         <div className="tooltip-task-description-container"></div>
                       </div>
@@ -378,33 +385,6 @@ export default function CalendarMonthly() {
                     </div>
                   </form>
                 </div>
-
-                // <div>
-                //   {/* render header of tooltip */}
-                //   {tooltipContentHeader()}
-                //   <div className="tooltip-task-title">
-                //     <h2>Create a new event </h2>
-                //     <p>a new event</p>
-                //   </div>
-                //   <div className="tooltip-task-additional">
-                //     {/* TODO: create notifications */}
-                //     <div className="tooltip-task-notification">
-                //       <svg
-                //         focusable="false"
-                //         width="20"
-                //         height="20"
-                //         viewBox="0 0 24 24"
-                //       >
-                //         <path d="M18 17v-6c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v6H4v2h16v-2h-2zm-2 0H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zm-4 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></path>
-                //       </svg>
-                //       <p>in 5 minutes before</p>
-                //     </div>
-
-                //     <div className="tooltip-task-owner">
-                //       <i className="fa fa-calendar"></i>
-                //     </div>
-                //   </div>
-                // </div>
               }
             >
               {/* Children */}
@@ -415,7 +395,7 @@ export default function CalendarMonthly() {
                   selectedDate
                 )} date`}
                 onClick={(event) =>
-                  handleOnClick({
+                  handleOnDateClick({
                     event: event,
                     tooltipId: id,
                     selectedDate: date,

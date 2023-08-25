@@ -75,7 +75,6 @@ function DefaultLayout() {
       {asideShown && (
         <aside className='default-aside'>
           <Link to={"/dashboard"}>Dashboard</Link>
-          <Link to={"/users"}>Users</Link>
           <Link to={"/calendar"}>Calendar</Link>
           <Link to={"/tasks"}>Tasks</Link>
 
@@ -85,6 +84,7 @@ function DefaultLayout() {
               <>
                 <Link to={"/roles"}>Roles</Link>
                 <Link to={"/roles/all"}>Role names</Link>
+                <Link to={"/users"}>Users</Link>
               </>
             )}
 

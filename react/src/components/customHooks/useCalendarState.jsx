@@ -34,7 +34,7 @@ export function useCalendarState() {
   const [layout, setLayout] = useState('month');
 
   // Use the useCalendarApi hook to access the functions
-  const { allTasks, getAllTasks, getTasksOfSelectedDay, loading } = useCalendarApiContext();
+  const { allTasks, getAllTasks, loading } = useCalendarApiContext();
 
   // Fetch tasks when component mounts
   useEffect(() => {
@@ -56,20 +56,20 @@ export function useCalendarState() {
     setLayout(calendarType);
   }, [calendarLayout])
 
-  // Fetch tasks for the selected date
-  useEffect(() => {
-      fetchTasks(selectedDate);
-  }, [selectedDate]);
+  // // Fetch tasks for the selected date
+  // useEffect(() => {
+  //     fetchTasks(selectedDate);
+  // }, [selectedDate]);
 
   // Fetch tasks and generate month dates on year and month change
   useEffect(() => {
     fetchTasksAndGenerateDates();
   }, [year, month]);
 
-  // Function to fetch tasks for the selected date
-  const fetchTasks = (date) => {
-    getTasksOfSelectedDay(date);
-  }
+  // // Function to fetch tasks for the selected date
+  // const fetchTasks = (date) => {
+  //   getTasksOfSelectedDay(date);
+  // }
 
   // Function to fetch tasks and generate month dates
   const fetchTasksAndGenerateDates = () => {

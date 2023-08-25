@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import axiosClient from "../../axios-client";
+import { toast } from "react-toastify";
 
 /**
  * Calendar API Context
@@ -53,24 +54,24 @@ export function CalendarApiProvider({ children }) {
         console.log(error);
       });
   };
-  /**
-   *  Fetch tasks of the selected day from the API and update the dayTasks state.
-   * 
-   * @param {string} selectedDate - The selected date in the format 'YYYY-MM-DD'.
-   * 
-   */
-  const getTasksOfSelectedDay = (selectedDate) => {
-    axiosClient
-      .get(`/calendar/calendar/${selectedDate}`)
-      .then(({ data }) => {
-        setDayTasks(data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Failed to fetch tasks");
-      });
-  };
+  // /**
+  //  *  Fetch tasks of the selected day from the API and update the dayTasks state.
+  //  * 
+  //  * @param {string} selectedDate - The selected date in the format 'YYYY-MM-DD'.
+  //  * 
+  //  */
+  // const getTasksOfSelectedDay = (selectedDate) => {
+  //   axiosClient
+  //     .get(`/calendar/calendar/${selectedDate}`)
+  //     .then(({ data }) => {
+  //       setDayTasks(data.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error("Failed to fetch tasks");
+  //     });
+  // };
   // The value provided by the context that will be accessible by child components
   const calendarApiValue = {
     allTasks,
@@ -78,7 +79,7 @@ export function CalendarApiProvider({ children }) {
     setAllTasks,
     setDayTasks,
     getAllTasks,
-    getTasksOfSelectedDay,
+    // getTasksOfSelectedDay,
     loading
   };
 

@@ -367,7 +367,7 @@ export default function CalendarWeekly() {
    * @returns {JSX.Element} - JSX element containing the selected task data.
    */
   const renderTooltipContent = (task) => (
-    <div>
+    <>
       {tooltipContentHeader()}
       <div className="tooltip-task-title">
         <h2>{task.title}</h2>
@@ -388,7 +388,7 @@ export default function CalendarWeekly() {
           {task.user.name}
         </div>
       </div>
-    </div>
+    </>
   );
 
   /**
@@ -408,7 +408,7 @@ export default function CalendarWeekly() {
 
     return (
       <div className="tasks-list">
-        <ul>
+
           {filteredTasks.slice(0, maxTasksToShow).map((task) => {
             const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
             const isTooltipVisible = () => openedTooltipId === task.id;
@@ -421,18 +421,17 @@ export default function CalendarWeekly() {
                 tooltipId={openedTooltipId}
                 content={renderTooltipContent(task)}
               >
-                <li
+                <div
                   className={`task-option ${toggledTaskActiveClass}`}
                   onClick={(event) => handleOnClick(event, task.id)}
                   style={calculateTaskHeight(task.time_start, task.time_end)}
                 >
                   {`${task.title} ${task.time_start}-${task.time_end}`}
-                </li>
+                </div>
               </Tooltip>
             );
           })}
-        </ul>
-      </div>
+        </div>
     );
   };
 

@@ -60,6 +60,7 @@ function DefaultLayout() {
     axiosClient.post("/logout").then(() => {
       setUser({});
       setToken(null);
+      navigate('/login');
     });
   };
 

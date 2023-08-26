@@ -107,6 +107,10 @@ export default function CalendarWeekly() {
   const handleDateClick = (date) => {
     setSelectedDate(date);
   };
+  const handleExistingTaskClick = (event, taskId) => {
+    closeDateTimeSelectedCell();
+    handleOnClick(event, taskId);
+  }
 
   /**
    * Handles the click on a specific date-hour cell.
@@ -118,18 +122,20 @@ export default function CalendarWeekly() {
    * @param {number} hourIndex - The index of the hour within a day.
    * @returns {any}
    */
-  const handleDateHourClick = ({
-    date,
-    hour,
-    isFirstHalf,
-    e,
-    dateIndex,
-    hourIndex
-  }
-  ) => {
+  const handleDateHourClick = ({ date, hour, e, dateIndex, hourIndex }) => {
+    const rect = e.target.getBoundingClientRect();
+    const clickedY = e.clientY - rect.top;
+    const cellHeight = rect.height;
+
+    const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const tooltipId = `${hourIndex}${dateIndex}`;
-    const startHour = !isFirstHalf ? hour + 0.5 : hour;
-    const endHour = !isFirstHalf ? hour + 1.5 : hour + 1;
+    debugger;
+    let startHour = hour;
+    let endHour = hour + 1;
+    if (clickedHalf === "second") {
+      startHour += 0.5;
+      endHour += 0.5;
+    }
 
     // Convert decimal fractions to minutes
     const startMinutes = Math.floor((startHour % 1) * 60);
@@ -140,11 +146,6 @@ export default function CalendarWeekly() {
     startTime.setHours(Math.floor(startHour), startMinutes, 0, 0);
     endTime.setHours(Math.floor(endHour), endMinutes, 0, 0);
 
-    const rect = e.target.getBoundingClientRect();
-    const clickedY = e.clientY - rect.top;
-    const cellHeight = rect.height;
-
-    const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const clickedCellIndex = `${hourIndex}${dateIndex}`;
 
     setClickedCellIndex(clickedCellIndex);
@@ -242,6 +243,14 @@ export default function CalendarWeekly() {
     });
     setSelectedDatesByCell(initialDatesByCells);
   }, [currentWeekDates]);
+
+  const closeDateTimeSelectedCell = () => {
+    setClickedCellIndex(null);
+  };
+
+  useEffect(() => {
+    openedTooltipId === null && closeDateTimeSelectedCell();
+  }, [openedTooltipId]);
 
   /**
    * Initiates a default new task state based on selected time and date and sets state.
@@ -408,30 +417,29 @@ export default function CalendarWeekly() {
 
     return (
       <div className="tasks-list">
-
-          {filteredTasks.slice(0, maxTasksToShow).map((task) => {
-            const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
-            const isTooltipVisible = () => openedTooltipId === task.id;
-            return (
-              <Tooltip
-                classes={`tooltip-task-description ${tooltipPositionClass} `}
-                key={task.id}
-                isTooltipVisible={isTooltipVisible()}
-                tooltipPositionClass={tooltipPositionClass}
-                tooltipId={openedTooltipId}
-                content={renderTooltipContent(task)}
+        {filteredTasks.slice(0, maxTasksToShow).map((task) => {
+          const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
+          const isTooltipVisible = () => openedTooltipId === task.id;
+          return (
+            <Tooltip
+              classes={`tooltip-task-description ${tooltipPositionClass} `}
+              key={task.id}
+              isTooltipVisible={isTooltipVisible()}
+              tooltipPositionClass={tooltipPositionClass}
+              tooltipId={openedTooltipId}
+              content={renderTooltipContent(task)}
+            >
+              <div
+                className={`task-option ${toggledTaskActiveClass}`}
+                onClick={(event) => handleExistingTaskClick(event, task.id)}
+                style={calculateTaskHeight(task.time_start, task.time_end)}
               >
-                <div
-                  className={`task-option ${toggledTaskActiveClass}`}
-                  onClick={(event) => handleOnClick(event, task.id)}
-                  style={calculateTaskHeight(task.time_start, task.time_end)}
-                >
-                  {`${task.title} ${task.time_start}-${task.time_end}`}
-                </div>
-              </Tooltip>
-            );
-          })}
-        </div>
+                {`${task.title} ${task.time_start}-${task.time_end}`}
+              </div>
+            </Tooltip>
+          );
+        })}
+      </div>
     );
   };
 
@@ -448,17 +456,14 @@ export default function CalendarWeekly() {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
     const cellHalfClassName = getCellHalfClassName();
 
-
     const handleCellClick = (e) =>
       handleDateHourClick({
         date: date,
         hour: hour,
-        isFirstHalf: e.nativeEvent.offSetY < 30,
         e: e,
         dateIndex: dateIndex,
-        hourIndex: hourIndex
-      }
-      );
+        hourIndex: hourIndex,
+      });
 
     return (
       <div

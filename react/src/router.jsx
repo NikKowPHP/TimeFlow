@@ -20,14 +20,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/users" />,
+        element: <Navigate to="/calendar" />,
       },
       {
         path: "/users",
-        element: <Users />,
-      },
-      {
-        path: "/dashboard",
         element: <Users />,
       },
       {

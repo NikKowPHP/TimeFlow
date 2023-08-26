@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
-import Tooltip from "../components/tooltips/Tooltip";
+import Modal from "../components/modals/Modal";
 import CheckboxForm from "../components/CheckboxForm";
 import RoleForm from "./RoleForm";
 import { useStateContext } from "../contexts/ContextProvider";
@@ -97,8 +97,8 @@ export default function Roles() {
         }}
       >
         <h1>Roles</h1>
-        <Tooltip 
-        tooltipVisible={showRoleCreationForm}
+        <Modal 
+        modalVisible={showRoleCreationForm}
         
         children={
           <button className="btn-add" onClick={handleShowRoleCreationForm}>Create a role</button>
@@ -152,8 +152,8 @@ export default function Roles() {
                       
                       {/* TOOLTIP IMPLEMENTATION */}
 
-                      <Tooltip
-                      tooltipVisible={r.isUpdatedRoles}
+                      <Modal
+                      modalVisible={r.isUpdatedRoles}
                         children={
                           <button
                             className="btn-edit"

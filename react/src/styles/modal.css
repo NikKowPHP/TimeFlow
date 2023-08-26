@@ -1,9 +1,9 @@
-.tooltip-container {
+.modal-container {
 	position: relative;
   width: 100%;
 	display: inline-block;
 }
-.tooltip {
+.modal {
 	position: absolute;
 	top: 110%;
 	left: 50%;
@@ -17,15 +17,15 @@
   opacity: 0.9;
   z-index: 8;
 }
-.tooltip-right {
+.modal-right {
 	top: 110%;
 	left: 50%;
 }
-.tooltip-left {
+.modal-left {
   top: 100% !important;
   left: -130% !important;
 }
-.tooltip-task-description {
+.modal-task-description {
 	position: absolute;
 	top: 50%;
 	left: 200%;
@@ -41,35 +41,35 @@
   opacity: 1;
   z-index: 4;
 }
-.tooltip-task-dates {
+.modal-task-dates {
   margin-left: 23px;
   display: flex;
   align-items: center;
 }
-.tooltip-task-dates span{
+.modal-task-dates span{
   padding: 5px;
 }
-.tooltip-task-time {
+.modal-task-time {
   display: block;
 }
-.tooltip-tools {
+.modal-tools {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
 }
-.tooltip-tools > *:last-child {
+.modal-tools > *:last-child {
   margin-left: auto;
   
 }
-.tooltip-tools > *:not(:last-child) {
+.modal-tools > *:not(:last-child) {
   margin-right: 10px;
 }
-.tooltip-task-title {
+.modal-task-title {
   position: relative;
   padding-left: 25px;
   margin-bottom: 10px;
 }
-.tooltip-task-title::before {
+.modal-task-title::before {
   content: "";
   position: absolute;
   top: 10px;
@@ -78,19 +78,19 @@
   height: 10px;
   background-color: rgb(206, 71, 206);
 }
-.tooltip-task-notification{
+.modal-task-notification{
   display: flex;
   margin-bottom: 10px;
 }
-.tooltip-task-notification svg {
+.modal-task-notification svg {
   margin-right: 8px;
 }
-.tooltip-task-owner {
+.modal-task-owner {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-.tooltip-task-owner i {
+.modal-task-owner i {
   align-items: center;
   text-align: center;
   margin-left: 3px;

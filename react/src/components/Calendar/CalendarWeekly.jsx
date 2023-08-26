@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 
 import "../../styles/calendar/calendar-weekly.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
-import { useTooltipState } from "../customHooks/useTooltipState";
+import { useModalState } from "../customHooks/useModalState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import svgPaths from "../svgPaths";
 import newTaskHandler from "./newTaskHandler";
-import Tooltip from "../tooltips/Tooltip";
+import Modal from "../modals/Modal";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
@@ -18,7 +18,7 @@ import TimeSelection from "../TimeSelection";
  * 1) split into smaller components: 
  * Date Header: Responsible for rendering the date labels and navigation buttons.
    Time Grid: Renders the time slots and associated tasks.
-    Task Tooltip: Handles the rendering and interaction of task tooltips.
+    Task Modal: Handles the rendering and interaction of task modals.
    Task Form: Manages the form for creating new tasks.
   2) Consolidate Effect Hooks: combining related effect hooks into a single effect
   3) Component Separation: Instead of having utility functions (calculateTaskHeight, filterTasksForDateAndHour) general functions move to a utility
@@ -29,14 +29,14 @@ import TimeSelection from "../TimeSelection";
  * @component
  */
 export default function CalendarWeekly() {
-  // Get tooltip's state from custom hook
+  // Get modal's state from custom hook
   const {
-    openedTooltipId,
-    isTooltipVisible,
-    tooltipPositionClass,
-    showTooltip,
-    hideTooltip,
-  } = useTooltipState();
+    openedModalId,
+    isModalVisible,
+    modalPositionClass,
+    showModal,
+    hideModal,
+  } = useModalState();
 
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
     useCalendarState();
@@ -76,7 +76,7 @@ export default function CalendarWeekly() {
    */
   function handleDataFromChild(data) {
     if (data) {
-      hideTooltip();
+      hideModal();
       setClickedCellIndex(null);
       toast.success(`The task '${data.title}' was successfully created`);
     }
@@ -128,7 +128,7 @@ export default function CalendarWeekly() {
     const cellHeight = rect.height;
 
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
-    const tooltipId = `${hourIndex}${dateIndex}`;
+    const modalId = `${hourIndex}${dateIndex}`;
     debugger;
     let startHour = hour;
     let endHour = hour + 1;
@@ -156,7 +156,7 @@ export default function CalendarWeekly() {
     setClickedPeriodStart(convertTime(startTime));
     setClickedPeriodEnd(convertTime(endTime));
 
-    handleOnClick(e, tooltipId);
+    handleOnClick(e, modalId);
     initiateNewTask(hour, endHour, date);
   };
 
@@ -180,17 +180,17 @@ export default function CalendarWeekly() {
   };
 
   /**
-   * Handle click on a task or a date to show the tooltip
+   * Handle click on a task or a date to show the modal
    * @param {Object} event - The event object
-   * @param {number} id - The id of the tooltip
+   * @param {number} id - The id of the modal
    */
   const handleOnClick = (event, id) => {
-    // Close opened tooltip
-    if (openedTooltipId !== null) {
-      hideTooltip();
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
     }
     event.stopPropagation();
-    showTooltip(id);
+    showModal(id);
   };
 
   /**
@@ -249,8 +249,8 @@ export default function CalendarWeekly() {
   };
 
   useEffect(() => {
-    openedTooltipId === null && closeDateTimeSelectedCell();
-  }, [openedTooltipId]);
+    openedModalId === null && closeDateTimeSelectedCell();
+  }, [openedModalId]);
 
   /**
    * Initiates a default new task state based on selected time and date and sets state.
@@ -299,21 +299,21 @@ export default function CalendarWeekly() {
   };
 
   /**
-   * Determines the class name for an active task based on the tooltip's state and the provided task ID.
+   * Determines the class name for an active task based on the modal's state and the provided task ID.
    * @param {string} taskId - The ID of the task being evaluated.
    * @returns {string} - The class name "task-active" if the task is active; otherwise, an empty string.
    */
   const toggleTaskActiveClass = (taskId) => {
-    const isActive = openedTooltipId === taskId && isTooltipVisible;
+    const isActive = openedModalId === taskId && isModalVisible;
     return isActive ? "task-active" : "";
   };
 
   /**
-   * Renders the header content for the tooltip.
-   * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the tooltip.
+   * Renders the header content for the modal.
+   * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the modal.
    */
-  const tooltipContentHeader = () => (
-    <div className="tooltip-tools">
+  const modalContentHeader = () => (
+    <div className="modal-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
         {svgPaths.edit}
       </svg>
@@ -325,7 +325,7 @@ export default function CalendarWeekly() {
       </svg>
       <svg
         style={{ cursor: "pointer" }}
-        onClick={() => hideTooltip()}
+        onClick={() => hideModal()}
         focusable="false"
         width="20"
         height="20"
@@ -371,28 +371,28 @@ export default function CalendarWeekly() {
   };
 
   /**
-   * Renders the content for the tooltip of the selected task.
-   * @param {Object} task - The task object for which the tooltip content is being rendered.
+   * Renders the content for the modal of the selected task.
+   * @param {Object} task - The task object for which the modal content is being rendered.
    * @returns {JSX.Element} - JSX element containing the selected task data.
    */
-  const renderTooltipContent = (task) => (
+  const renderModalContent = (task) => (
     <>
-      {tooltipContentHeader()}
-      <div className="tooltip-task-title">
+      {modalContentHeader()}
+      <div className="modal-task-title">
         <h2>{task.title}</h2>
         <p>
           {task.date} ⋅ {task.time_start}-{task.time_end}
         </p>
       </div>
-      <div className="tooltip-task-additional">
+      <div className="modal-task-additional">
         {/* TODO: create notifications */}
-        <div className="tooltip-task-notification">
+        <div className="modal-task-notification">
           <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
             {svgPaths.notification}
           </svg>
           <p>in 5 minutes before</p>
         </div>
-        <div className="tooltip-task-owner">
+        <div className="modal-task-owner">
           <i className="fa fa-calendar"></i>
           {task.user.name}
         </div>
@@ -419,15 +419,15 @@ export default function CalendarWeekly() {
       <div className="tasks-list">
         {filteredTasks.slice(0, maxTasksToShow).map((task) => {
           const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
-          const isTooltipVisible = () => openedTooltipId === task.id;
+          const isModalVisible = () => openedModalId === task.id;
           return (
-            <Tooltip
-              classes={`tooltip-task-description ${tooltipPositionClass} `}
+            <Modal
+              classes={`modal-task-description ${modalPositionClass} `}
               key={task.id}
-              isTooltipVisible={isTooltipVisible()}
-              tooltipPositionClass={tooltipPositionClass}
-              tooltipId={openedTooltipId}
-              content={renderTooltipContent(task)}
+              isModalVisible={isModalVisible()}
+              modalPositionClass={modalPositionClass}
+              modalId={openedModalId}
+              content={renderModalContent(task)}
             >
               <div
                 className={`task-option ${toggledTaskActiveClass}`}
@@ -436,7 +436,7 @@ export default function CalendarWeekly() {
               >
                 {`${task.title} ${task.time_start}-${task.time_end}`}
               </div>
-            </Tooltip>
+            </Modal>
           );
         })}
       </div>
@@ -475,7 +475,7 @@ export default function CalendarWeekly() {
 
         {/* Click on cell content */}
         {cellClassNameSelected === "clicked-cell" && (
-          <div className="clicked-new-task-tooltip">
+          <div className="clicked-new-task-modal">
             <h4>
               {task.title ? (
                 <TruncatedText text={task.title} maxCharacters={10} />
@@ -483,7 +483,7 @@ export default function CalendarWeekly() {
                 "(Untitled)"
               )}
             </h4>
-            <p className="clicked-new-task-tooltip__text">
+            <p className="clicked-new-task-modal__text">
               {cellClassNameSelected === "clicked-cell" && clickedPeriod}
             </p>
           </div>
@@ -525,22 +525,22 @@ export default function CalendarWeekly() {
   );
 
   /**
-   * Renders the tooltip content for creating a new task with specified parameters.
+   * Renders the modal content for creating a new task with specified parameters.
    * @param {string} dayName - The name of the day.
    * @param {string} cellId - The unique ID of the cell.
-   * @param {JSX.Element} tooltipContentHeader - The JSX element representing the header of the tooltip with icons and layout.
-   * @returns {JSX.Element} - The JSX element representing the tooltip content for creating a new task.
+   * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.
+   * @returns {JSX.Element} - The JSX element representing the modal content for creating a new task.
    */
-  const renderTooltipContentNewTask = (
+  const renderModalContentNewTask = (
     dayName,
     cellId,
-    tooltipContentHeader
+    modalContentHeader
   ) => (
     <div>
-      {/* render header of tooltip */}
-      {tooltipContentHeader}
+      {/* render header of modal */}
+      {modalContentHeader}
       <form onSubmit={handleTaskCreation}>
-        <div className="tooltip-task-title">
+        <div className="modal-task-title">
           <h2>Create a new event </h2>
           <input
             type="text"
@@ -549,31 +549,31 @@ export default function CalendarWeekly() {
               setTask({ ...task, title: event.target.value })
             }
           />
-          <div className="tooltip-task-time">
+          <div className="modal-task-time">
             {renderDateSelection(cellId)}
 
-            <div className="tooltip-task-time_time-selection-container">
+            <div className="modal-task-time_time-selection-container">
               {renderTimeSelection(clickedPeriodStart, true)}-
               {renderTimeSelection(clickedPeriodEnd, false)}
             </div>
-            <div className="tooltip-task-description-container"></div>
+            <div className="modal-task-description-container"></div>
           </div>
-          <div className="tooltip-task__time-period">
-            <span className="tooltip-task-time__day">{dayName}</span>
+          <div className="modal-task__time-period">
+            <span className="modal-task-time__day">{dayName}</span>
             <span>
               {clickedPeriodStart}-{clickedPeriodEnd}
             </span>
           </div>
         </div>
-        <div className="tooltip-task-additional">
+        <div className="modal-task-additional">
           {/* TODO: create notifications */}
-          <div className="tooltip-task-notification">
+          <div className="modal-task-notification">
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
               {svgPaths.notification}
             </svg>
             <p>in 5 minutes before</p>
           </div>
-          <div className="tooltip-task-owner">
+          <div className="modal-task-owner">
             <i className="fa fa-calendar"></i>
           </div>
           <button className="btn btn-block" type="submit">
@@ -585,24 +585,24 @@ export default function CalendarWeekly() {
   );
 
   /**
-   * Renders a wrapper around the Tooltip component with the provided content.
+   * Renders a wrapper around the Modal component with the provided content.
    *
    * @param {string} cellId - The unique ID of the cell.
-   * @param {JSX.Element} tooltipContent - The JSX element representing the content of the tooltip.
+   * @param {JSX.Element} modalContent - The JSX element representing the content of the modal.
    * @param {JSX.Element} cellContent - The JSX element representing the content of the cell.
-   * @returns {JSX.Element} JSX element representing the wrapped Tooltip component with content.
+   * @returns {JSX.Element} JSX element representing the wrapped Modal component with content.
    */
-  const renderTooltipWrapper = (cellId, tooltipContent, cellContent) => (
-    <Tooltip
-      isTooltipVisible={openedTooltipId === cellId}
-      tooltipPositionClass={tooltipPositionClass}
-      classes={`tooltip-task-description ${tooltipPositionClass} `}
+  const renderModalWrapper = (cellId, modalContent, cellContent) => (
+    <Modal
+      isModalVisible={openedModalId === cellId}
+      modalPositionClass={modalPositionClass}
+      classes={`modal-task-description ${modalPositionClass} `}
       key={cellId}
-      content={tooltipContent}
+      content={modalContent}
     >
       {/* Children */}
       {cellContent}
-    </Tooltip>
+    </Modal>
   );
 
   /**
@@ -628,15 +628,15 @@ export default function CalendarWeekly() {
                     dateIndex,
                     hourIndex
                   );
-                  const tooltipContent = renderTooltipContentNewTask(
+                  const modalContent = renderModalContentNewTask(
                     dayName,
                     cellId,
-                    tooltipContentHeader()
+                    modalContentHeader()
                   );
 
-                  return renderTooltipWrapper(
+                  return renderModalWrapper(
                     cellId,
-                    tooltipContent,
+                    modalContent,
                     cellContent
                   );
                 })}

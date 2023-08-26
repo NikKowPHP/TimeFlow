@@ -1,10 +1,10 @@
 import "../../styles/calendar/calendar-monthly.css";
 import React, { useState } from "react";
-import Tooltip from "../tooltips/Tooltip";
+import Modal from "../modals/Modal";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { dateUtils } from "../../utils/dateUtils";
 import { useCalendarState } from "../customHooks/useCalendarState";
-import { useTooltipState } from "../customHooks/useTooltipState";
+import { useModalState } from "../customHooks/useModalState";
 import newTaskHandler from "./newTaskHandler";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
@@ -14,9 +14,9 @@ import { toast } from "react-toastify";
 /**
  * CalendarMonthly Component
  *
- * This component represents a monthly calendar view with tasks and tooltips.
+ * This component represents a monthly calendar view with tasks and modals.
  * It fetches tasks using a custom context API and renders them in a monthly layout.
- * It uses the Tooltip component to display task details when clicked on a task or date.
+ * It uses the Modal component to display task details when clicked on a task or date.
  *
  * @param {object} props - The component props.
  * @param {Date[]} props.dates - An array of Date objects representing each day in the month.
@@ -35,14 +35,14 @@ export default function CalendarMonthly() {
   const { convertDecimalToTime } = calendarUtils();
   const { convertDateSql } = dateUtils();
 
-  // Get tooltip's state from custom hook
+  // Get modal's state from custom hook
   const {
-    openedTooltipId,
-    isTooltipVisible,
-    tooltipPositionClass,
-    showTooltip,
-    hideTooltip,
-  } = useTooltipState();
+    openedModalId,
+    isModalVisible,
+    modalPositionClass,
+    showModal,
+    hideModal,
+  } = useModalState();
 
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
@@ -54,7 +54,7 @@ export default function CalendarMonthly() {
    */
   function handleDataFromChild(data) {
     if (data) {
-      hideTooltip();
+      hideModal();
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
@@ -79,32 +79,32 @@ export default function CalendarMonthly() {
     setTask({ ...task, ...newTask });
   };
 
-  const handleOnDateClick = ({ event, tooltipId, selectedDate }) => {
+  const handleOnDateClick = ({ event, modalId, selectedDate }) => {
 
     setSelectedDate(selectedDate);
     initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
     handleOnClick({
       event: event,
-      tooltipId: tooltipId,
+      modalId: modalId,
       selectedDate: selectedDate,
     });
   };
 
-  // Handle click on a task or a date to show the tooltip
-  const handleOnClick = ({ event, tooltipId }) => {
-    // Close opened tooltip
-    if (openedTooltipId !== null) {
-      hideTooltip();
+  // Handle click on a task or a date to show the modal
+  const handleOnClick = ({ event, modalId }) => {
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
     }
     event.stopPropagation();
-    showTooltip(tooltipId);
+    showModal(modalId);
   };
   // Get the class name for an active task
   const toggleTaskActiveClass = (taskId) => {
     return (
-      openedTooltipId &&
-      openedTooltipId === taskId &&
-      isTooltipVisible &&
+      openedModalId &&
+      openedModalId === taskId &&
+      isModalVisible &&
       "task-active"
     );
   };
@@ -135,9 +135,9 @@ export default function CalendarMonthly() {
     }
   };
 
-  // Render the header of the tooltip content
-  const tooltipContentHeader = () => (
-    <div className="tooltip-tools">
+  // Render the header of the modal content
+  const modalContentHeader = () => (
+    <div className="modal-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
         <path d="M20.41 4.94l-1.35-1.35c-.78-.78-2.05-.78-2.83 0L3 16.82V21h4.18L20.41 7.77c.79-.78.79-2.05 0-2.83zm-14 14.12L5 19v-1.36l9.82-9.82 1.41 1.41-9.82 9.83z"></path>
       </svg>
@@ -150,7 +150,7 @@ export default function CalendarMonthly() {
       </svg>
       <svg
         style={{ cursor: "pointer" }}
-        onClick={() => hideTooltip()}
+        onClick={() => hideModal()}
         focusable="false"
         width="20"
         height="20"
@@ -174,24 +174,24 @@ export default function CalendarMonthly() {
       <div className="tasks-list">
         <ul>
           {dateTasks.slice(0, maxTasksToShow).map((task) => (
-            <Tooltip
-              classes={`tooltip-task-description ${tooltipPositionClass} `}
+            <Modal
+              classes={`modal-task-description ${modalPositionClass} `}
               key={task.id}
-              isTooltipVisible={openedTooltipId === task.id}
-              tooltipPositionClass={tooltipPositionClass}
-              tooltipId={openedTooltipId}
+              isModalVisible={openedModalId === task.id}
+              modalPositionClass={modalPositionClass}
+              modalId={openedModalId}
               content={
                 <div>
-                  {tooltipContentHeader()}
-                  <div className="tooltip-task-title">
+                  {modalContentHeader()}
+                  <div className="modal-task-title">
                     <h2>{task.title}</h2>
                     <p>
                       {task.date} ⋅ {task.time_start}-{task.time_end}
                     </p>
                   </div>
-                  <div className="tooltip-task-additional">
+                  <div className="modal-task-additional">
                     {/* TODO: create notifications */}
-                    <div className="tooltip-task-notification">
+                    <div className="modal-task-notification">
                       <svg
                         focusable="false"
                         width="20"
@@ -202,7 +202,7 @@ export default function CalendarMonthly() {
                       </svg>
                       <p>in 5 minutes before</p>
                     </div>
-                    <div className="tooltip-task-owner">
+                    <div className="modal-task-owner">
                       <i className="fa fa-calendar"></i>
                       {task.user.name}
                     </div>
@@ -212,11 +212,11 @@ export default function CalendarMonthly() {
             >
               <li
                 className={`task-option ${toggleTaskActiveClass(task.id)} `}
-                onClick={(event) => handleOnClick({event:event, tooltipId:task.id})}
+                onClick={(event) => handleOnClick({event:event, modalId:task.id})}
               >
                 {`${task.title} ${task.time_start}-${task.time_end}`}
               </li>
-            </Tooltip>
+            </Modal>
           ))}
         </ul>
       </div>
@@ -259,12 +259,12 @@ export default function CalendarMonthly() {
     );
   };
 
-  const renderTooltipContentNewTask = (id, tooltipContentHeader) => (
+  const renderModalContentNewTask = (id, modalContentHeader) => (
     <div>
-      {/* render header of tooltip */}
-      {tooltipContentHeader}
+      {/* render header of modal */}
+      {modalContentHeader}
       <form onSubmit={handleTaskCreation}>
-        <div className="tooltip-task-title">
+        <div className="modal-task-title">
           <h2>Create a new event </h2>
           <input
             type="text"
@@ -273,31 +273,31 @@ export default function CalendarMonthly() {
               setTask({ ...task, title: event.target.value })
             }
           />
-          <div className="tooltip-task-time">
+          <div className="modal-task-time">
             {renderDateSelection(id, selectedDate)}
 
-            <div className="tooltip-task-time_time-selection-container">
+            <div className="modal-task-time_time-selection-container">
               {renderTimeSelection({ isStart: true })}-
               {renderTimeSelection({ isStart: false })}
             </div>
-            <div className="tooltip-task-description-container"></div>
+            <div className="modal-task-description-container"></div>
           </div>
-          <div className="tooltip-task__time-period">
-            <span className="tooltip-task-time__day">{dayName}</span>
+          <div className="modal-task__time-period">
+            <span className="modal-task-time__day">{dayName}</span>
             <span>
               {clickedPeriodStart}-{clickedPeriodEnd}
             </span>
           </div>
         </div>
-        <div className="tooltip-task-additional">
+        <div className="modal-task-additional">
           {/* TODO: create notifications */}
-          <div className="tooltip-task-notification">
+          <div className="modal-task-notification">
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
               {svgPaths.notification}
             </svg>
             <p>in 5 minutes before</p>
           </div>
-          <div className="tooltip-task-owner">
+          <div className="modal-task-owner">
             <i className="fa fa-calendar"></i>
           </div>
           <button className="btn btn-block" type="submit">
@@ -326,17 +326,17 @@ export default function CalendarMonthly() {
           const dayName = calendarUtils().getDayName(date.getDay());
 
           return (
-            <Tooltip
-              isTooltipVisible={openedTooltipId === id}
-              tooltipPositionClass={tooltipPositionClass}
-              classes={`tooltip-task-description ${tooltipPositionClass} `}
+            <Modal
+              isModalVisible={openedModalId === id}
+              modalPositionClass={modalPositionClass}
+              classes={`modal-task-description ${modalPositionClass} `}
               key={id}
               content={
                 <div>
-                  {/* render header of tooltip */}
-                  {tooltipContentHeader()}
+                  {/* render header of modal */}
+                  {modalContentHeader()}
                   <form onSubmit={handleTaskCreation}>
-                    <div className="tooltip-task-title">
+                    <div className="modal-task-title">
                       <h2>Create a new event </h2>
                       <input
                         type="text"
@@ -345,17 +345,17 @@ export default function CalendarMonthly() {
                           setTask({ ...task, title: event.target.value })
                         }
                       />
-                      <div className="tooltip-task-time">
+                      <div className="modal-task-time">
                         {renderDateSelection(id, date)}
 
-                        <div className="tooltip-task-time_time-selection-container">
+                        <div className="modal-task-time_time-selection-container">
                           {renderTimeSelection({ isStart: true })}-
                           {renderTimeSelection({ isStart: false })}
                         </div>
-                        <div className="tooltip-task-description-container"></div>
+                        <div className="modal-task-description-container"></div>
                       </div>
-                      <div className="tooltip-task__time-period">
-                        <span className="tooltip-task-time__day">
+                      <div className="modal-task__time-period">
+                        <span className="modal-task-time__day">
                           {dayName}
                         </span>
                         <span>
@@ -363,9 +363,9 @@ export default function CalendarMonthly() {
                         </span>
                       </div>
                     </div>
-                    <div className="tooltip-task-additional">
+                    <div className="modal-task-additional">
                       {/* TODO: create notifications */}
-                      <div className="tooltip-task-notification">
+                      <div className="modal-task-notification">
                         <svg
                           focusable="false"
                           width="20"
@@ -376,7 +376,7 @@ export default function CalendarMonthly() {
                         </svg>
                         <p>in 5 minutes before</p>
                       </div>
-                      <div className="tooltip-task-owner">
+                      <div className="modal-task-owner">
                         <i className="fa fa-calendar"></i>
                       </div>
                       <button className="btn btn-block" type="submit">
@@ -397,7 +397,7 @@ export default function CalendarMonthly() {
                 onClick={(event) =>
                   handleOnDateClick({
                     event: event,
-                    tooltipId: id,
+                    modalId: id,
                     selectedDate: date,
                   })
                 }
@@ -406,7 +406,7 @@ export default function CalendarMonthly() {
                 {date.getDate()}
                 {renderDateTasks(date)}
               </li>
-            </Tooltip>
+            </Modal>
           );
         })}
       </ol>

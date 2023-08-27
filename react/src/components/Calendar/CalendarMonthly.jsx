@@ -6,10 +6,8 @@ import { dateUtils } from "../../utils/dateUtils";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import { useModalState } from "../customHooks/useModalState";
 import newTaskHandler from "./newTaskHandler";
-import DateSelection from "../DateSelection";
-import TimeSelection from "../TimeSelection";
-import svgPaths from "../svgPaths";
 import { toast } from "react-toastify";
+import TaskForm from "../Task/TaskForm";
 
 /**
  * CalendarMonthly Component
@@ -57,6 +55,9 @@ export default function CalendarMonthly() {
       hideModal();
       toast.success(`The task '${data.title}' was successfully created`);
     }
+  }
+  const onTooltipClose = () => {
+    hideModal();
   }
 
   /**
@@ -223,90 +224,6 @@ export default function CalendarMonthly() {
     );
   };
 
-  /**
-   * Renders DateSelection component with specified props.
-   * @param {string} id - The unique id of the cell.
-   * @returns {JSX.Element} JSX element representing the DateSelection component.
-   */
-  const renderDateSelection = (id, selectedDate) => {
-    return (
-      <DateSelection
-        onSelectDate={(newSelectedDate, id) =>
-          handleDateSelection(newSelectedDate, id)
-        }
-        defaultDate={selectedDate}
-        id={id}
-      />
-    );
-  };
-  /**
-   * Renders TimeSelection component with specified props.
-   * @param {string} time - The time string of the selected cell in format 'HH:MM'.
-   * @param {boolean} isStart - A flag indicating if the time selection is for the start time.
-   * @returns {JSX.Element} JSX element representing the TimeSelection component.
-   */
-  const renderTimeSelection = ({ isStart }) => {
-    const defaultTime = isStart ? "07:00" : "08:00";
-    return (
-      <div className="time-selection-block">
-        <TimeSelection
-          onSelectTime={(selectedTime) =>
-            handleTimeSelection(selectedTime, isStart)
-          }
-          defaultTime={defaultTime}
-        />
-      </div>
-    );
-  };
-
-  const renderModalContentNewTask = (id, modalContentHeader) => (
-    <div>
-      {/* render header of modal */}
-      {modalContentHeader}
-      <form onSubmit={handleTaskCreation}>
-        <div className="modal-task-title">
-          <h2>Create a new event </h2>
-          <input
-            type="text"
-            placeholder="Add title"
-            onChange={(event) =>
-              setTask({ ...task, title: event.target.value })
-            }
-          />
-          <div className="modal-task-time">
-            {renderDateSelection(id, selectedDate)}
-
-            <div className="modal-task-time_time-selection-container">
-              {renderTimeSelection({ isStart: true })}-
-              {renderTimeSelection({ isStart: false })}
-            </div>
-            <div className="modal-task-description-container"></div>
-          </div>
-          <div className="modal-task__time-period">
-            <span className="modal-task-time__day">{dayName}</span>
-            <span>
-              {clickedPeriodStart}-{clickedPeriodEnd}
-            </span>
-          </div>
-        </div>
-        <div className="modal-task-additional">
-          {/* TODO: create notifications */}
-          <div className="modal-task-notification">
-            <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-              {svgPaths.notification}
-            </svg>
-            <p>in 5 minutes before</p>
-          </div>
-          <div className="modal-task-owner">
-            <i className="fa fa-calendar"></i>
-          </div>
-          <button className="btn btn-block" type="submit">
-            Create
-          </button>
-        </div>
-      </form>
-    </div>
-  );
 
   return (
     <div className="calendar-by-month-wrapper">
@@ -333,57 +250,18 @@ export default function CalendarMonthly() {
               key={id}
               content={
                 <div>
-                  {/* render header of modal */}
-                  {modalContentHeader()}
-                  <form onSubmit={handleTaskCreation}>
-                    <div className="modal-task-title">
-                      <h2>Create a new event </h2>
-                      <input
-                        type="text"
-                        placeholder="Add title"
-                        onChange={(event) =>
-                          setTask({ ...task, title: event.target.value })
-                        }
-                      />
-                      <div className="modal-task-time">
-                        {renderDateSelection(id, date)}
-
-                        <div className="modal-task-time_time-selection-container">
-                          {renderTimeSelection({ isStart: true })}-
-                          {renderTimeSelection({ isStart: false })}
-                        </div>
-                        <div className="modal-task-description-container"></div>
-                      </div>
-                      <div className="modal-task__time-period">
-                        <span className="modal-task-time__day">
-                          {dayName}
-                        </span>
-                        <span>
-                          {clickedPeriodStart}-{clickedPeriodEnd}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="modal-task-additional">
-                      {/* TODO: create notifications */}
-                      <div className="modal-task-notification">
-                        <svg
-                          focusable="false"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                        >
-                          {svgPaths.notification}
-                        </svg>
-                        <p>in 5 minutes before</p>
-                      </div>
-                      <div className="modal-task-owner">
-                        <i className="fa fa-calendar"></i>
-                      </div>
-                      <button className="btn btn-block" type="submit">
-                        Create
-                      </button>
-                    </div>
-                  </form>
+                  <TaskForm 
+                    formId={id}
+                    openedModalId={openedModalId}
+                    selectedDate={date}
+                    onDateSelection={handleDateSelection}
+                    onTimeSelection={handleTimeSelection}
+                    handleTaskCreation={handleTaskCreation}
+                    clickedPeriodStart={clickedPeriodStart}
+                    clickedPeriodEnd={clickedPeriodEnd}
+                    onTooltipClose={onTooltipClose}
+                  
+                  />
                 </div>
               }
             >

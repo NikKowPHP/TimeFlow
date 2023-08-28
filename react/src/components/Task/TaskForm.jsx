@@ -11,6 +11,7 @@ export default function TaskForm({
   clickedPeriodStart,
   clickedPeriodEnd,
   onTooltipClose,
+  onTaskSet,
 }) {
 
   /**
@@ -87,7 +88,7 @@ export default function TaskForm({
             type="text"
             placeholder="Add title"
             onChange={(event) =>
-              setTask({ ...task, title: event.target.value })
+              onTaskSet(event)
             }
           />
           <div className="modal-task-time">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useCalendarApiContext } from "../Calendar/CalendarApiContext";
 import { calendarUtils } from "../../utils/calendarUtils.js";
+import { dateUtils } from "../../utils/dateUtils";
 
 /**
  * useCalendarState Hook
@@ -77,6 +78,12 @@ export function useCalendarState() {
     setDates(calendarUtils().generateMonthDates(year, month));
   }
 
+  const getTasksByDate = (date) =>
+    allTasks.filter(
+      (task) =>
+        task.date === dateUtils().convertDateSql(date.toLocaleDateString())
+    );
+
   // Function to calculate the next month
   const goToNextMonth = () => {
     if (month === 11) {
@@ -105,6 +112,7 @@ export function useCalendarState() {
 		goToNextMonth,
 		goToPrevMonth,
 		dates,
+    getTasksByDate,
 		setDates,
 		layout,
 		setLayout,

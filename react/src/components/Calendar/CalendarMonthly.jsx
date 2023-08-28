@@ -28,7 +28,7 @@ export default function CalendarMonthly() {
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
   });
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
+  const { dates, currentDate, allTasks, selectedDate, setSelectedDate, getTasksByDate } =
     useCalendarState();
 
   const { convertDecimalToTime } = calendarUtils();
@@ -136,11 +136,11 @@ export default function CalendarMonthly() {
     }
   };
 
-  const getTasksByDate = (date) =>
-    allTasks.filter(
-      (task) =>
-        task.date === dateUtils().convertDateSql(date.toLocaleDateString())
-    );
+  // const getTasksByDate = (date) =>
+  //   allTasks.filter(
+  //     (task) =>
+  //       task.date === dateUtils().convertDateSql(date.toLocaleDateString())
+  //   );
 
   // Render the tasks for a specific date
   const renderDateTasks = (date) => {
@@ -188,6 +188,10 @@ export default function CalendarMonthly() {
       </ol>
   )
 
+  const setNewTaskTitle = (event) => {
+    setTask({ ...task, title: event.target.value })
+  }
+
   return (
     <div className="calendar-by-month-wrapper">
       {renderDays()}
@@ -195,9 +199,7 @@ export default function CalendarMonthly() {
       <ol className="calendar-by-month-dates">
         {dates.map((date, index) => {
           const id = date.toLocaleDateString();
-          const dayName = calendarUtils().getDayName(date.getDay());
           const renderChildren = () => (
-
               <li
                 className={`${calendarUtils().getActiveDateClass(
                   id,
@@ -236,29 +238,12 @@ export default function CalendarMonthly() {
                     clickedPeriodStart={clickedPeriodStart}
                     clickedPeriodEnd={clickedPeriodEnd}
                     onTooltipClose={onTooltipClose}
+                    onTaskSet={setNewTaskTitle}
                   />
                 </div>
               }
             >
               {renderChildren()}
-              {/* <li
-                className={`${calendarUtils().getActiveDateClass(
-                  id,
-                  currentDate,
-                  selectedDate
-                )} date`}
-                onClick={(event) =>
-                  handleOnDateClick({
-                    event: event,
-                    modalId: id,
-                    selectedDate: date,
-                  })
-                }
-                key={index}
-              >
-                {date.getDate()}
-                {renderDateTasks(date)}
-              </li> */}
             </Modal>
           );
         })}

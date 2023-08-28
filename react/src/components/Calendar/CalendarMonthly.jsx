@@ -31,7 +31,6 @@ export default function CalendarMonthly() {
   const { dates, currentDate, allTasks, selectedDate, setSelectedDate, getTasksByDate } =
     useCalendarState();
 
-  const { convertDecimalToTime } = calendarUtils();
   const { convertDateSql } = dateUtils();
 
   // Get modal's state from custom hook
@@ -68,8 +67,6 @@ export default function CalendarMonthly() {
    * @param {Date} clickedDate - represents the clicked date.
    */
   const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
-    // const formattedTimeStart = convertDecimalToTime(timeStart);
-    // const formattedTimeEnd = convertDecimalToTime(timeEnd);
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
     const newTask = {
       id: null,
@@ -110,6 +107,10 @@ export default function CalendarMonthly() {
     );
   };
 
+  const setNewTaskTitle = (event) => {
+    setTask({ ...task, title: event.target.value })
+  }
+
   /**
    * Handles date selection and sets states
    * @param {Date} newSelectedDate - The selected date
@@ -136,11 +137,6 @@ export default function CalendarMonthly() {
     }
   };
 
-  // const getTasksByDate = (date) =>
-  //   allTasks.filter(
-  //     (task) =>
-  //       task.date === dateUtils().convertDateSql(date.toLocaleDateString())
-  //   );
 
   // Render the tasks for a specific date
   const renderDateTasks = (date) => {
@@ -178,19 +174,12 @@ export default function CalendarMonthly() {
   };
   const renderDays = () => (
       <ol className="calendar-by-month-days">
-        <li className="day-name">Mon</li>
-        <li className="day-name">Tue</li>
-        <li className="day-name">Wed</li>
-        <li className="day-name">Thu</li>
-        <li className="day-name">Fri</li>
-        <li className="day-name">Sat</li>
-        <li className="day-name">Sun</li>
+        {calendarUtils().weekDays().map((day, index) => (
+          <li key={index} className="day-name">{day}</li>
+        ))}
       </ol>
   )
 
-  const setNewTaskTitle = (event) => {
-    setTask({ ...task, title: event.target.value })
-  }
 
   return (
     <div className="calendar-by-month-wrapper">

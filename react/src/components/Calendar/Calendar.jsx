@@ -1,6 +1,6 @@
 import "../../styles/calendar.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
-import CalendarMonthly from "./CalendarMonthly";
+import CalendarMonthly from "./CalendarMonthly/CalendarMonthly";
 import CalendarWeekly from "./CalendarWeekly";
 import CalendarAgenda from "./CalendarAgenda";
 import { CalendarApiProvider } from "./CalendarApiContext";

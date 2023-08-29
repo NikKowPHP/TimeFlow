@@ -75,7 +75,6 @@ function DefaultLayout() {
       <ToastContainer />
       {asideShown && (
         <aside className='default-aside'>
-          <Link to={"/dashboard"}>Dashboard</Link>
           <Link to={"/calendar"}>Calendar</Link>
           <Link to={"/tasks"}>Tasks</Link>
 

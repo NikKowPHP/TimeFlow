@@ -42,13 +42,13 @@ export default function CalendarMonthly() {
     hideModal,
   } = useModalState();
 
+  // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
 
   /**
    * Handles data received from a child component (newTaskHandler)
    * @param {Object} data - Data received from the child component
-   * @returns {any}
    */
   function handleDataFromChild(data) {
     if (data) {
@@ -56,7 +56,9 @@ export default function CalendarMonthly() {
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
-  const onTooltipClose = () => {
+
+  // Function handles closing the current modal
+  const onModalClose = () => {
     hideModal();
   };
 
@@ -78,6 +80,14 @@ export default function CalendarMonthly() {
     setTask({ ...task, ...newTask });
   };
 
+   /**
+   * Handles click on a date to initiate new task and show modal
+   * @param {Object} options - Click event details
+   * @param {Event} options.event - Click event
+   * @param {string} options.modalId - ID of the modal
+   * @param {Date} options.selectedDate - Selected date
+   * @returns {void}
+   */
   const handleOnDateClick = ({ event, modalId, selectedDate }) => {
     setSelectedDate(selectedDate);
     initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
@@ -88,7 +98,13 @@ export default function CalendarMonthly() {
     });
   };
 
-  // Handle click on a task or a date to show the modal
+   /**
+   * Handles click on a task or date to show the modal
+   * @param {Object} options - Click event details
+   * @param {Event} options.event - Click event
+   * @param {string} options.modalId - ID of the modal
+   * @returns {void}
+   */
   const handleOnClick = ({ event, modalId }) => {
     // Close opened modal
     if (openedModalId !== null) {
@@ -97,7 +113,11 @@ export default function CalendarMonthly() {
     event.stopPropagation();
     showModal(modalId);
   };
-  // Get the class name for an active task
+  /**
+   * Toggles active class for tasks in modal
+   * @param {integer} taskId - ID of the task
+   * @returns {any}
+   */
   const toggleTaskActiveClass = (taskId) => {
     return (
       openedModalId &&
@@ -107,6 +127,11 @@ export default function CalendarMonthly() {
     );
   };
 
+  /**
+   * Sets new task title in state 
+   * @param {Event} event - Input change event
+   * @returns {void}
+   */
   const setNewTaskTitle = (event) => {
     setTask({ ...task, title: event.target.value })
   }
@@ -114,6 +139,7 @@ export default function CalendarMonthly() {
   /**
    * Handles date selection and sets states
    * @param {Date} newSelectedDate - The selected date
+   * @returns {void}
    */
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
@@ -123,9 +149,10 @@ export default function CalendarMonthly() {
   };
 
   /**
-   * Hadles time selection and sets state
+   * Handles time selection and sets state
    * @param {Date} selectedTime - The selected time
    * @param {boolean} isStart - Whether is start of the time period or the end
+   * @returns {void}
    */
   const handleTimeSelection = (selectedTime, isStart) => {
     if (isStart) {
@@ -138,10 +165,16 @@ export default function CalendarMonthly() {
   };
 
 
-  // Render the tasks for a specific date
+  /**
+   * Render the list of tasks for a specific date.
+   * @param {Date} date - specific date to render tasks.
+   * @returns {JSX.Element} - JSX element representing the list of tasks.
+   */
   const renderDateTasks = (date) => {
     const dateTasks = getTasksByDate(date);
     const maxTasksToShow = Math.min(dateTasks.length, 4);
+
+    // Function to render each task as a modal content
     const modalChildren = (task) => (
       <li
         className={`task-option ${toggleTaskActiveClass(task.id)} `}
@@ -162,7 +195,7 @@ export default function CalendarMonthly() {
               modalPositionClass={modalPositionClass}
               modalId={openedModalId}
               content={
-                <ExistingTask task={task} onTooltipClose={onTooltipClose} />
+                <ExistingTask task={task} onModalClose={onModalClose} />
               }
             >
               {modalChildren(task)}
@@ -172,6 +205,10 @@ export default function CalendarMonthly() {
       </div>
     );
   };
+  /**
+   * Function to render list of weekdays.
+   * @returns {JSX.Element} - JSX Element representing list of weekdays
+   */
   const renderDays = () => (
       <ol className="calendar-by-month-days">
         {calendarUtils().weekDays().map((day, index) => (
@@ -181,6 +218,7 @@ export default function CalendarMonthly() {
   )
 
 
+  // Render the main component 
   return (
     <div className="calendar-by-month-wrapper">
       {renderDays()}
@@ -188,6 +226,7 @@ export default function CalendarMonthly() {
       <ol className="calendar-by-month-dates">
         {dates.map((date, index) => {
           const id = date.toLocaleDateString();
+          // Function to render children content for each date
           const renderChildren = () => (
               <li
                 className={`${calendarUtils().getActiveDateClass(
@@ -209,6 +248,7 @@ export default function CalendarMonthly() {
               </li>
           )
 
+          // Render modal for each date
           return (
             <Modal
               isModalVisible={openedModalId === id}
@@ -226,7 +266,7 @@ export default function CalendarMonthly() {
                     handleTaskCreation={handleTaskCreation}
                     clickedPeriodStart={clickedPeriodStart}
                     clickedPeriodEnd={clickedPeriodEnd}
-                    onTooltipClose={onTooltipClose}
+                    onModalClose={onModalClose}
                     onTaskSet={setNewTaskTitle}
                   />
                 </div>

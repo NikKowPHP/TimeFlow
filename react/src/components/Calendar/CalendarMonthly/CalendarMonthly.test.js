@@ -1,9 +1,12 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import CalendarMonthly from "./CalendarMonthly";
+
+const React = require('react');
+const { render, fireEvent } = require('@testing-library/react');
+const CalendarMonthly = require('./CalendarMonthly.jsx'); 
 
 describe('CalendarMonthly Component', () => {
-	it('renders without errors', () => {
-		render(<CalendarMonthly />);
-	})
+  it('renders without errors', () => {
+    render(<CalendarMonthly />);
+  });
+
+  // Add more test cases here
 });

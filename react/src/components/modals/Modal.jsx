@@ -1,4 +1,5 @@
 import "../../styles/modal.css";
+import React from "react";
 
 /**
  * Modal component is used to display additional information or details when the user interacts with an element.

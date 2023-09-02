@@ -9,7 +9,7 @@ export default function newTaskHandler({ onDataReceived }) {
 
 	const [task, setTask] = useState({
 		id: null,
-		user_id: user.id,
+		user_id: user?.id || '',
 		title: '',
 		time_start: '',
 		time_end: '',
@@ -17,7 +17,7 @@ export default function newTaskHandler({ onDataReceived }) {
 		// description: ''
 	})
 	useEffect(() => {
-		setTask({...task, user_id: user.id});
+		setTask({...task, user_id: user?.id});
 	}, [user])
 
 	const handleTaskCreation = (ev) => {

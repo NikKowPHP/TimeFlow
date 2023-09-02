@@ -7,10 +7,14 @@
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
 export function calendarUtils() {
-  // checks if a given date is the current date or the selected date and returns the appropriate class
+  // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
-    const modifiedDate = new Date(date).toLocaleDateString();
-    const presentDateModified = presentDate.toLocaleDateString();
+    // Check if date is a valid Date object before calling toLocaleDateString
+    const modifiedDate = date instanceof Date ? date.toLocaleDateString() : "";
+    // Check if presentDate is a valid Date object before calling toLocaleDateString
+    const presentDateModified =
+      presentDate instanceof Date ? presentDate.toLocaleDateString() : "";
+
     let selectedDateModified = selectedDate;
     if (selectedDate) {
       selectedDateModified = selectedDate.toLocaleDateString();
@@ -86,28 +90,32 @@ export function calendarUtils() {
     return currentMonthDates;
   }
 
-  // Function to get the current week dates array based on the current date 
-	const getCurrentWeekDates = (dates, currentDate) => {
-		const weeks = 6; // Is always 6 weeks based on the type of the calendar
-		let currentWeekIndex = -1; // Initialize with an invalid value
-		let currentWeekDates = [];
-		
-		// Find the week index of the current date
-		for (let weekIndex = 0; weekIndex < weeks; weekIndex++){
-			const startIndex = weekIndex * 7;
-			const endIndex = startIndex + 7;
-			const weekDates = dates.slice(startIndex, endIndex);
-			if(weekDates.some(date => date.toDateString() === currentDate.toDateString())) {
-				currentWeekIndex = weekIndex;
-			}
-			if(currentWeekIndex !== -1) {
-				const startIndex = currentWeekIndex * 7;
-				const endIndex = startIndex + 7;
-				currentWeekDates = dates.slice(startIndex, endIndex);
-			}
-		}
-			return currentWeekDates;
-  }
+  // Function to get the current week dates array based on the current date
+  const getCurrentWeekDates = (dates, currentDate) => {
+    const weeks = 6; // Is always 6 weeks based on the type of the calendar
+    let currentWeekIndex = -1; // Initialize with an invalid value
+    let currentWeekDates = [];
+
+    // Find the week index of the current date
+    for (let weekIndex = 0; weekIndex < weeks; weekIndex++) {
+      const startIndex = weekIndex * 7;
+      const endIndex = startIndex + 7;
+      const weekDates = dates.slice(startIndex, endIndex);
+      if (
+        weekDates.some(
+          (date) => date.toDateString() === currentDate.toDateString()
+        )
+      ) {
+        currentWeekIndex = weekIndex;
+      }
+      if (currentWeekIndex !== -1) {
+        const startIndex = currentWeekIndex * 7;
+        const endIndex = startIndex + 7;
+        currentWeekDates = dates.slice(startIndex, endIndex);
+      }
+    }
+    return currentWeekDates;
+  };
 
   // Generates the array of month numbers (0-11) representing january - december.
   function generateMonthNumbers() {
@@ -137,7 +145,6 @@ export function calendarUtils() {
     return months[month];
   }
 
-  
   // Function to convert time to 'HH:mm' 24 hour format
   const convertTime = (time) => {
     return time.toLocaleTimeString([], {
@@ -145,8 +152,7 @@ export function calendarUtils() {
       minute: "2-digit",
       hour12: false,
     });
-  }
-
+  };
 
   const convertTimePeriod = (startTime, endTime) => {
     const startTimeString = startTime.toLocaleTimeString([], {
@@ -165,20 +171,17 @@ export function calendarUtils() {
 
   const getDayName = (dayIndex) => {
     return weekDays()[dayIndex];
-
-  }
-
+  };
 
   const convertHour = (hour) => {
     const date = new Date();
     date.setHours(hour);
     const options = {
-      hour: 'numeric',
-      hour12: true
+      hour: "numeric",
+      hour12: true,
     };
-    return date.toLocaleTimeString(undefined, options );
-  }
-
+    return date.toLocaleTimeString(undefined, options);
+  };
 
   const generateHoursOfDay = () => {
     const hoursOfDay = [];
@@ -187,7 +190,6 @@ export function calendarUtils() {
     }
     return hoursOfDay;
   };
-
 
   const convertDecimalToTime = (decimalTime) => {
     const hours = Math.floor(decimalTime);
@@ -210,6 +212,6 @@ export function calendarUtils() {
     convertTimePeriod,
     convertTime,
     convertDecimalToTime,
-    getDayName
+    getDayName,
   };
 }

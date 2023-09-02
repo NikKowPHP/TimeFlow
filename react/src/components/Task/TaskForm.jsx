@@ -10,7 +10,7 @@ export default function TaskForm({
   handleTaskCreation,
   clickedPeriodStart,
   clickedPeriodEnd,
-  onTooltipClose,
+  onModalClose,
   onTaskSet,
 }) {
 
@@ -61,7 +61,7 @@ export default function TaskForm({
       </svg>
       <svg
         style={{ cursor: "pointer" }}
-        onClick={() => onTooltipClose()}
+        onClick={() => onModalClose()}
         focusable="false"
         width="20"
         height="20"

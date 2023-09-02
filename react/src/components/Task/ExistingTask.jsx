@@ -3,7 +3,7 @@ import svgPaths from "../svgPaths";
 
 export default function ExistingTask({
 	task,
-	onTooltipClose
+	onModalClose
 
 }) {
   // Render the header of the modal content
@@ -20,7 +20,7 @@ export default function ExistingTask({
       </svg>
       <svg
         style={{ cursor: "pointer" }}
-        onClick={() => onTooltipClose()}
+        onClick={() => onModalClose()}
         focusable="false"
         width="20"
         height="20"

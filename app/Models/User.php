@@ -55,10 +55,11 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        $this->load('roles');
-        if($this->roles->contains('role', 'admin')) {
-            return true;
-        }
-        return false;
+        // $this->load('roles');
+        // if($this->roles->contains('role', 'admin')) {
+        //     return true;
+        // }
+        // return false;
+        return $this->roles->contains('role', 'admin');
     }
 }

@@ -7,7 +7,8 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Console\View\Components\Task;
+// use Illuminate\Console\View\Components\Task;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -55,11 +56,6 @@ class User extends Authenticatable
     }
     public function isAdmin()
     {
-        // $this->load('roles');
-        // if($this->roles->contains('role', 'admin')) {
-        //     return true;
-        // }
-        // return false;
         return $this->roles->contains('role', 'admin');
     }
 }

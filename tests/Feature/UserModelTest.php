@@ -4,49 +4,62 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Role;
+use App\Models\Task;
 use App\Models\User;
-
+/**
+ * Class UserModelTest
+ *
+ * @package Tests\Feature
+ */
 class UserModelTest extends TestCase
 {
 
-    // Test to create a user and check if it's stored in the database.
+    /**
+     * Test to create a user and check if it's stored in the database.
+     */
     public function testCreateUser(): void
     {
-        // Create a user using the User factory.
+        // Arrange: Create a user using the User factory.
         $user = User::factory()->create();
 
-        // Assert that the created object is an instance of the User model.
+        // Act: No specific action required as the user is created automatically.
+
+        // Assert: Check if the created object is an instance of the User model.
         $this->assertInstanceOf(User::class, $user);
 
         // Assert that the user's email exists in the 'users' table in the database.
         $this->assertDatabaseHas('users', ['email' => $user->email]);
     }
 
-    // Test to check if a user has the admin role.
+    /**
+     * Test to check if a user has the admin role.
+     */
     public function testCheckIsUserAdmin()
     {
-        // Create a regular user.
+        // Arrange: Create a regular user.
         $user = User::factory()->create();
 
-        // Assert that the regular user is not an admin.
+        // Assert: check if the regular user is not an admin.
         $this->assertFalse($user->isAdmin());
 
-        // Create an admin user and attach the 'admin' role to it.
+        // Arrange: Create an admin user and attach the 'admin' role to it.
         $admin_user = User::factory()->create();
         $admin_user->roles()->attach(Role::where('role', 'admin')->first());
 
-        // Assert that the admin user is an admin.
+        // Assert: Check if the admin user is an admin.
         $this->assertTrue($admin_user->isAdmin());
 
     }
 
-    // Test to check if a user has the tasks.
+    /**
+     * Test to check if a user has the tasks.
+     */
     public function testUserHasManyTasks()
     {
-        // Create a user.
+        // Arrange: Create a user.
         $user = User::factory()->create();
 
-        // Create some tasks for the user.
+        // Act: Create some tasks for the user.
         $task1 = $user->tasks()->create([
             'title' => 'Task 1',
             'time_start' => '08:00',
@@ -58,22 +71,43 @@ class UserModelTest extends TestCase
             'time_end' => '09:00',
         ]);
 
-        // Check if the user has the tasks.
+        // Assert: Check if the user has the tasks.
         $this->assertTrue($user->tasks->contains($task1));
         $this->assertTrue($user->tasks->contains($task1));
     }
 
-    // Test to check of user retrieval from database.
+    /**
+     * Test to check of user retrieval from database.
+     */
     public function testUserRetrieval()
     {
+        // Arrange: Create a user.
         $user = User::factory()->create();
+
+        // Act: Find the user by id and email.
         $found_by_id = User::find($user->id);
         $found_by_email = User::where('email', $user->email)->first();
 
+        // Assert: Check if created user matches with the user from database.
         $this->assertEquals($user->id, $found_by_id->id);
         $this->assertEquals($user->email, $found_by_email->email);
 
     }
 
+    /**
+     * Test to check user-task relationship.
+     */
+    public function testUserTaskRelationship()
+    {
+        // Arrange: Create a user and a task associated with that user.
+        $user = User::factory()->create();
+        $task = Task::factory()->create(['user_id' => $user->id]);
 
+        // Act: No specific action required as the user and task are created.
+
+        // Assert: Check if the user has the task.
+        $this->assertTrue($user->tasks->contains($task));
+        
+
+    }
 }

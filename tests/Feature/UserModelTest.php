@@ -61,6 +61,19 @@ class UserModelTest extends TestCase
         // Check if the user has the tasks.
         $this->assertTrue($user->tasks->contains($task1));
         $this->assertTrue($user->tasks->contains($task1));
+    }
+
+    // Test to check of user retrieval from database.
+    public function testUserRetrieval()
+    {
+        $user = User::factory()->create();
+        $found_by_id = User::find($user->id);
+        $found_by_email = User::where('email', $user->email)->first();
+
+        $this->assertEquals($user->id, $found_by_id->id);
+        $this->assertEquals($user->email, $found_by_email->email);
 
     }
+
+
 }

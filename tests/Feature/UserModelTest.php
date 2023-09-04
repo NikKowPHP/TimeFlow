@@ -39,4 +39,28 @@ class UserModelTest extends TestCase
         $this->assertTrue($admin_user->isAdmin());
 
     }
+
+    // Test to check if a user has the tasks.
+    public function testUserHasManyTasks()
+    {
+        // Create a user.
+        $user = User::factory()->create();
+
+        // Create some tasks for the user.
+        $task1 = $user->tasks()->create([
+            'title' => 'Task 1',
+            'time_start' => '08:00',
+            'time_end' => '09:00',
+        ]);
+        $task1 = $user->tasks()->create([
+            'title' => 'Task 2',
+            'time_start' => '08:00',
+            'time_end' => '09:00',
+        ]);
+
+        // Check if the user has the tasks.
+        $this->assertTrue($user->tasks->contains($task1));
+        $this->assertTrue($user->tasks->contains($task1));
+
+    }
 }

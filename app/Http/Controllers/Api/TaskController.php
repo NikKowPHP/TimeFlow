@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
-use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
@@ -15,24 +15,22 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TaskResource::collection(
-            Task::query()->orderBy('date', 'desc')->get()
-        );
-    }
-    public function indexByUser(User $user)
-    {
-        $user = auth()->user();
-        // TODO: fix bug with relationship
-        $tasks = Task::where('user_id', $user->id)->get();
-        return TaskResource::collection($tasks);
+        $user = $request->user();
+        if ($user->isAdmin()) {
+            return TaskResource::collection(
+                Task::query()->orderBy('date', 'desc')->get()
+            );
+        }
+        return TaskResource::collection($user->tasks);
     }
     public function indexByDate($date)
     {
         $date = Task::whereDate('date', $date)->get();
-        if($date->count() !== 0) {
-            log::debug('index by date', ['data'=> $date]);
+
+        if ($date->count() !== 0) {
+            log::debug('index by date', ['data' => $date]);
             return TaskResource::collection($date);
         } else {
             return [];

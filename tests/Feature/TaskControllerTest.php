@@ -55,5 +55,34 @@ class TaskControllerTest extends TestCase
         $response->assertStatus(200)->assertJsonCount(3, 'data');
     }
 
+    /**
+     * Test creating a new task.
+     */
+    public function testCreateTask()
+    {
+        // Arrange: Create a regular user.
+        $user = User::factory()->create();
+
+        // Arrange: Prepare task data.
+        $taskData = [
+            'user_id' => $user->id,
+            'date' => '2023-09-10',
+            'time_start' => '08:00',
+            'time_end' => '09:00',
+            'title' => 'New Task',
+        ];
+        
+        // Act: Simulate an authenticated user before accessing the route.
+        $this->actingAs($user);
+
+        // Act: Send a POST request to create a new task.
+        $response = $this->post('/api/tasks', $taskData);
+
+        // Assert: The response indicates a successful creation (HTTP status 201).
+        $response->assertStatus(201);
+
+        // Assert: The task has been created in the database.
+        $this->assertDatabaseHas('tasks', $taskData);
+    }
 
 }

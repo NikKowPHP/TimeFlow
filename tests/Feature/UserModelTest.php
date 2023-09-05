@@ -128,4 +128,21 @@ class UserModelTest extends TestCase
         $this->assertTrue($user->roles->contains($role1));
         $this->assertTrue($user->roles->contains($role2));
     }
+
+    /**
+     *  Test to check user-task relationship. 
+     */
+    public function testUserHasTasks()
+    {
+        // Arrange: Create a user.
+        $user = User::factory()->create();
+
+        // Act: Create tasks associated with the user.
+        $task1= Task::factory()->create(['user_id'=> $user->id]);
+        $task2= Task::factory()->create(['user_id'=> $user->id]);
+
+        // Assert: Check if the user has the assigned roles.
+        $this->assertTrue($user->tasks->contains($task1));
+        $this->assertTrue($user->tasks->contains($task2));
+    }
 }

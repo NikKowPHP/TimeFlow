@@ -1286,3 +1286,4 @@ vendor/symfony/yaml/Yaml.php
 vendor/symfony/yaml/Command/LintCommand.php
 vendor/symfony/yaml/Exception/ParseException.php
 vendor/symfony/yaml/Tag/TaggedValue.php
+.phpunit.result.cache

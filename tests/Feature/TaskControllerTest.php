@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\Task;
@@ -22,7 +23,7 @@ class TaskControllerTest extends TestCase
 
         // Act: Create some tasks.
         $task = Task::factory()->count(5)->create();
-        
+
         // Act: Simulate an authenticated admin user.
         $this->actingAs($adminUser);
 
@@ -44,7 +45,7 @@ class TaskControllerTest extends TestCase
 
         // Act: Create some tasks.
         $task = Task::factory()->count(3)->create();
-        
+
         // Act: Simulate an authenticated regular user.
         $this->actingAs($user);
 
@@ -71,7 +72,7 @@ class TaskControllerTest extends TestCase
             'time_end' => '09:00',
             'title' => 'New Task',
         ];
-        
+
         // Act: Simulate an authenticated user before accessing the route.
         $this->actingAs($user);
 
@@ -83,6 +84,37 @@ class TaskControllerTest extends TestCase
 
         // Assert: The task has been created in the database.
         $this->assertDatabaseHas('tasks', $taskData);
+    }
+
+    /**
+     * Test storing a new task.
+     */
+    public function testStoreMethod()
+    {
+        // Create a user for authentication.
+        $user = User::factory()->create();
+
+        // Simulate authentication as the user.
+        $this->actingAs($user);
+
+        // Arrange: Prepare task data.
+        $taskData = [
+            'user_id' => $user->id,
+            'date' => '2023-09-10',
+            'time_start' => '08:00',
+            'time_end' => '09:00',
+            'title' => 'New Task',
+        ];
+
+
+        // Send a POST request to the store method with the task data.
+        $response = $this->post('/api/tasks', $taskData);
+
+        // Assert that the response status is 201 (Created).
+        $response->assertStatus(201);
+
+        // Assert that the new task has been created in the database.
+       $this->assertDatabaseHas('tasks', $taskData);
     }
 
 }

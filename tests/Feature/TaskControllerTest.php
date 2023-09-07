@@ -117,4 +117,28 @@ class TaskControllerTest extends TestCase
        $this->assertDatabaseHas('tasks', $taskData);
     }
 
+    /**
+     * Test removing a task.
+     */
+    public function testDestroyTask()
+    {
+        // Arrange: Create a user for authentication.
+        $user = User::factory()->create();
+
+        // Act: Simulate authentication as the user.
+        $this->actingAs($user);
+
+        // Arrange: Prepare task instance.
+        $task = Task::factory()->state(['user_id' => $user->id])->create();
+
+       // Act: Remove the task from database.
+       $response = $this->delete("/api/tasks/{$task->id}");
+
+       // Assert: The response status is 204 (No Content) for successful deletion.
+       $response->assertStatus(204);
+
+       // Assert: The new task has been removed from the database.
+       $this->assertDatabaseMissing('tasks', $task->toArray());
+    }
+
 }

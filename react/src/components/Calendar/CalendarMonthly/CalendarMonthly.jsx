@@ -9,6 +9,7 @@ import newTaskHandler from "../newTaskHandler";
 import { toast } from "react-toastify";
 import TaskForm from "../../Task/TaskForm";
 import ExistingTask from "../../Task/ExistingTask";
+import { taskUtils } from "../../../utils/taskUtils";
 
 /**
  * CalendarMonthly Component
@@ -28,10 +29,14 @@ export default function CalendarMonthly() {
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
   });
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate, getTasksByDate } =
+  const { dates, currentDate, allTasks, selectedDate, setSelectedDate, getTasksByDate, refreshTasks } =
     useCalendarState();
 
   const { convertDateSql } = dateUtils();
+  const {onTaskDelete} = taskUtils({
+    onStateReceived: handleTaskState,
+  });
+
 
   // Get modal's state from custom hook
   const {
@@ -62,6 +67,16 @@ export default function CalendarMonthly() {
     hideModal();
   };
 
+  // Handles the task state from task utils file.
+  function handleTaskState(state) {
+    // Handle task deletion.
+      if(state.status === 204){
+        hideModal();
+        refreshTasks();
+        toast.success(`The task '${state.task.title}' was successfully deleted`);
+      }
+    
+  }
   /**
    * Initiates a default new task state based on selected time and date and sets state.
    * @param {Date} timeStart - represents starting time.
@@ -195,7 +210,11 @@ export default function CalendarMonthly() {
               modalPositionClass={modalPositionClass}
               modalId={openedModalId}
               content={
-                <ExistingTask task={task} onModalClose={onModalClose} />
+                <ExistingTask 
+                task={task} 
+                onModalClose={onModalClose}
+                onDelete={onTaskDelete}
+                 />
               }
             >
               {modalChildren(task)}

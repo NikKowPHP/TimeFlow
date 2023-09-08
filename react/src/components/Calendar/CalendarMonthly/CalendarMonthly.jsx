@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import TaskForm from "../../Task/TaskForm";
 import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
-import {  useNavigate, useLocation } from "react-router-dom";
+import { useLocationState } from "../../customHooks/useLocationState";
 
 /**
  * CalendarMonthly Component
@@ -27,20 +27,27 @@ import {  useNavigate, useLocation } from "react-router-dom";
  */
 
 export default function CalendarMonthly() {
-  const navigate = useNavigate(); 
-  const location = useLocation();
+  // const navigate = useNavigate();
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
   });
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate, getTasksByDate, refreshTasks } =
-    useCalendarState();
+  const {
+    dates,
+    currentDate,
+    allTasks,
+    selectedDate,
+    setSelectedDate,
+    getTasksByDate,
+    refreshTasks,
+  } = useCalendarState();
 
   const { convertDateSql } = dateUtils();
-  const {onTaskDelete} = taskUtils({
+  const { onTaskDelete } = taskUtils({
     onStateReceived: handleTaskState,
   });
 
+  const { setPreviousRoute, navigateTo } = useLocationState();
 
   // Get modal's state from custom hook
   const {
@@ -74,18 +81,16 @@ export default function CalendarMonthly() {
   // Handles the task state from task utils file.
   function handleTaskState(state) {
     // Handle task deletion.
-      if(state.status === 204){
-        hideModal();
-        refreshTasks();
-        toast.success(`The task '${state.task.title}' was successfully deleted`);
-      }
-    
+    if (state.status === 204) {
+      hideModal();
+      refreshTasks();
+      toast.success(`The task '${state.task.title}' was successfully deleted`);
+    }
   }
 
-
   function onTaskEdit(task) {
-    navigate(`/tasks/${task.id}`, { state: { previousRoute: location.pathname } });
-
+    setPreviousRoute();
+    navigateTo(`/tasks/${task.id}`); // Use custom navigation function in order to not to import useNavigate hook.
   }
   /**
    * Initiates a default new task state based on selected time and date and sets state.
@@ -105,7 +110,7 @@ export default function CalendarMonthly() {
     setTask({ ...task, ...newTask });
   };
 
-   /**
+  /**
    * Handles click on a date to initiate new task and show modal
    * @param {Object} options - Click event details
    * @param {Event} options.event - Click event
@@ -123,7 +128,7 @@ export default function CalendarMonthly() {
     });
   };
 
-   /**
+  /**
    * Handles click on a task or date to show the modal
    * @param {Object} options - Click event details
    * @param {Event} options.event - Click event
@@ -153,13 +158,13 @@ export default function CalendarMonthly() {
   };
 
   /**
-   * Sets new task title in state 
+   * Sets new task title in state
    * @param {Event} event - Input change event
    * @returns {void}
    */
   const setNewTaskTitle = (event) => {
-    setTask({ ...task, title: event.target.value })
-  }
+    setTask({ ...task, title: event.target.value });
+  };
 
   /**
    * Handles date selection and sets states
@@ -188,7 +193,6 @@ export default function CalendarMonthly() {
       setTask({ ...task, time_end: selectedTime });
     }
   };
-
 
   /**
    * Render the list of tasks for a specific date.
@@ -220,12 +224,12 @@ export default function CalendarMonthly() {
               modalPositionClass={modalPositionClass}
               modalId={openedModalId}
               content={
-                <ExistingTask 
-                task={task} 
-                onModalClose={onModalClose}
-                onDelete={onTaskDelete}
-                onEditTask={onTaskEdit}
-                 />
+                <ExistingTask
+                  task={task}
+                  onModalClose={onModalClose}
+                  onDelete={onTaskDelete}
+                  onEditTask={onTaskEdit}
+                />
               }
             >
               {modalChildren(task)}
@@ -240,15 +244,18 @@ export default function CalendarMonthly() {
    * @returns {JSX.Element} - JSX Element representing list of weekdays
    */
   const renderDays = () => (
-      <ol className="calendar-by-month-days">
-        {calendarUtils().weekDays().map((day, index) => (
-          <li key={index} className="day-name">{day}</li>
+    <ol className="calendar-by-month-days">
+      {calendarUtils()
+        .weekDays()
+        .map((day, index) => (
+          <li key={index} className="day-name">
+            {day}
+          </li>
         ))}
-      </ol>
-  )
+    </ol>
+  );
 
-
-  // Render the main component 
+  // Render the main component
   return (
     <div className="calendar-by-month-wrapper">
       {renderDays()}
@@ -258,25 +265,25 @@ export default function CalendarMonthly() {
           const id = date.toLocaleDateString();
           // Function to render children content for each date
           const renderChildren = () => (
-              <li
-                className={`${calendarUtils().getActiveDateClass(
-                  id,
-                  currentDate,
-                  selectedDate
-                )} date`}
-                onClick={(event) =>
-                  handleOnDateClick({
-                    event: event,
-                    modalId: id,
-                    selectedDate: date,
-                  })
-                }
-                key={index}
-              >
-                {date.getDate()}
-                {renderDateTasks(date)}
-              </li>
-          )
+            <li
+              className={`${calendarUtils().getActiveDateClass(
+                id,
+                currentDate,
+                selectedDate
+              )} date`}
+              onClick={(event) =>
+                handleOnDateClick({
+                  event: event,
+                  modalId: id,
+                  selectedDate: date,
+                })
+              }
+              key={index}
+            >
+              {date.getDate()}
+              {renderDateTasks(date)}
+            </li>
+          );
 
           // Render modal for each date
           return (

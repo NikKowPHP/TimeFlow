@@ -14,6 +14,9 @@ export function useLocationState() {
     const previousRoute = location.state?.previousRoute || "/calendar";
     navigate(previousRoute);
   }
+	function navigateTo(route) {
+		navigate(route);
+	}
 
-  return { setPreviousRoute, goBack };
+  return { setPreviousRoute, goBack, navigateTo };
 }

@@ -1,11 +1,18 @@
 import React from "react";
 import svgPaths from "../svgPaths";
 
-export default function ExistingTask({ task, onModalClose, onDelete }) {
+export default function ExistingTask({ task, onModalClose, onDelete, onEditTask }) {
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+      <svg
+        className="cursor--pointer"
+        onClick={() => onEditTask(task)}
+        focusable="false"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+      >
         {svgPaths.edit}
       </svg>
       <button className="btn-transparent" onClick={() => onDelete(task)}>

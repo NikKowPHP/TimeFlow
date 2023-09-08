@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
 
 export default function TaskForm() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const previousRoute = location.state?.previousRoute || '/calendar'
   const [task, setTask] = useState({
     title: "",
     date: null,
@@ -41,6 +44,9 @@ export default function TaskForm() {
       });
     }
   };
+  const onCancelTask = () => {
+    navigate(previousRoute);
+  }
   return (
     <>
       {task.id && (
@@ -80,7 +86,10 @@ export default function TaskForm() {
                     }
                   />
                 </div>
-                <button className="btn btn-block btn-submit">Save</button>
+                <div className="task-form__btn-group">
+                  <button type="submit" className="btn btn-add">Save</button>
+                  <button onClick={ onCancelTask } className="btn btn-delete">Cancel</button>
+                </div>
               </form>
             )}
           </div>

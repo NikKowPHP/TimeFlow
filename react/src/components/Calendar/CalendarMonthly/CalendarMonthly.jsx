@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import TaskForm from "../../Task/TaskForm";
 import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
+import {  useNavigate, useLocation } from "react-router-dom";
 
 /**
  * CalendarMonthly Component
@@ -26,6 +27,9 @@ import { taskUtils } from "../../../utils/taskUtils";
  */
 
 export default function CalendarMonthly() {
+  const navigate = useNavigate(); 
+  const location = useLocation();
+
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
   });
@@ -76,6 +80,12 @@ export default function CalendarMonthly() {
         toast.success(`The task '${state.task.title}' was successfully deleted`);
       }
     
+  }
+
+
+  function onTaskEdit(task) {
+    navigate(`/tasks/${task.id}`, { state: { previousRoute: location.pathname } });
+
   }
   /**
    * Initiates a default new task state based on selected time and date and sets state.
@@ -214,6 +224,7 @@ export default function CalendarMonthly() {
                 task={task} 
                 onModalClose={onModalClose}
                 onDelete={onTaskDelete}
+                onEditTask={onTaskEdit}
                  />
               }
             >

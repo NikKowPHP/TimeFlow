@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
+import { useLocationState } from "../components/customHooks/useLocationState";
 
 export default function TaskForm() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const previousRoute = location.state?.previousRoute || '/calendar'
+  const {goBack} = useLocationState();
   const [task, setTask] = useState({
     title: "",
     date: null,
@@ -45,7 +44,7 @@ export default function TaskForm() {
     }
   };
   const onCancelTask = () => {
-    navigate(previousRoute);
+    goBack();
   }
   return (
     <>

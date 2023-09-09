@@ -51,12 +51,6 @@ export default function TaskForm({
   const renderModalContentHeader = () => (
     <div className="modal-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.edit}
-      </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.delete}
-      </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
         {svgPaths.envelope}
       </svg>
       <svg

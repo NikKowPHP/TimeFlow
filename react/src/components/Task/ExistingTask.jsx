@@ -1,13 +1,13 @@
 import React from "react";
 import svgPaths from "../svgPaths";
 
-export default function ExistingTask({ task, onModalClose, onDelete, onEditTask }) {
+export default function ExistingTask({ task, onModalClose, onDelete, onTaskEdit }) {
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">
       <svg
         className="cursor--pointer"
-        onClick={() => onEditTask(task)}
+        onClick={() => onTaskEdit(task)}
         focusable="false"
         width="20"
         height="20"

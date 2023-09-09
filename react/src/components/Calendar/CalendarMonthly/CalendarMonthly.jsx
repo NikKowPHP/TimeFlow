@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import TaskForm from "../../Task/TaskForm";
 import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
-import { useLocationState } from "../../customHooks/useLocationState";
+import { useLocation, useNavigate } from "react-router-dom";
 
 /**
  * CalendarMonthly Component
@@ -27,7 +27,7 @@ import { useLocationState } from "../../customHooks/useLocationState";
  */
 
 export default function CalendarMonthly() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
@@ -47,7 +47,6 @@ export default function CalendarMonthly() {
     onStateReceived: handleTaskState,
   });
 
-  const { setPreviousRoute, navigateTo } = useLocationState();
 
   // Get modal's state from custom hook
   const {
@@ -89,8 +88,8 @@ export default function CalendarMonthly() {
   }
 
   function onTaskEdit(task) {
-    setPreviousRoute();
-    navigateTo(`/tasks/${task.id}`); // Use custom navigation function in order to not to import useNavigate hook.
+    navigate(`/tasks/${task.id}`, {state: {previousLocation: location.pathname}});
+    
   }
   /**
    * Initiates a default new task state based on selected time and date and sets state.
@@ -228,7 +227,7 @@ export default function CalendarMonthly() {
                   task={task}
                   onModalClose={onModalClose}
                   onDelete={onTaskDelete}
-                  onEditTask={onTaskEdit}
+                  onTaskEdit={onTaskEdit}
                 />
               }
             >

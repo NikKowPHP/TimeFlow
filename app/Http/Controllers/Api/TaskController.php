@@ -61,7 +61,9 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-
+       $task_data_validated = $request->validated();
+       $task->update($task_data_validated);
+       return new TaskResource($task);
     }
 
     /**

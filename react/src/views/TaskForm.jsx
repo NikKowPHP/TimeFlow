@@ -40,6 +40,9 @@ export default function TaskForm() {
     if (task.id) {
       axiosClient.put(`/tasks/${task.id}`, task).then(() => {
         toast.success("The task was updated");
+        setTimeout(()=> {
+          goBack();
+        }, 2000);
       });
     }
   };

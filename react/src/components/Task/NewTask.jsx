@@ -3,7 +3,7 @@ import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import svgPaths from "../svgPaths";
 
-export default function TaskForm({
+export default function NewTask({
   selectedDate,
   onDateSelection,
   onTimeSelection,

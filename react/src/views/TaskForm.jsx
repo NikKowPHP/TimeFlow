@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
-import { useLocationState } from "../components/customHooks/useLocationState";
 
 export default function TaskForm() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const previousLocation = location.state?.previousLocation;
+
   const { id } = useParams();
-  const {goBack} = useLocationState();
   const [task, setTask] = useState({
     title: "",
     date: null,
@@ -43,9 +45,10 @@ export default function TaskForm() {
       });
     }
   };
-  const onCancelTask = () => {
-    goBack();
-  }
+
+  const goBack = () => {
+    navigate(previousLocation);
+  };
   return (
     <>
       {task.id && (
@@ -54,42 +57,50 @@ export default function TaskForm() {
           <div className="card animated fadeInDown">
             {loading && <div className="text-center">Loading ...</div>}
             {!loading && (
-              <form action="" onSubmit={onSubmitForm}>
-                <input
-                  type="text"
-                  value={task.title}
-                  onChange={(ev) =>
-                    setTask({ ...task, title: ev.target.value })
-                  }
-                  placeholder="Task title"
-                />
-                <input
-                  type="date"
-                  value={task.date}
-                  onChange={(ev) => setTask({ ...task, date: ev.target.value })}
-                />
-                <div style={{ display: "flex", alignItems: "center" }}>
+              <>
+                <form action="" onSubmit={onSubmitForm}>
                   <input
-                    type="time"
-                    value={task.time_start}
+                    type="text"
+                    value={task.title}
                     onChange={(ev) =>
-                      setTask({ ...task, time_start: ev.target.value })
+                      setTask({ ...task, title: ev.target.value })
+                    }
+                    placeholder="Task title"
+                  />
+                  <input
+                    type="date"
+                    value={task.date}
+                    onChange={(ev) =>
+                      setTask({ ...task, date: ev.target.value })
                     }
                   />
-                  <span style={{ padding: "5px", fontWeight: "700" }}>-</span>
-                  <input
-                    type="time"
-                    value={task.time_end}
-                    onChange={(ev) =>
-                      setTask({ ...task, time_end: ev.target.value })
-                    }
-                  />
-                </div>
-                <div className="task-form__btn-group">
-                  <button type="submit" className="btn btn-add">Save</button>
-                  <button onClick={ onCancelTask } className="btn btn-delete">Cancel</button>
-                </div>
-              </form>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <input
+                      type="time"
+                      value={task.time_start}
+                      onChange={(ev) =>
+                        setTask({ ...task, time_start: ev.target.value })
+                      }
+                    />
+                    <span style={{ padding: "5px", fontWeight: "700" }}>-</span>
+                    <input
+                      type="time"
+                      value={task.time_end}
+                      onChange={(ev) =>
+                        setTask({ ...task, time_end: ev.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="task-form__btn-group">
+                    <button type="submit" className="btn btn-add">
+                      Save
+                    </button>
+                    <button onClick={goBack} className="btn btn-delete">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </>
             )}
           </div>
         </div>

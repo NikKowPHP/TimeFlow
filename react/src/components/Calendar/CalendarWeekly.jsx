@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
 import "../../styles/calendar/calendar-weekly.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import { useModalState } from "../customHooks/useModalState";
@@ -12,7 +11,8 @@ import Modal from "../modals/Modal";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
-
+import ExistingTask from "../Task/ExistingTask";
+import { useLocation, useNavigate } from "react-router-dom";
 /**
  * TODO: REFACTORING:
  * 1) split into smaller components: 
@@ -29,6 +29,8 @@ import TimeSelection from "../TimeSelection";
  * @component
  */
 export default function CalendarWeekly() {
+  const navigate = useNavigate();
+  const location = useLocation();
   // Get modal's state from custom hook
   const {
     openedModalId,
@@ -110,7 +112,7 @@ export default function CalendarWeekly() {
   const handleExistingTaskClick = (event, taskId) => {
     closeDateTimeSelectedCell();
     handleOnClick(event, taskId);
-  }
+  };
 
   /**
    * Handles the click on a specific date-hour cell.
@@ -129,7 +131,6 @@ export default function CalendarWeekly() {
 
     const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
     const modalId = `${hourIndex}${dateIndex}`;
-    debugger;
     let startHour = hour;
     let endHour = hour + 1;
     if (clickedHalf === "second") {
@@ -399,6 +400,28 @@ export default function CalendarWeekly() {
       </div>
     </>
   );
+  const renderModalChildren = (task) => {
+    const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
+
+    return (
+      <div
+        className={`task-option ${toggledTaskActiveClass}`}
+        onClick={(event) => handleExistingTaskClick(event, task.id)}
+        style={calculateTaskHeight(task.time_start, task.time_end)}
+      >
+        {`${task.title} ${task.time_start}-${task.time_end}`}
+      </div>
+    );
+  };
+
+  const onModalClose = () => {
+    hideModal();
+  };
+  const onTaskDelete = () => {};
+
+  const onTaskEdit = (task) => {
+    navigate(`/tasks/${task.id}`, {state: {previousLocation: location.pathname }});
+  };
 
   /**
    * Renders tasks associated with a specific date and hour.
@@ -418,7 +441,6 @@ export default function CalendarWeekly() {
     return (
       <div className="tasks-list">
         {filteredTasks.slice(0, maxTasksToShow).map((task) => {
-          const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
           const isModalVisible = () => openedModalId === task.id;
           return (
             <Modal
@@ -427,15 +449,16 @@ export default function CalendarWeekly() {
               isModalVisible={isModalVisible()}
               modalPositionClass={modalPositionClass}
               modalId={openedModalId}
-              content={renderModalContent(task)}
+              content={
+                <ExistingTask
+                  task={task}
+                  onModalClose={onModalClose}
+                  onDelete={onTaskDelete}
+                  onTaskEdit={onTaskEdit}
+                />
+              }
             >
-              <div
-                className={`task-option ${toggledTaskActiveClass}`}
-                onClick={(event) => handleExistingTaskClick(event, task.id)}
-                style={calculateTaskHeight(task.time_start, task.time_end)}
-              >
-                {`${task.title} ${task.time_start}-${task.time_end}`}
-              </div>
+              {renderModalChildren(task)}
             </Modal>
           );
         })}
@@ -531,11 +554,7 @@ export default function CalendarWeekly() {
    * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.
    * @returns {JSX.Element} - The JSX element representing the modal content for creating a new task.
    */
-  const renderModalContentNewTask = (
-    dayName,
-    cellId,
-    modalContentHeader
-  ) => (
+  const renderModalContentNewTask = (dayName, cellId, modalContentHeader) => (
     <div>
       {/* render header of modal */}
       {modalContentHeader}
@@ -634,11 +653,7 @@ export default function CalendarWeekly() {
                     modalContentHeader()
                   );
 
-                  return renderModalWrapper(
-                    cellId,
-                    modalContent,
-                    cellContent
-                  );
+                  return renderModalWrapper(cellId, modalContent, cellContent);
                 })}
             </div>
           </div>

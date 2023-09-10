@@ -7,7 +7,7 @@ import { useCalendarState } from "../../customHooks/useCalendarState";
 import { useModalState } from "../../customHooks/useModalState";
 import newTaskHandler from "../newTaskHandler";
 import { toast } from "react-toastify";
-import TaskForm from "../../Task/TaskForm";
+import NewTask from "../../Task/NewTask";
 import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -293,7 +293,7 @@ export default function CalendarMonthly() {
               key={id}
               content={
                 <div>
-                  <TaskForm
+                  <NewTask
                     formId={id}
                     openedModalId={openedModalId}
                     selectedDate={date}

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
+import { useLocationState } from "../components/customHooks/useLocationState";
 
 export default function TaskForm() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const previousLocation = location.state?.previousLocation;
-
+  const { goBack } = useLocationState();
   const { id } = useParams();
   const [task, setTask] = useState({
     title: "",
@@ -46,9 +44,6 @@ export default function TaskForm() {
     }
   };
 
-  const goBack = () => {
-    navigate(previousLocation);
-  };
   return (
     <>
       {task.id && (

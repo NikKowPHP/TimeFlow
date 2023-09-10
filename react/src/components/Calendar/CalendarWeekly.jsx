@@ -12,7 +12,8 @@ import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import ExistingTask from "../Task/ExistingTask";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocationState } from "../customHooks/useLocationState";
+// import { useLocation, useNavigate } from "react-router-dom";
 /**
  * TODO: REFACTORING:
  * 1) split into smaller components: 
@@ -29,8 +30,9 @@ import { useLocation, useNavigate } from "react-router-dom";
  * @component
  */
 export default function CalendarWeekly() {
-  const navigate = useNavigate();
-  const location = useLocation();
+
+  const {navigate} = useLocationState();
+
   // Get modal's state from custom hook
   const {
     openedModalId,

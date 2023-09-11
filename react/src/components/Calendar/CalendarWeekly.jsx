@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import "../../styles/calendar/calendar-weekly.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
@@ -13,8 +13,8 @@ import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import ExistingTask from "../Task/ExistingTask";
 import { useLocationState } from "../customHooks/useLocationState";
-// import { useLocation, useNavigate } from "react-router-dom";
 /**
+ * 
  * TODO: REFACTORING:
  * 1) split into smaller components: 
  * Date Header: Responsible for rendering the date labels and navigation buttons.
@@ -30,8 +30,7 @@ import { useLocationState } from "../customHooks/useLocationState";
  * @component
  */
 export default function CalendarWeekly() {
-
-  const {navigate} = useLocationState();
+  const { navigate } = useLocationState();
 
   // Get modal's state from custom hook
   const {
@@ -218,11 +217,15 @@ export default function CalendarWeekly() {
    * @param {Date[]} dates - An array of available dates.
    * @param {Date} currentWeekStartDate - The start date of the currently displayed week.
    */
-  useEffect(() => {
-    if (dates.length != 0) {
-      const currentWeekDates = getCurrentWeekDates(dates, currentWeekStartDate);
-      setCurrentWeekDates(currentWeekDates);
+  const currentWeekDays = useMemo(() => {
+    if (dates.length != -1) {
+      return getCurrentWeekDates(dates, currentWeekStartDate);
     }
+    return [];
+  }, [dates, currentWeekStartDate]);
+
+  useEffect(() => {
+    setCurrentWeekDates(currentWeekDays);
   }, [dates, currentWeekStartDate]);
 
   /**
@@ -422,7 +425,9 @@ export default function CalendarWeekly() {
   const onTaskDelete = () => {};
 
   const onTaskEdit = (task) => {
-    navigate(`/tasks/${task.id}`, {state: {previousLocation: location.pathname }});
+    navigate(`/tasks/${task.id}`, {
+      state: { previousLocation: location.pathname },
+    });
   };
 
   /**
@@ -438,6 +443,7 @@ export default function CalendarWeekly() {
       convertedDate,
       convertedHourIndex
     );
+
     const maxTasksToShow = Math.min(filteredTasks.length, 4);
 
     return (

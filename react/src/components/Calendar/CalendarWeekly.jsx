@@ -348,7 +348,7 @@ export default function CalendarWeekly() {
    * @param {string} taskTimeEnd - The end time of the task.
    * @returns {Object} CSS style object with the calculated height.
    */
-  const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+  const calculateTaskHeight = useMemo(() => (taskTimeStart, taskTimeEnd) => {
     const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
     const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
     const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
@@ -359,7 +359,7 @@ export default function CalendarWeekly() {
     return {
       height: `${taskHeight}px`,
     };
-  };
+  }, []) ;
 
   /**
    * Filters allTasks array to extract specific tasks based on date and hour.

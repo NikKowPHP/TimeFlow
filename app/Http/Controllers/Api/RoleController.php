@@ -31,7 +31,6 @@ class RoleController extends Controller
     {
         $data = $request->validated();
         $role = Role::create($data);
-        Log::debug('data create role', ['role'=> $role]);
         return new RoleResource($role);
     }
 

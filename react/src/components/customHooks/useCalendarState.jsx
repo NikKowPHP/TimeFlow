@@ -57,32 +57,17 @@ export function useCalendarState() {
     setLayout(calendarType);
   }, [calendarLayout])
 
-  // // Fetch tasks for the selected date
-  // useEffect(() => {
-  //     fetchTasks(selectedDate);
-  // }, [selectedDate]);
-
   // Fetch tasks and generate month dates on year and month change
   useEffect(() => {
     fetchTasksAndGenerateDates();
   }, [year, month]);
 
-  // // Function to fetch tasks for the selected date
-  // const fetchTasks = (date) => {
-  //   getTasksOfSelectedDay(date);
-  // }
 
   // Function to fetch tasks and generate month dates
   const fetchTasksAndGenerateDates = () => {
-    getAllTasks();
     setDates(calendarUtils().generateMonthDates(year, month));
   }
 
-  const getTasksByDate = (date) =>
-    allTasks.filter(
-      (task) =>
-        task.date === dateUtils().convertDateSql(date.toLocaleDateString())
-    );
 
   // Function to calculate the next month
   const goToNextMonth = () => {
@@ -112,7 +97,6 @@ export function useCalendarState() {
 		goToNextMonth,
 		goToPrevMonth,
 		dates,
-    getTasksByDate,
 		setDates,
 		layout,
 		setLayout,

@@ -1,4 +1,5 @@
 import axiosClient from "../axios-client";
+import { dateUtils } from "./dateUtils";
 
 export function taskUtils({onStateReceived}) {
 
@@ -11,7 +12,15 @@ export function taskUtils({onStateReceived}) {
     });
   }
 
+  // Function to fetch tasks of a date.
+  const getTasksByDate = (date, allTasks) =>
+    allTasks.filter(
+      (task) =>
+        task.date === dateUtils().convertDateSql(date.toLocaleDateString())
+    );
+
 	return {
 		onTaskDelete,
+    getTasksByDate,
 	}
 }

@@ -38,7 +38,6 @@ const CalendarApiContext = createContext({
 
 export function CalendarApiProvider({ children }) {
   const [allTasks, setAllTasks] = useState([]);
-  const [dayTasks, setDayTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch all tasks from the API and update the allTasks state.
@@ -54,32 +53,11 @@ export function CalendarApiProvider({ children }) {
         console.log(error);
       });
   };
-  // /**
-  //  *  Fetch tasks of the selected day from the API and update the dayTasks state.
-  //  * 
-  //  * @param {string} selectedDate - The selected date in the format 'YYYY-MM-DD'.
-  //  * 
-  //  */
-  // const getTasksOfSelectedDay = (selectedDate) => {
-  //   axiosClient
-  //     .get(`/calendar/calendar/${selectedDate}`)
-  //     .then(({ data }) => {
-  //       setDayTasks(data.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       toast.error("Failed to fetch tasks");
-  //     });
-  // };
   // The value provided by the context that will be accessible by child components
   const calendarApiValue = {
     allTasks,
-    dayTasks,
     setAllTasks,
-    setDayTasks,
     getAllTasks,
-    // getTasksOfSelectedDay,
     loading
   };
 

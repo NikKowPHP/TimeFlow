@@ -13,6 +13,7 @@ import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import ExistingTask from "../Task/ExistingTask";
 import { useLocationState } from "../customHooks/useLocationState";
+import TaskList from "./TaskList";
 /**
  * 
  * TODO: REFACTORING:
@@ -69,6 +70,32 @@ export default function CalendarWeekly() {
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
+
+  useEffect(() => {
+    setCurrentWeekDates(currentWeekDays);
+  }, [dates, currentWeekStartDate]);
+
+  /**
+   * A React effect hook that generates the current week's dates by cell ids based on the selected week dates.
+   * It triggers whenever the available dates or the current week's start date changes.
+   * @effect
+   * @param {Date[]} dates - An array of available dates.
+   * @param {Date} currentWeekStartDate - The start date of the currently displayed week.
+   */
+  useEffect(() => {
+    const initialDatesByCells = {};
+    const hoursOfDay = generateHoursOfDay();
+    hoursOfDay.map((hour, hourIndex) => {
+      currentWeekDates &&
+        currentWeekDates.map((date, dateIndex) => {
+          const dateWithHours = new Date(date);
+          dateWithHours.setHours(hour);
+          const cellId = `${hourIndex}${dateIndex}`;
+          initialDatesByCells[cellId] = dateWithHours;
+        });
+    });
+    setSelectedDatesByCell(initialDatesByCells);
+  }, [currentWeekDates]);
 
   // Event handlers
 
@@ -224,32 +251,6 @@ export default function CalendarWeekly() {
     return [];
   }, [dates, currentWeekStartDate]);
 
-  useEffect(() => {
-    setCurrentWeekDates(currentWeekDays);
-  }, [dates, currentWeekStartDate]);
-
-  /**
-   * A React effect hook that generates the current week's dates by cell ids based on the selected week dates.
-   * It triggers whenever the available dates or the current week's start date changes.
-   * @effect
-   * @param {Date[]} dates - An array of available dates.
-   * @param {Date} currentWeekStartDate - The start date of the currently displayed week.
-   */
-  useEffect(() => {
-    const initialDatesByCells = {};
-    const hoursOfDay = generateHoursOfDay();
-    hoursOfDay.map((hour, hourIndex) => {
-      currentWeekDates &&
-        currentWeekDates.map((date, dateIndex) => {
-          const dateWithHours = new Date(date);
-          dateWithHours.setHours(hour);
-          const cellId = `${hourIndex}${dateIndex}`;
-          initialDatesByCells[cellId] = dateWithHours;
-        });
-    });
-    setSelectedDatesByCell(initialDatesByCells);
-  }, [currentWeekDates]);
-
   const closeDateTimeSelectedCell = () => {
     setClickedCellIndex(null);
   };
@@ -348,18 +349,21 @@ export default function CalendarWeekly() {
    * @param {string} taskTimeEnd - The end time of the task.
    * @returns {Object} CSS style object with the calculated height.
    */
-  const calculateTaskHeight = useMemo(() => (taskTimeStart, taskTimeEnd) => {
-    const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
-    const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
-    const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
-    const cellTimeAvailableMinutes = 60;
-    const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
-    const cellHeight = 64.83;
-    const taskHeight = cellHeight * heightRatio;
-    return {
-      height: `${taskHeight}px`,
-    };
-  }, []) ;
+  const calculateTaskHeight = useMemo(
+    () => (taskTimeStart, taskTimeEnd) => {
+      const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
+      const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
+      const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+      const cellTimeAvailableMinutes = 60;
+      const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+      const cellHeight = 64.83;
+      const taskHeight = cellHeight * heightRatio;
+      return {
+        height: `${taskHeight}px`,
+      };
+    },
+    []
+  );
 
   /**
    * Filters allTasks array to extract specific tasks based on date and hour.
@@ -376,35 +380,6 @@ export default function CalendarWeekly() {
     });
   };
 
-  /**
-   * Renders the content for the modal of the selected task.
-   * @param {Object} task - The task object for which the modal content is being rendered.
-   * @returns {JSX.Element} - JSX element containing the selected task data.
-   */
-  const renderModalContent = (task) => (
-    <>
-      {modalContentHeader()}
-      <div className="modal-task-title">
-        <h2>{task.title}</h2>
-        <p>
-          {task.date} ⋅ {task.time_start}-{task.time_end}
-        </p>
-      </div>
-      <div className="modal-task-additional">
-        {/* TODO: create notifications */}
-        <div className="modal-task-notification">
-          <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-            {svgPaths.notification}
-          </svg>
-          <p>in 5 minutes before</p>
-        </div>
-        <div className="modal-task-owner">
-          <i className="fa fa-calendar"></i>
-          {task.user.name}
-        </div>
-      </div>
-    </>
-  );
   const renderModalChildren = (task) => {
     const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
 
@@ -428,50 +403,6 @@ export default function CalendarWeekly() {
     navigate(`/tasks/${task.id}`, {
       state: { previousLocation: location.pathname },
     });
-  };
-
-  /**
-   * Renders tasks associated with a specific date and hour.
-   * @param {Date} date - The date for which tasks should be rendered.
-   * @param {number} hourIndex - Index of the hour within the day.
-   * @returns {JSX.Element[]} Array of JSX elements representing tasks.
-   */
-  const renderDateTasks = (date, hourIndex) => {
-    const convertedHourIndex = hourIndex.toString().padStart(2, "0");
-    const convertedDate = dateUtils().convertDateSql(date.toLocaleDateString());
-    const filteredTasks = filterTasksForDateAndHour(
-      convertedDate,
-      convertedHourIndex
-    );
-
-    const maxTasksToShow = Math.min(filteredTasks.length, 4);
-
-    return (
-      <div className="tasks-list">
-        {filteredTasks.slice(0, maxTasksToShow).map((task) => {
-          const isModalVisible = () => openedModalId === task.id;
-          return (
-            <Modal
-              classes={`modal-task-description ${modalPositionClass} `}
-              key={task.id}
-              isModalVisible={isModalVisible()}
-              modalPositionClass={modalPositionClass}
-              modalId={openedModalId}
-              content={
-                <ExistingTask
-                  task={task}
-                  onModalClose={onModalClose}
-                  onDelete={onTaskDelete}
-                  onTaskEdit={onTaskEdit}
-                />
-              }
-            >
-              {renderModalChildren(task)}
-            </Modal>
-          );
-        })}
-      </div>
-    );
   };
 
   /**
@@ -502,7 +433,18 @@ export default function CalendarWeekly() {
         className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
         onClick={handleCellClick}
       >
-        {renderDateTasks(date, hourIndex)}
+        {/* {renderDateTasks(date, hourIndex)} */}
+        <TaskList
+          date={date}
+          hourIndex={hourIndex}
+          openedModalId={openedModalId}
+          modalPositionClass={modalPositionClass}
+          onModalClose={onModalClose}
+          onTaskDelete={onTaskDelete}
+          onTaskEdit={onTaskEdit}
+          renderModalChildren={renderModalChildren}
+          filterTasksForDateAndHour={filterTasksForDateAndHour}
+        />
 
         {/* Click on cell content */}
         {cellClassNameSelected === "clicked-cell" && (

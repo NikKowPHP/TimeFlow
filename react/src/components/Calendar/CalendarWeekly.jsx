@@ -11,9 +11,9 @@ import Modal from "../modals/Modal";
 import TruncatedText from "../TruncatedText";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
-import ExistingTask from "../Task/ExistingTask";
 import { useLocationState } from "../customHooks/useLocationState";
 import TaskList from "./TaskList";
+import Loading from "../Loading";
 /**
  * 
  * TODO: REFACTORING:
@@ -42,8 +42,14 @@ export default function CalendarWeekly() {
     hideModal,
   } = useModalState();
 
-  const { dates, currentDate, allTasks, selectedDate, setSelectedDate } =
-    useCalendarState();
+  const {
+    dates,
+    currentDate,
+    allTasks,
+    selectedDate,
+    setSelectedDate,
+    loading,
+  } = useCalendarState();
 
   // Destructure functions from calendarUtils
   const {
@@ -651,8 +657,9 @@ export default function CalendarWeekly() {
       </div>
     </>
   );
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="calendar-weekly__container">
       {currentWeekDates && renderCurrentWeekDates()}
       {renderTimeGrid()}

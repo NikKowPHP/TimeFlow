@@ -11,6 +11,7 @@ import NewTask from "../../Task/NewTask";
 import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
 import { useLocationState } from "../../customHooks/useLocationState";
+import Loading from "../../Loading";
 
 /**
  * CalendarMonthly Component
@@ -37,12 +38,13 @@ export default function CalendarMonthly() {
     currentDate,
     selectedDate,
     setSelectedDate,
-    getTasksByDate,
     refreshTasks,
+    allTasks,
+    loading,
   } = useCalendarState();
 
   const { convertDateSql } = dateUtils();
-  const { onTaskDelete } = taskUtils({
+  const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
   });
 
@@ -198,7 +200,7 @@ export default function CalendarMonthly() {
    * @returns {JSX.Element} - JSX element representing the list of tasks.
    */
   const renderDateTasks = (date) => {
-    const dateTasks = getTasksByDate(date);
+    const dateTasks = getTasksByDate(date, allTasks);
     const maxTasksToShow = Math.min(dateTasks.length, 4);
 
     // Function to render each task as a modal content
@@ -252,37 +254,37 @@ export default function CalendarMonthly() {
         ))}
     </ol>
   );
+  const renderDateChildren = (id, date) => (
+    <li
+      className={`${calendarUtils().getActiveDateClass(
+        id,
+        currentDate,
+        selectedDate
+      )} date`}
+      onClick={(event) =>
+        handleOnDateClick({
+          event: event,
+          modalId: id,
+          selectedDate: date,
+        })
+      }
+      key={id}
+    >
+      {date.getDate()}
+      {renderDateTasks(date)}
+    </li>
+  );
 
   // Render the main component
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="calendar-by-month-wrapper">
       {renderDays()}
 
       <ol className="calendar-by-month-dates">
         {dates.map((date, index) => {
           const id = date.toLocaleDateString();
-          // Function to render children content for each date
-          const renderChildren = () => (
-            <li
-              className={`${calendarUtils().getActiveDateClass(
-                id,
-                currentDate,
-                selectedDate
-              )} date`}
-              onClick={(event) =>
-                handleOnDateClick({
-                  event: event,
-                  modalId: id,
-                  selectedDate: date,
-                })
-              }
-              key={index}
-            >
-              {date.getDate()}
-              {renderDateTasks(date)}
-            </li>
-          );
-
           // Render modal for each date
           return (
             <Modal
@@ -307,7 +309,7 @@ export default function CalendarMonthly() {
                 </div>
               }
             >
-              {renderChildren()}
+              {renderDateChildren(id, date)}
             </Modal>
           );
         })}

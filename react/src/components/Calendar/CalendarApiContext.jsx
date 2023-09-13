@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 
 /**
  * Calendar API Context
- * 
+ *
  * This context provides access to the calendar-related data and functions using React's Context API.
- * 
+ *
  * @typedef {object} calendarApiValue
  * @property {Array} allTasks - An array containing all tasks.
  * @property {Array} dayTasks - An array containing all tasks of the selected day.
@@ -27,10 +27,10 @@ const CalendarApiContext = createContext({
 
 /**
  * Calendar API Provider Component
- * 
+ *
  * The CalendarApiProvider is a wrapper component that provides the CalendarApiContext to its child components.
  * It also contains the state and functions related to calendar data management.
- * 
+ *
  * @param {object} props - The props for the CalendarApiProvider component.
  * @param {React.ReactNode} props.children - The child components wrapped by the CalendarApiProvider.
  * @returns {React.ReactNode} - The JSX element representing the wrapped child components.
@@ -58,7 +58,7 @@ export function CalendarApiProvider({ children }) {
     allTasks,
     setAllTasks,
     getAllTasks,
-    loading
+    loading,
   };
 
   return (
@@ -70,10 +70,10 @@ export function CalendarApiProvider({ children }) {
 
 /**
  * Hook to Access Calendar API Context
- * 
+ *
  * This hook provides easy access to the CalendarApiContext.
- * 
+ *
  * @returns {CalendarApiValue} - The context value containing calendar-related data and functions.
- * 
+ *
  */
 export const useCalendarApiContext = () => useContext(CalendarApiContext);

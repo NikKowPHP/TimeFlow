@@ -304,7 +304,7 @@ export default function CalendarMonthly() {
                     clickedPeriodStart={clickedPeriodStart}
                     clickedPeriodEnd={clickedPeriodEnd}
                     onModalClose={onModalClose}
-                    onTaskSet={setNewTaskTitle}
+                    onTitleSet={setNewTaskTitle}
                   />
                 </div>
               }

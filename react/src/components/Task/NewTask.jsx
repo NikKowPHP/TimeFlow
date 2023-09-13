@@ -11,18 +11,15 @@ export default function NewTask({
   clickedPeriodStart,
   clickedPeriodEnd,
   onModalClose,
-  onTaskSet,
+  onTitleSet,
 }) {
-
   /**
    * Renders DateSelection component with specified props.
    * @returns {JSX.Element} JSX element representing the DateSelection component.
    */
   const renderDateSelection = () => (
     <DateSelection
-      onSelectDate={(newSelectedDate) =>
-        onDateSelection(newSelectedDate)
-      }
+      onSelectDate={(newSelectedDate) => onDateSelection(newSelectedDate)}
       defaultDate={selectedDate}
     />
   );
@@ -36,9 +33,7 @@ export default function NewTask({
   const renderTimeSelection = (defaultTime, isStart) => (
     <div className="time-selection-block">
       <TimeSelection
-        onSelectTime={(selectedTime) =>
-          onTimeSelection(selectedTime, isStart)
-        }
+        onSelectTime={(selectedTime) => onTimeSelection(selectedTime, isStart)}
         defaultTime={defaultTime}
       />
     </div>
@@ -50,12 +45,9 @@ export default function NewTask({
    */
   const renderModalContentHeader = () => (
     <div className="modal-tools">
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.envelope}
-      </svg>
       <svg
-        style={{ cursor: "pointer" }}
         onClick={() => onModalClose()}
+        className="svg-control"
         focusable="false"
         width="20"
         height="20"
@@ -81,9 +73,7 @@ export default function NewTask({
           <input
             type="text"
             placeholder="Add title"
-            onChange={(event) =>
-              onTaskSet(event)
-            }
+            onChange={(event) => onTitleSet(event)}
           />
           <div className="modal-task-time">
             {renderDateSelection()}
@@ -118,7 +108,6 @@ export default function NewTask({
       </form>
     </div>
   );
-
 
   return renderModalNewTaskForm(renderModalContentHeader());
 }

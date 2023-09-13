@@ -113,6 +113,14 @@ input:focus {
   background-color: rgba(164, 94, 192, 0.116);
 }
 
+.svg-control {
+  cursor: pointer;
+}
+.svg-control:hover,
+.svg-control:active,
+.svg-control:focus {
+  fill: #00000086;
+}
 .text-center {
   text-align: center;
 }
@@ -164,6 +172,9 @@ table > tbody > tr > td {
 }
 .notification-error {
   background-color: #a70000;
+}
+.cursor--pointer {
+  cursor: pointer;
 }
 
 /* Login/Signup forms*/

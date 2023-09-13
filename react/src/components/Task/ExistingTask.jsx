@@ -6,7 +6,7 @@ export default function ExistingTask({ task, onModalClose, onDelete, onTaskEdit 
   const modalContentHeader = () => (
     <div className="modal-tools">
       <svg
-        className="cursor--pointer"
+        className="svg-control cursor--pointer "
         onClick={() => onTaskEdit(task)}
         focusable="false"
         width="20"
@@ -15,11 +15,9 @@ export default function ExistingTask({ task, onModalClose, onDelete, onTaskEdit 
       >
         {svgPaths.edit}
       </svg>
-      <button className="btn-transparent" onClick={() => onDelete(task)}>
-        <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+        <svg className="svg-control" onClick={() => onDelete(task)} focusable="false" width="20" height="20" viewBox="0 0 24 24">
           {svgPaths.delete}
         </svg>
-      </button>
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
         {svgPaths.envelope}
       </svg>

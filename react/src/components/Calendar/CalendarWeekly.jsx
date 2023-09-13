@@ -14,6 +14,7 @@ import TimeSelection from "../TimeSelection";
 import { useLocationState } from "../customHooks/useLocationState";
 import TaskList from "./TaskList";
 import Loading from "../Loading";
+import NewTask from "../Task/NewTask";
 /**
  * 
  * TODO: REFACTORING:
@@ -49,6 +50,7 @@ export default function CalendarWeekly() {
     selectedDate,
     setSelectedDate,
     loading,
+    refreshTasks,
   } = useCalendarState();
 
   // Destructure functions from calendarUtils
@@ -112,6 +114,7 @@ export default function CalendarWeekly() {
    */
   function handleDataFromChild(data) {
     if (data) {
+      refreshTasks();
       hideModal();
       setClickedCellIndex(null);
       toast.success(`The task '${data.title}' was successfully created`);
@@ -439,7 +442,6 @@ export default function CalendarWeekly() {
         className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
         onClick={handleCellClick}
       >
-        {/* {renderDateTasks(date, hourIndex)} */}
         <TaskList
           date={date}
           hourIndex={hourIndex}
@@ -502,6 +504,9 @@ export default function CalendarWeekly() {
       />
     </div>
   );
+  const onTitleChangeNewTask = (event) => {
+    setTask({ ...task, title: event.target.value });
+  };
 
   /**
    * Renders the modal content for creating a new task with specified parameters.
@@ -580,6 +585,8 @@ export default function CalendarWeekly() {
     </Modal>
   );
 
+  const renderModalNewTask = (cellId) => {};
+
   /**
    * Renders the time grid containing cells for each hour and date within the week.
    *
@@ -603,10 +610,19 @@ export default function CalendarWeekly() {
                     dateIndex,
                     hourIndex
                   );
-                  const modalContent = renderModalContentNewTask(
-                    dayName,
-                    cellId,
-                    modalContentHeader()
+                  const modalContent = (
+                    <NewTask
+                      formId={cellId}
+                      openedModalId={openedModalId}
+                      selectedDate={selectedDate}
+                      onDateSelection={handleDateSelection}
+                      onTimeSelection={handleTimeSelection}
+                      handleTaskCreation={handleTaskCreation}
+                      clickedPeriodStart={clickedPeriodStart}
+                      clickedPeriodEnd={clickedPeriodEnd}
+                      onModalClose={onModalClose}
+                      onTitleSet={onTitleChangeNewTask}
+                    />
                   );
 
                   return renderModalWrapper(cellId, modalContent, cellContent);

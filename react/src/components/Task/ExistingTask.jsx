@@ -1,7 +1,12 @@
 import React from "react";
 import svgPaths from "../svgPaths";
 
-export default function ExistingTask({ task, onModalClose, onDelete, onTaskEdit }) {
+export default function ExistingTask({
+  task,
+  onModalClose,
+  onDelete,
+  onTaskEdit,
+}) {
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">
@@ -15,14 +20,18 @@ export default function ExistingTask({ task, onModalClose, onDelete, onTaskEdit 
       >
         {svgPaths.edit}
       </svg>
-        <svg className="svg-control" onClick={() => onDelete(task)} focusable="false" width="20" height="20" viewBox="0 0 24 24">
-          {svgPaths.delete}
-        </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.envelope}
+      <svg
+        className="svg-control"
+        onClick={() => onDelete(task)}
+        focusable="false"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+      >
+        {svgPaths.delete}
       </svg>
       <svg
-        style={{ cursor: "pointer" }}
+        className="svg-control"
         onClick={() => onModalClose()}
         focusable="false"
         width="20"

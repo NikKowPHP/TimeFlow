@@ -42,6 +42,7 @@ export function CalendarApiProvider({ children }) {
 
   // Fetch all tasks from the API and update the allTasks state.
   const getAllTasks = () => {
+    setLoading(true);
     axiosClient
       .get(`/calendar/calendar/`)
       .then(({ data }) => {

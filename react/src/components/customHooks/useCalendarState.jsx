@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useCalendarApiContext } from "../Calendar/CalendarApiContext";
 import { calendarUtils } from "../../utils/calendarUtils.js";
-import { dateUtils } from "../../utils/dateUtils";
 
 /**
  * useCalendarState Hook

@@ -50,7 +50,6 @@ export default function CalendarWeekly() {
     selectedDate,
     setSelectedDate,
     loading,
-    refreshTasks,
   } = useCalendarState();
 
   // Destructure functions from calendarUtils
@@ -114,7 +113,6 @@ export default function CalendarWeekly() {
    */
   function handleDataFromChild(data) {
     if (data) {
-      refreshTasks();
       hideModal();
       setClickedCellIndex(null);
       toast.success(`The task '${data.title}' was successfully created`);

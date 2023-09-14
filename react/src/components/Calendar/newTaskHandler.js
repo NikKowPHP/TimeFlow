@@ -26,7 +26,6 @@ export default function newTaskHandler({ onDataReceived }) {
 		axiosClient.post(`/calendar/calendar`, task)
 		.then(({data}) => {
 			refreshTasks();
-
 			onDataReceived(data)
 
 		})

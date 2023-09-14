@@ -35,14 +35,18 @@ export default function CalendarMonthly() {
   });
   const {
     dates,
+    month,
     currentDate,
     selectedDate,
     setSelectedDate,
     refreshTasks,
     allTasks,
     loading,
+    goToPrevMonth,
+    goToNextMonth,
   } = useCalendarState();
 
+  const { getMonthName } = calendarUtils();
   const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
@@ -279,41 +283,60 @@ export default function CalendarMonthly() {
   return loading ? (
     <Loading />
   ) : (
-    <div className="calendar-by-month-wrapper">
-      {renderDays()}
+    <div className="calendar-by-month">
+      <div className="calendar-weekly__dates-switcher-container">
+        <span
+          onClick={goToPrevMonth}
+          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
+        >
+          chevron_left
+        </span>
+        <span className="calendar-monthy__month-name">
+          {getMonthName(month)}
+        </span>
+        <span
+          onClick={goToNextMonth}
+          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
+        >
+          chevron_right
+        </span>
+      </div>
+      <div className="calendar-by-month-wrapper">
+        {renderDays()}
 
-      <ol className="calendar-by-month-dates">
-        {dates.map((date, index) => {
-          const id = date.toLocaleDateString();
-          // Render modal for each date
-          return (
-            <Modal
-              isModalVisible={openedModalId === id}
-              modalPositionClass={modalPositionClass}
-              classes={`modal-task-description ${modalPositionClass} `}
-              key={id}
-              content={
-                <div>
-                  <NewTask
-                    formId={id}
-                    openedModalId={openedModalId}
-                    selectedDate={date}
-                    onDateSelection={handleDateSelection}
-                    onTimeSelection={handleTimeSelection}
-                    handleTaskCreation={handleTaskCreation}
-                    clickedPeriodStart={clickedPeriodStart}
-                    clickedPeriodEnd={clickedPeriodEnd}
-                    onModalClose={onModalClose}
-                    onTitleSet={setNewTaskTitle}
-                  />
-                </div>
-              }
-            >
-              {renderDateChildren(id, date)}
-            </Modal>
-          );
-        })}
-      </ol>
+        <ol className="calendar-by-month-dates">
+          {dates.map((date, index) => {
+            const id = date.toLocaleDateString();
+            // Render modal for each date
+            return (
+              <Modal
+                isModalVisible={openedModalId === id}
+                modalPositionClass={modalPositionClass}
+                classes={`modal-task-description ${modalPositionClass} `}
+                key={id}
+                content={
+                  <div>
+                    <NewTask
+                      formId={id}
+                      openedModalId={openedModalId}
+                      selectedDate={date}
+                      onDateSelection={handleDateSelection}
+                      onTimeSelection={handleTimeSelection}
+                      handleTaskCreation={handleTaskCreation}
+                      clickedPeriodStart={clickedPeriodStart}
+                      clickedPeriodEnd={clickedPeriodEnd}
+                      onModalClose={onModalClose}
+                      onTitleSet={setNewTaskTitle}
+                    />
+                  </div>
+                }
+              >
+                {renderDateChildren(id, date)}
+              </Modal>
+            );
+          })}
+        </ol>
+      </div>
     </div>
   );
 }

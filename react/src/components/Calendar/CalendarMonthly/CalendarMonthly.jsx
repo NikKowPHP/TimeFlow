@@ -12,6 +12,7 @@ import ExistingTask from "../../Task/ExistingTask";
 import { taskUtils } from "../../../utils/taskUtils";
 import { useLocationState } from "../../customHooks/useLocationState";
 import Loading from "../../Loading";
+import TruncatedText from "../../TruncatedText";
 
 /**
  * CalendarMonthly Component
@@ -205,7 +206,7 @@ export default function CalendarMonthly() {
    */
   const renderDateTasks = (date) => {
     const dateTasks = getTasksByDate(date, allTasks);
-    const maxTasksToShow = Math.min(dateTasks.length, 4);
+    const maxTasksToShow = Math.min(dateTasks.length, 3);
 
     // Function to render each task as a modal content
     const modalChildren = (task) => (
@@ -213,8 +214,10 @@ export default function CalendarMonthly() {
         className={`task-option ${toggleTaskActiveClass(task.id)} `}
         onClick={(event) => handleOnClick({ event: event, modalId: task.id })}
       >
-        {`${task.title} ${task.time_start}-${task.time_end}`}
+        <TruncatedText text={task.title} maxCharacters={6} />
+        {` ${task.time_start}-${task.time_end}`}
       </li>
+      // TODO: if there is any more tasks per this day, show 'other tasks' menu to display all of them.
     );
 
     return (

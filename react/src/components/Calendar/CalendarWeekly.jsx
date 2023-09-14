@@ -15,6 +15,7 @@ import { useLocationState } from "../customHooks/useLocationState";
 import TaskList from "./TaskList";
 import Loading from "../Loading";
 import NewTask from "../Task/NewTask";
+import { taskUtils } from "../../utils/taskUtils";
 /**
  * 
  * TODO: REFACTORING:
@@ -49,6 +50,7 @@ export default function CalendarWeekly() {
     allTasks,
     selectedDate,
     setSelectedDate,
+    refreshTasks,
     loading,
   } = useCalendarState();
 
@@ -63,6 +65,19 @@ export default function CalendarWeekly() {
     convertTime,
     convertDecimalToTime,
   } = calendarUtils();
+
+  const { onTaskDelete } = taskUtils({
+    onStateReceived: handleTaskState,
+  });
+
+  function handleTaskState(state) {
+    // Handle task deletion.
+    if (state.status === 204) {
+      hideModal();
+      refreshTasks();
+      toast.success(`The task '${state.task.title}' was successfully deleted`);
+    }
+  }
 
   const { convertDateSql } = dateUtils();
   const { task, setTask, handleTaskCreation } = newTaskHandler({
@@ -404,8 +419,6 @@ export default function CalendarWeekly() {
   const onModalClose = () => {
     hideModal();
   };
-  const onTaskDelete = () => {};
-
   const onTaskEdit = (task) => {
     navigate(`/tasks/${task.id}`, {
       state: { previousLocation: location.pathname },

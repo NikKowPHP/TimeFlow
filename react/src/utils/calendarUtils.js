@@ -7,11 +7,10 @@
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
 export function calendarUtils() {
+
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
-    // Check if date is a valid Date object before calling toLocaleDateString
     const modifiedDate = date instanceof Date ? date.toLocaleDateString() : "";
-    // Check if presentDate is a valid Date object before calling toLocaleDateString
     const presentDateModified =
       presentDate instanceof Date ? presentDate.toLocaleDateString() : "";
 
@@ -22,7 +21,7 @@ export function calendarUtils() {
     if (presentDateModified === modifiedDate) {
       return "current-date";
     } else if (selectedDateModified === modifiedDate) {
-      return "date-active";
+      return "selected-date";
     }
     return "";
   }

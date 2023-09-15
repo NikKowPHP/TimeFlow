@@ -47,7 +47,7 @@ export default function CalendarMonthly() {
     goToNextMonth,
   } = useCalendarState();
 
-  const { getMonthName } = calendarUtils();
+  const { getMonthName, getActiveDateClass } = calendarUtils();
   const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
@@ -263,8 +263,8 @@ export default function CalendarMonthly() {
   );
   const renderDateChildren = (id, date) => (
     <li
-      className={`${calendarUtils().getActiveDateClass(
-        id,
+      className={`${getActiveDateClass(
+        date,
         currentDate,
         selectedDate
       )} date`}
@@ -307,7 +307,7 @@ export default function CalendarMonthly() {
       <div className="calendar-monthly-wrapper">
         {renderDays()}
 
-        <ol className="calendar-monthly-dates">
+        <ol className="calendar-dates calendar-monthly-dates">
           {dates.map((date, index) => {
             const id = date.toLocaleDateString();
             // Render modal for each date

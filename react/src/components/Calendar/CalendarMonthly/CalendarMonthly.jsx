@@ -294,7 +294,7 @@ export default function CalendarMonthly() {
         >
           chevron_left
         </span>
-        <span className="calendar-monthly__month-name">
+        <span className="dates-switcher__month-name">
           {getMonthName(month)}
         </span>
         <span

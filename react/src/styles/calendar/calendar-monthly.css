@@ -90,6 +90,14 @@ CALENDAR BY MONTH
   cursor: pointer;
 }
 
+
+.dates-switcher__month-name {
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
 @media screen and (max-width: 970px) {
   .calendar-monthly-dates .date {
     height: 170px;

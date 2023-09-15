@@ -251,7 +251,7 @@ export default function CalendarMonthly() {
    * @returns {JSX.Element} - JSX Element representing list of weekdays
    */
   const renderDays = () => (
-    <ol className="calendar-by-month-days">
+    <ol className="calendar-monthly-days">
       {calendarUtils()
         .weekDays()
         .map((day, index) => (
@@ -286,28 +286,28 @@ export default function CalendarMonthly() {
   return loading ? (
     <Loading />
   ) : (
-    <div className="calendar-by-month">
-      <div className="calendar-weekly__dates-switcher-container">
+    <div className="calendar-monthly">
+      <div className="dates-switcher-container">
         <span
           onClick={goToPrevMonth}
-          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
+          className="material-symbols-rounded dates-switcher__block"
         >
           chevron_left
         </span>
-        <span className="calendar-monthy__month-name">
+        <span className="calendar-monthly__month-name">
           {getMonthName(month)}
         </span>
         <span
           onClick={goToNextMonth}
-          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
+          className="material-symbols-rounded  dates-switcher__block"
         >
           chevron_right
         </span>
       </div>
-      <div className="calendar-by-month-wrapper">
+      <div className="calendar-monthly-wrapper">
         {renderDays()}
 
-        <ol className="calendar-by-month-dates">
+        <ol className="calendar-monthly-dates">
           {dates.map((date, index) => {
             const id = date.toLocaleDateString();
             // Render modal for each date

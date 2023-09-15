@@ -92,6 +92,6 @@ CALENDAR BY MONTH
 
 @media screen and (max-width: 970px) {
   .calendar-by-month-dates .date {
-    height: 150px;
+    height: 170px;
   }
 }

@@ -2,7 +2,7 @@
 CALENDAR BY MONTH
  */
 
-.calendar-by-month-days {
+.calendar-monthly-days {
   display: grid;
   font-weight: 500;
   grid-template-columns: repeat(7, 1fr);
@@ -11,7 +11,7 @@ CALENDAR BY MONTH
   padding: 0;
   text-align: center;
 }
-.calendar-by-month-days li {
+.calendar-monthly-days li {
   padding: 3px;
   /* height: 70px; */
   display: block;
@@ -19,11 +19,11 @@ CALENDAR BY MONTH
   border-top: 1px solid black;
   border-right: 1px solid black;
 }
-.calendar-by-month-wrapper {
+.calendar-monthly-wrapper {
   border-left: 1px solid black;
   background-color: #fff;
 }
-.calendar-by-month-dates {
+.calendar-monthly-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   list-style: none;
@@ -31,7 +31,7 @@ CALENDAR BY MONTH
   padding: 0;
   text-align: center;
 }
-.calendar-by-month-dates .date {
+.calendar-monthly-dates .date {
   position: relative;
   padding: 3px;
   height: 100px;
@@ -41,7 +41,7 @@ CALENDAR BY MONTH
   border-right: 1px solid black;
 }
 
-.calendar-by-month-dates li::before {
+.calendar-monthly-dates li::before {
   position: absolute;
   content: "";
   left: 50%;
@@ -52,17 +52,17 @@ CALENDAR BY MONTH
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-.calendar-by-month-dates li.active::before {
+.calendar-monthly-dates li.active::before {
   border: 1px solid #9c59b6;
   z-index: 1;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-.calendar-by-month-dates li.current-date::before {
+.calendar-monthly-dates li.current-date::before {
   z-index: inherit;
   background-color: rgba(156, 89, 182, 0.39);
 }
-.calendar-by-month-dates li:hover {
+.calendar-monthly-dates li:hover {
   z-index: inherit;
 }
 .tasks-list ul {
@@ -91,7 +91,7 @@ CALENDAR BY MONTH
 }
 
 @media screen and (max-width: 970px) {
-  .calendar-by-month-dates .date {
+  .calendar-monthly-dates .date {
     height: 170px;
   }
 }

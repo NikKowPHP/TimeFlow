@@ -207,7 +207,11 @@ export default function CalendarMonthly() {
   const renderDateTasks = (date) => {
     const dateTasks = getTasksByDate(date, allTasks);
     const maxTasksToShow = Math.min(dateTasks.length, 3);
+    const tasksRest = dateTasks.length - maxTasksToShow;
+    const showEllipsis = dateTasks.length > 3;
+    const ellipsisId = date.toLocaleDateString() + `${dateTasks.length}`;
 
+    //TODO: pull  the function out of the function
     // Function to render each task as a modal content
     const modalChildren = (task) => (
       <li
@@ -219,6 +223,30 @@ export default function CalendarMonthly() {
       </li>
       // TODO: if there is any more tasks per this day, show 'other tasks' menu to display all of them.
     );
+
+    const renderEllipsis = () => {
+      return (
+        <h5
+          onClick={(event) =>
+            handleOnClick({ event: event, modalId: ellipsisId })
+          }
+          className="date-tasks__ellipsis"
+        >
+          {tasksRest} more
+        </h5>
+      );
+    };
+
+    const renderEllipsisContent = (dateTasks) => {
+      console.log(dateTasks);
+      return (
+        <ul>
+          {dateTasks.map((task) => (
+            <li>{task.title}</li>
+          ))}
+        </ul>
+      );
+    };
 
     return (
       <div className="tasks-list">
@@ -242,6 +270,17 @@ export default function CalendarMonthly() {
               {modalChildren(task)}
             </Modal>
           ))}
+
+          <Modal
+            classes={`modal-task-description ${modalPositionClass} `}
+            key={task.id}
+            isModalVisible={openedModalId === ellipsisId}
+            modalPositionClass={modalPositionClass}
+            modalId={openedModalId}
+            content={renderEllipsisContent(dateTasks)}
+          >
+            {showEllipsis && renderEllipsis()}
+          </Modal>
         </ul>
       </div>
     );
@@ -263,11 +302,7 @@ export default function CalendarMonthly() {
   );
   const renderDateChildren = (id, date) => (
     <li
-      className={`${getActiveDateClass(
-        date,
-        currentDate,
-        selectedDate
-      )} date`}
+      className={`${getActiveDateClass(date, currentDate, selectedDate)} date`}
       onClick={(event) =>
         handleOnDateClick({
           event: event,

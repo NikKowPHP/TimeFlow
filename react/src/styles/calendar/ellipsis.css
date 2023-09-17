@@ -1,0 +1,11 @@
+.ellipsis-task-list__list {
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+.Ellipsis:hover {
+  background-color: rgba(204, 195, 204, 0.39);
+}
+.ellipsis-task-list__item {
+	font-size: 15px;
+}

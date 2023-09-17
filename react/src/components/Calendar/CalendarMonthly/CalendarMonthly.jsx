@@ -13,6 +13,7 @@ import { taskUtils } from "../../../utils/taskUtils";
 import { useLocationState } from "../../customHooks/useLocationState";
 import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
+import ElipsisTaskList from "../EllipsisTaskList";
 
 /**
  * CalendarMonthly Component
@@ -215,7 +216,7 @@ export default function CalendarMonthly() {
     // Function to render each task as a modal content
     const modalChildren = (task) => (
       <li
-        className={`task-option ${toggleTaskActiveClass(task.id)} `}
+        className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(task.id)} `}
         onClick={(event) => handleOnClick({ event: event, modalId: task.id })}
       >
         <TruncatedText text={task.title} maxCharacters={6} />
@@ -237,20 +238,9 @@ export default function CalendarMonthly() {
       );
     };
 
-    const renderEllipsisContent = (dateTasks) => {
-      console.log(dateTasks);
-      return (
-        <ul>
-          {dateTasks.map((task) => (
-            <li>{task.title}</li>
-          ))}
-        </ul>
-      );
-    };
-
     return (
-      <div className="tasks-list">
-        <ul>
+      <div className="calendar-monthly__date-task-list">
+        <ul className="calendar-monthly__date-task-list__list">
           {dateTasks.slice(0, maxTasksToShow).map((task) => (
             <Modal
               classes={`modal-task-description ${modalPositionClass} `}
@@ -277,7 +267,7 @@ export default function CalendarMonthly() {
             isModalVisible={openedModalId === ellipsisId}
             modalPositionClass={modalPositionClass}
             modalId={openedModalId}
-            content={renderEllipsisContent(dateTasks)}
+            content={<ElipsisTaskList taskList={dateTasks} />}
           >
             {showEllipsis && renderEllipsis()}
           </Modal>

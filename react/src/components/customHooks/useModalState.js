@@ -19,6 +19,9 @@ export function useModalState() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
 
+  const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
+  const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
+
 	// State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
   const [modalPositionClass, setModalPositionClass] =
@@ -92,16 +95,34 @@ export function useModalState() {
     setIsModalVisible(false);
     setOpenedModalId(null);
   };
+  // Show the nested modal with the specified modalId
+  const showNestedModal = (modalId) => {
+    setIsNestedModalVisible(true);
+    setNestedOpenedModalId(modalId);
+    // Adjust the nested modal position based on the click event
+    adjustModalPosition();
+  };
+  // Hide the nested modal
+  const hideNestedModal = () => {
+    setIsNestedModalVisible(false);
+    setNestedOpenedModalId(null);
+  };
 
   // Return the state and functions to be used by the component
   return {
     openedModalId,
     setOpenedModalId,
+    nestedOpenedModalId,
+    setNestedOpenedModalId,
     isModalVisible,
     setIsModalVisible,
+    isNestedModalVisible,
+    setIsNestedModalVisible,
     modalPositionClass,
     setModalVisibility,
     showModal,
     hideModal,
+    showNestedModal,
+    hideNestedModal,
   };
 }

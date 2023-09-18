@@ -267,7 +267,15 @@ export default function CalendarMonthly() {
             isModalVisible={openedModalId === ellipsisId}
             modalPositionClass={modalPositionClass}
             modalId={openedModalId}
-            content={<ElipsisTaskList taskList={dateTasks} />}
+            content={<ElipsisTaskList 
+              modalPositionClass={modalPositionClass}
+              openedModalId={openedModalId}
+              onModalClose={onModalClose}
+              onTaskDelete={onTaskDelete}
+              onTaskEdit={onTaskEdit}
+              taskList={dateTasks} 
+              handleOnTaskClick={handleOnClick}
+              />}
           >
             {showEllipsis && renderEllipsis()}
           </Modal>

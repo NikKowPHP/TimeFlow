@@ -1,18 +1,34 @@
 import "../../styles/calendar/ellipsis.css";
-import React from "react";
+import React, { useState } from "react";
 import svgPaths from "../svgPaths";
 import ExistingTask from "../Task/ExistingTask";
 import Modal from "../modals/Modal";
+import { useModalState } from "../customHooks/useModalState";
 
 export default function ElipsisTaskList({
   taskList,
   onModalClose,
   onTaskDelete,
   onTaskEdit,
-  openedModalId,
-  modalPositionClass,
-  handleOnTaskClick,
 }) {
+  // Get modal's state from custom hook
+  const {
+    modalPositionClass,
+    nestedOpenedModalId,
+    showNestedModal,
+    hideNestedModal,
+  } = useModalState();
+
+  const handleOnTaskClick = ({ event, nestedModalId }) => {
+    debugger;
+    // Close opened nested modal
+    if (nestedOpenedModalId !== null) {
+      hideNestedModal();
+    }
+    event.stopPropagation();
+    showNestedModal(nestedModalId);
+  };
+
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">
@@ -30,10 +46,11 @@ export default function ElipsisTaskList({
   );
 
   const modalTaskChildren = (task) => {
+    const taskModalId = `${task.date}-${task.time_start}-${task.time_end}`;
     return (
       <div
         onClick={(event) =>
-          handleOnTaskClick({ event: event, modalId: task.id})
+          handleOnTaskClick({ event: event, nestedModalId: taskModalId })
         }
         key={task.id}
         className="ellipsis-task-list__item"
@@ -43,25 +60,29 @@ export default function ElipsisTaskList({
     );
   };
   const renderTaskList = () =>
-    taskList.map((task) => (
-      <Modal
-        classes={`modal-task-description ${modalPositionClass} `}
-        key={task.id}
-        isModalVisible={openedModalId === task.id}
-        modalPositionClass={modalPositionClass}
-        modalId={openedModalId}
-        content={
-          <ExistingTask
-            task={task}
-            onModalClose={onModalClose}
-            onDelete={onTaskDelete}
-            onTaskEdit={onTaskEdit}
-          />
-        }
-      >
-        {modalTaskChildren(task)}
-      </Modal>
-    ));
+    taskList.map((task) => {
+      const taskModalId = `${task.date}-${task.time_start}-${task.time_end}`;
+
+      return (
+        <Modal
+          classes={`modal-task-description ${modalPositionClass} `}
+          key={task.id}
+          isModalVisible={nestedOpenedModalId === taskModalId}
+          modalPositionClass={modalPositionClass}
+          modalId={nestedOpenedModalId}
+          content={
+            <ExistingTask
+              task={task}
+              onModalClose={onModalClose}
+              onDelete={onTaskDelete}
+              onTaskEdit={onTaskEdit}
+            />
+          }
+        >
+          {modalTaskChildren(task)}
+        </Modal>
+      );
+    });
   const modalContentBody = () => (
     <div>
       {modalContentHeader()}

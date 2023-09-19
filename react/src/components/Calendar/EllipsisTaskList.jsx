@@ -20,7 +20,6 @@ export default function ElipsisTaskList({
   } = useModalState();
 
   const handleOnTaskClick = ({ event, nestedModalId }) => {
-    debugger;
     // Close opened nested modal
     if (nestedOpenedModalId !== null) {
       hideNestedModal();
@@ -46,7 +45,7 @@ export default function ElipsisTaskList({
   );
 
   const modalTaskChildren = (task) => {
-    const taskModalId = `${task.date}-${task.time_start}-${task.time_end}`;
+    const taskModalId = `${task.title}-${task.date}-${task.time_start}-${task.time_end}`;
     return (
       <div
         onClick={(event) =>
@@ -59,13 +58,16 @@ export default function ElipsisTaskList({
       </div>
     );
   };
+  const onNestedModalClose = () => {
+    hideNestedModal();
+  }
   const renderTaskList = () =>
     taskList.map((task) => {
-      const taskModalId = `${task.date}-${task.time_start}-${task.time_end}`;
+      const taskModalId = `${task.title}-${task.date}-${task.time_start}-${task.time_end}`;
 
       return (
         <Modal
-          classes={`modal-task-description ${modalPositionClass} `}
+          classes={`ellipsis-modal__content ${modalPositionClass} `}
           key={task.id}
           isModalVisible={nestedOpenedModalId === taskModalId}
           modalPositionClass={modalPositionClass}
@@ -73,7 +75,7 @@ export default function ElipsisTaskList({
           content={
             <ExistingTask
               task={task}
-              onModalClose={onModalClose}
+              onModalClose={onNestedModalClose}
               onDelete={onTaskDelete}
               onTaskEdit={onTaskEdit}
             />

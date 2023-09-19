@@ -59,6 +59,7 @@ export default function CalendarMonthly() {
     openedModalId,
     isModalVisible,
     modalPositionClass,
+    modalPositionHeightClass,
     showModal,
     hideModal,
   } = useModalState();
@@ -66,6 +67,7 @@ export default function CalendarMonthly() {
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
+  const modalClasses = `modal-task-description ${modalPositionClass} ${modalPositionHeightClass} `; 
 
   /**
    * Handles data received from a child component (newTaskHandler)
@@ -243,10 +245,9 @@ export default function CalendarMonthly() {
         <ul className="calendar-monthly__date-task-list__list">
           {dateTasks.slice(0, maxTasksToShow).map((task) => (
             <Modal
-              classes={`modal-task-description ${modalPositionClass} `}
+              classes={modalClasses}
               key={task.id}
               isModalVisible={openedModalId === task.id}
-              modalPositionClass={modalPositionClass}
               modalId={openedModalId}
               content={
                 <ExistingTask
@@ -262,13 +263,11 @@ export default function CalendarMonthly() {
           ))}
 
           <Modal
-            classes={`modal-task-description ${modalPositionClass} `}
+            classes={modalClasses}
             key={task.id}
             isModalVisible={openedModalId === ellipsisId}
-            modalPositionClass={modalPositionClass}
             modalId={openedModalId}
             content={<ElipsisTaskList 
-              modalPositionClass={modalPositionClass}
               openedModalId={openedModalId}
               onModalClose={onModalClose}
               onTaskDelete={onTaskDelete}
@@ -347,8 +346,7 @@ export default function CalendarMonthly() {
             return (
               <Modal
                 isModalVisible={openedModalId === id}
-                modalPositionClass={modalPositionClass}
-                classes={`modal-task-description ${modalPositionClass} `}
+                classes={modalClasses}
                 key={id}
                 content={
                   <div>

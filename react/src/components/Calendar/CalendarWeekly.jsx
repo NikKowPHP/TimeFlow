@@ -40,6 +40,8 @@ export default function CalendarWeekly() {
     openedModalId,
     isModalVisible,
     modalPositionClass,
+    modalPositionHeightClass,
+    modalPositionStyles,
     showModal,
     hideModal,
   } = useModalState();
@@ -92,6 +94,7 @@ export default function CalendarWeekly() {
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
+  const modalClasses = `modal-task-description ${modalPositionClass} ${modalPositionHeightClass} `;
 
   useEffect(() => {
     setCurrentWeekDates(currentWeekDays);
@@ -341,6 +344,7 @@ export default function CalendarWeekly() {
    * Renders the header content for the modal.
    * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the modal.
    */
+  // TODO: delete unnacessary func's
   const modalContentHeader = () => (
     <div className="modal-tools">
       <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
@@ -404,7 +408,7 @@ export default function CalendarWeekly() {
 
   const renderModalChildren = (task) => {
     const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
-
+    // TODO: style move
     return (
       <div
         className={`task-option ${toggledTaskActiveClass}`}
@@ -457,7 +461,8 @@ export default function CalendarWeekly() {
           date={date}
           hourIndex={hourIndex}
           openedModalId={openedModalId}
-          modalPositionClass={modalPositionClass}
+          classes={modalClasses}
+          style={modalPositionStyles}
           onModalClose={onModalClose}
           onTaskDelete={onTaskDelete}
           onTaskEdit={onTaskEdit}
@@ -586,8 +591,7 @@ export default function CalendarWeekly() {
   const renderModalWrapper = (cellId, modalContent, cellContent) => (
     <Modal
       isModalVisible={openedModalId === cellId}
-      modalPositionClass={modalPositionClass}
-      classes={`modal-task-description ${modalPositionClass} `}
+      classes={modalClasses}
       key={cellId}
       content={modalContent}
     >

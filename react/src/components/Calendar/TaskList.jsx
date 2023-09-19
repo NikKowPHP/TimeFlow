@@ -7,7 +7,8 @@ const TaskList = ({
   date,
   hourIndex,
   openedModalId,
-  modalPositionClass,
+  classes,
+  style,
   onTaskDelete,
   onModalClose,
   onTaskEdit,
@@ -39,10 +40,10 @@ const TaskList = ({
         const isModalVisible = () => openedModalId === task.id;
         return (
           <Modal
-            classes={`modal-task-description ${modalPositionClass} `}
+            classes={classes}
+            style={style}
             key={task.id}
             isModalVisible={isModalVisible()}
-            modalPositionClass={modalPositionClass}
             modalId={openedModalId}
             content={
               <ExistingTask

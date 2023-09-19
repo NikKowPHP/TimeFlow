@@ -19,17 +19,17 @@ export default function Modal({
   children,
   content,
   classes = "",
+  style,
   isModalVisible,
-  modalPositionClass,
   modalId,
 }) {
 
-   /**
+  /**
    * Handle click events on the modal content to prevent event bubbling.
-   * 
+   *
    * @param {React.MouseEvent} event - The click event object.
    */
-  
+
   const handleContentClick = (event) => {
     event.stopPropagation();
   };
@@ -42,8 +42,9 @@ export default function Modal({
       {isModalVisible && (
         <div
           data-modal-id={modalId}
-          className={`modal ${classes} ${modalPositionClass}`}
+          className={`modal ${classes}`}
           onClick={handleContentClick}
+          style={style}
         >
           {content}
         </div>

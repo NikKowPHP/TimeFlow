@@ -138,6 +138,15 @@
   z-index: 1;
 }
 
+.calendar-weekly__task-option__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.calendar-weekly__task-option__time {
+  font-size: 13px;
+}
+
 .task-period-background {
   background-color: lightblue; /* Change this to your desired background color */
   height: 100%;

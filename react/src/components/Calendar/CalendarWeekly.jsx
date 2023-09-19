@@ -345,29 +345,6 @@ export default function CalendarWeekly() {
    * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the modal.
    */
   // TODO: delete unnacessary func's
-  const modalContentHeader = () => (
-    <div className="modal-tools">
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.edit}
-      </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.delete}
-      </svg>
-      <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-        {svgPaths.envelope}
-      </svg>
-      <svg
-        style={{ cursor: "pointer" }}
-        onClick={() => hideModal()}
-        focusable="false"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-      >
-        {svgPaths.close}
-      </svg>
-    </div>
-  );
 
   /**
    * Calculates the height of a task in pixels based on its start and end times.
@@ -411,11 +388,14 @@ export default function CalendarWeekly() {
     // TODO: style move
     return (
       <div
-        className={`task-option ${toggledTaskActiveClass}`}
+        className={` calendar-weekly__task-option__wrapper  task-option ${toggledTaskActiveClass}`}
         onClick={(event) => handleExistingTaskClick(event, task.id)}
         style={calculateTaskHeight(task.time_start, task.time_end)}
       >
-        {`${task.title} ${task.time_start}-${task.time_end}`}
+        <span className="calendar-weekly__task-option__title">{<TruncatedText text={task.title} maxCharacters={8} />}</span>
+        <span className="calendar-weekly__task-option__time">
+          {task.time_start}-{task.time_end}
+        </span>
       </div>
     );
   };
@@ -523,62 +503,6 @@ export default function CalendarWeekly() {
   const onTitleChangeNewTask = (event) => {
     setTask({ ...task, title: event.target.value });
   };
-
-  /**
-   * Renders the modal content for creating a new task with specified parameters.
-   * @param {string} dayName - The name of the day.
-   * @param {string} cellId - The unique ID of the cell.
-   * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.
-   * @returns {JSX.Element} - The JSX element representing the modal content for creating a new task.
-   */
-  const renderModalContentNewTask = (dayName, cellId, modalContentHeader) => (
-    <div>
-      {/* render header of modal */}
-      {modalContentHeader}
-      <form onSubmit={handleTaskCreation}>
-        <div className="modal-task-title">
-          <h2>Create a new event </h2>
-          <input
-            type="text"
-            placeholder="Add title"
-            onChange={(event) =>
-              setTask({ ...task, title: event.target.value })
-            }
-          />
-          <div className="modal-task-time">
-            {renderDateSelection(cellId)}
-
-            <div className="modal-task-time_time-selection-container">
-              {renderTimeSelection(clickedPeriodStart, true)}-
-              {renderTimeSelection(clickedPeriodEnd, false)}
-            </div>
-            <div className="modal-task-description-container"></div>
-          </div>
-          <div className="modal-task__time-period">
-            <span className="modal-task-time__day">{dayName}</span>
-            <span>
-              {clickedPeriodStart}-{clickedPeriodEnd}
-            </span>
-          </div>
-        </div>
-        <div className="modal-task-additional">
-          {/* TODO: create notifications */}
-          <div className="modal-task-notification">
-            <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-              {svgPaths.notification}
-            </svg>
-            <p>in 5 minutes before</p>
-          </div>
-          <div className="modal-task-owner">
-            <i className="fa fa-calendar"></i>
-          </div>
-          <button className="btn btn-block" type="submit">
-            Create
-          </button>
-        </div>
-      </form>
-    </div>
-  );
 
   /**
    * Renders a wrapper around the Modal component with the provided content.

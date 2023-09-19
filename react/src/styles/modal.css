@@ -3,27 +3,17 @@
   width: 100%;
 	display: inline-block;
 }
-.modal {
-	position: absolute;
-	/* top: 110%;
-	left: 50%; */
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 5px;
-  border-radius: 3px;
-  white-space: nowrap;
-  font-size: 14px;
-  opacity: 0.9;
-  z-index: 8;
-}
 .modal-right {
-	top: 100%;
-	left: 200%;
+	left: 270%;
 }
 .modal-left {
-  top: 100% ;
-  left: -100% ;
+  left: -170% ;
+}
+.modal-top {
+  top: -400px;
+}
+.modal-bottom {
+  top: 0;
 }
 .modal-task-description {
 	position: absolute;
@@ -33,6 +23,7 @@
   color: #000;
   padding: 15px 20px 15px 20px;
   width: 400px;
+  height: auto;
   border-radius: 3px;
   white-space: nowrap;
   font-size: 14px;

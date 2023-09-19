@@ -84,7 +84,6 @@
   flex-direction: row;
 }
 .tasks-list .modal-container{
-  margin-top: 3px;
   margin-left: 5px;
   display: flex;
   flex-direction: column;

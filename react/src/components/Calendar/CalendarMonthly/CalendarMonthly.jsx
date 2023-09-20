@@ -62,7 +62,7 @@ export default function CalendarMonthly() {
     modalPositionHeightClass,
     showModal,
     hideModal,
-  } = useModalState();
+  } = useModalState({ onStateReceived: handleModalState });
 
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
@@ -86,7 +86,7 @@ export default function CalendarMonthly() {
   const resetDateState = () => {
     setSelectedDate(null);
     setClickedCellIndex(null);
-  }
+  };
 
   // Function handles closing the current modal
   const onModalClose = () => {
@@ -102,6 +102,9 @@ export default function CalendarMonthly() {
       refreshTasks();
       toast.success(`The task '${state.task.title}' was successfully deleted`);
     }
+  }
+  function handleModalState (state) {
+    !state.isModalVisible && resetDateState();
   }
 
   function onTaskEdit(task) {
@@ -255,11 +258,11 @@ export default function CalendarMonthly() {
 
     const renderNewTaskBox = () => (
       <li className="calendar-monthly__clicked-new-task-modal">
-          {task.title ? (
-            <TruncatedText text={task.title} maxCharacters={10} />
-          ) : (
-            "(Untitled)"
-          )}
+        {task.title ? (
+          <TruncatedText text={task.title} maxCharacters={10} />
+        ) : (
+          "(Untitled)"
+        )}
       </li>
     );
     return (
@@ -300,7 +303,7 @@ export default function CalendarMonthly() {
               />
             }
           >
-              {clickedCellIndex === id && renderNewTaskBox()}
+            {clickedCellIndex === id && renderNewTaskBox()}
             {showEllipsis && renderEllipsis()}
           </Modal>
         </ul>

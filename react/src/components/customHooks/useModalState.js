@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
 /**
  * useModalState Hook
@@ -14,7 +14,8 @@ import { useState, useEffect} from "react";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState() {
+export function useModalState({onStateReceived}) {
+  // TODO: CALCULATE HEIGHT TO ADJUST THE MODAL
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
@@ -22,17 +23,18 @@ export function useModalState() {
   const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
   const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
 
-	// State for modal position
+  // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
-  const [modalPositionClass, setModalPositionClass] =
-    useState("modal-right");
+  const [modalPositionClass, setModalPositionClass] = useState("modal-right");
+  const [modalPositionHeightClass, setModalPositionHeightClass] =
+    useState("modal-bottom");
 
-	// Function to explicitly set the visibility of the modal
+  // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
     setIsModalVisible(isVisible);
   };
 
-	// Calculate the center of the screen and update on window resize
+  // Calculate the center of the screen and update on window resize
   useEffect(() => {
     const calculateScreenCenter = () => {
       const centerX = window.innerWidth / 2;
@@ -52,13 +54,13 @@ export function useModalState() {
     };
   }, []);
 
-
-  // Event listener to handle clicks outside the modal
+  // Event listener to handle click outside the modal
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Check if the modal is visible and the click is not the opened modal
       if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
         hideModal();
+        onStateReceived({isModalVisible: false});
       }
     };
     document.addEventListener("click", handleClickOutside);
@@ -74,6 +76,11 @@ export function useModalState() {
       setModalPositionClass("modal-left");
     } else {
       setModalPositionClass("modal-right");
+    }
+    if (mouseCoordinates.y > screenCenter.y) {
+      setModalPositionHeightClass("modal-top");
+    } else {
+      setModalPositionHeightClass("modal-bottom");
     }
   };
 
@@ -119,6 +126,7 @@ export function useModalState() {
     isNestedModalVisible,
     setIsNestedModalVisible,
     modalPositionClass,
+    modalPositionHeightClass,
     setModalVisibility,
     showModal,
     hideModal,

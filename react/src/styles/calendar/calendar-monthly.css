@@ -81,6 +81,17 @@ CALENDAR BY MONTH
 .date-tasks__ellipsis:hover {
   color: rgba(0, 0, 0, 0.568);
 }
+.calendar-monthly__clicked-new-task-modal {
+    text-align: center;
+    color: rgb(252, 252, 252);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 10px;
+    background-color: rgb(173, 114, 196);
+    box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
+    border-radius: 10%;
+
+}
 @media screen and (max-width: 970px) {
   .calendar-monthly-dates .date {
     height: 180px;

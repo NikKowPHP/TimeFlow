@@ -140,13 +140,13 @@ export default function CalendarMonthly() {
    */
   const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
     setSelectedDate(selectedDate);
-    setClickedCellIndex(cellId);
-    initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
     handleOnClick({
       event: event,
       modalId: modalId,
       selectedDate: selectedDate,
     });
+    setClickedCellIndex(cellId);
+    initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
   };
 
   /**
@@ -160,6 +160,7 @@ export default function CalendarMonthly() {
     // Close opened modal
     if (openedModalId !== null) {
       hideModal();
+      resetDateState();
     }
     event.stopPropagation();
     showModal(modalId);

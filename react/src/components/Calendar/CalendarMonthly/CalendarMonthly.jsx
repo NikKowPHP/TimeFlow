@@ -1,5 +1,5 @@
 import "../../../styles/calendar/calendar-monthly.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../modals/Modal";
 import { calendarUtils } from "../../../utils/calendarUtils";
 import { dateUtils } from "../../../utils/dateUtils";
@@ -62,7 +62,7 @@ export default function CalendarMonthly() {
     modalPositionHeightClass,
     showModal,
     hideModal,
-  } = useModalState({ onStateReceived: handleModalState });
+  } = useModalState();
 
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
@@ -82,6 +82,9 @@ export default function CalendarMonthly() {
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
+  useEffect(() => {
+    openedModalId === null && resetDateState();
+  }, [openedModalId])
 
   const resetDateState = () => {
     setSelectedDate(null);

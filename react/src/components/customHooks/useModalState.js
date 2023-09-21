@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState({onStateReceived}) {
+export function useModalState() {
   // TODO: CALCULATE HEIGHT TO ADJUST THE MODAL
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -60,7 +60,6 @@ export function useModalState({onStateReceived}) {
       // Check if the modal is visible and the click is not the opened modal
       if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
         hideModal();
-        onStateReceived({isModalVisible: false});
       }
     };
     document.addEventListener("click", handleClickOutside);

@@ -30,10 +30,10 @@ import ElipsisTaskList from "../EllipsisTaskList";
  */
 
 export default function CalendarMonthly() {
-  const { navigate } = useLocationState();
 
+  // Import states and functions
   const { task, setTask, handleTaskCreation } = newTaskHandler({
-    onDataReceived: handleDataFromChild,
+    onDataReceived: displaySuccessTaskCreation,
   });
   const {
     dates,
@@ -48,7 +48,8 @@ export default function CalendarMonthly() {
     goToNextMonth,
   } = useCalendarState();
 
-  const { getMonthName, getActiveDateClass } = calendarUtils();
+  const { getMonthName, getDateActiveClass,toggleTaskActiveClass } =
+    calendarUtils();
   const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
@@ -64,6 +65,8 @@ export default function CalendarMonthly() {
     hideModal,
   } = useModalState();
 
+
+  const { navigate } = useLocationState();
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
@@ -71,10 +74,10 @@ export default function CalendarMonthly() {
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
 
   /**
-   * Handles data received from a child component (newTaskHandler)
+   * Displays a new task creation success message
    * @param {Object} data - Data received from the child component
    */
-  function handleDataFromChild(data) {
+  function displaySuccessTaskCreation(data) {
     if (data) {
       hideModal();
       setSelectedDate(null);
@@ -84,7 +87,7 @@ export default function CalendarMonthly() {
   }
   useEffect(() => {
     openedModalId === null && resetDateState();
-  }, [openedModalId])
+  }, [openedModalId]);
 
   const resetDateState = () => {
     setSelectedDate(null);
@@ -105,9 +108,6 @@ export default function CalendarMonthly() {
       refreshTasks();
       toast.success(`The task '${state.task.title}' was successfully deleted`);
     }
-  }
-  function handleModalState (state) {
-    !state.isModalVisible && resetDateState();
   }
 
   function onTaskEdit(task) {
@@ -168,19 +168,6 @@ export default function CalendarMonthly() {
     event.stopPropagation();
     showModal(modalId);
   };
-  /**
-   * Toggles active class for tasks in modal
-   * @param {integer} taskId - ID of the task
-   * @returns {any}
-   */
-  const toggleTaskActiveClass = (taskId) => {
-    return (
-      openedModalId &&
-      openedModalId === taskId &&
-      isModalVisible &&
-      "task-active"
-    );
-  };
 
   /**
    * Sets new task title in state
@@ -219,6 +206,58 @@ export default function CalendarMonthly() {
     }
   };
 
+  const renderTaskItem = (task) => (
+    <li
+      className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(
+        task.id, openedModalId, isModalVisible
+      )} `}
+      onClick={(event) => handleOnClick({ event: event, modalId: task.id })}
+    >
+      <TruncatedText text={task.title} maxCharacters={6} />
+      {` ${task.time_start}-${task.time_end}`}
+    </li>
+  );
+
+  const renderEllipsis = (taskRestSum,ellipsisId) => {
+    return (
+      <h5
+        onClick={(event) =>
+          handleOnClick({ event: event, modalId: ellipsisId })
+        }
+        className="date-tasks__ellipsis"
+      >
+        {taskRestSum} more
+      </h5>
+    );
+  };
+
+  const renderNewTaskBox = () => (
+    <li className="calendar-monthly__clicked-new-task-modal">
+      {task.title ? (
+        <TruncatedText text={task.title} maxCharacters={10} />
+      ) : (
+        "(Untitled)"
+      )}
+    </li>
+  );
+
+  /**
+   * Function to render list of weekdays.
+   * @returns {JSX.Element} - JSX Element representing list of weekdays
+   */
+  const renderDays = () => (
+    <ol className="calendar-monthly-days">
+      {calendarUtils()
+        .weekDays()
+        .map((day, index) => (
+          <li key={index} className="day-name">
+            {day}
+          </li>
+        ))}
+    </ol>
+  );
+
+
   /**
    * Render the list of tasks for a specific date.
    * @param {Date} date - specific date to render tasks.
@@ -227,52 +266,14 @@ export default function CalendarMonthly() {
   const renderDateTasks = (date, id) => {
     const dateTasks = getTasksByDate(date, allTasks);
     const maxTasksToShow = Math.min(dateTasks.length, 3);
-    const tasksRest = dateTasks.length - maxTasksToShow;
+    const taskRestSum = dateTasks.length - maxTasksToShow;
     const showEllipsis = dateTasks.length > 3;
     const ellipsisId = date.toLocaleDateString() + `${dateTasks.length}`;
 
-    console.log(clickedCellIndex === id);
-
-    //TODO: pull  the function out of the function
-    // Function to render each task as a modal content
-    const modalChildren = (task) => (
-      <li
-        className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(
-          task.id
-        )} `}
-        onClick={(event) => handleOnClick({ event: event, modalId: task.id })}
-      >
-        <TruncatedText text={task.title} maxCharacters={6} />
-        {` ${task.time_start}-${task.time_end}`}
-      </li>
-    );
-
-    const renderEllipsis = () => {
-      return (
-        <h5
-          onClick={(event) =>
-            handleOnClick({ event: event, modalId: ellipsisId })
-          }
-          className="date-tasks__ellipsis"
-        >
-          {tasksRest} more
-        </h5>
-      );
-    };
-
-    const renderNewTaskBox = () => (
-      <li className="calendar-monthly__clicked-new-task-modal">
-        {task.title ? (
-          <TruncatedText text={task.title} maxCharacters={10} />
-        ) : (
-          "(Untitled)"
-        )}
-      </li>
-    );
     return (
-      <div className="calendar-monthly__date-task-list">
         <ul className="calendar-monthly__date-task-list__list">
           {dateTasks.slice(0, maxTasksToShow).map((task) => (
+            // Renders a task with modal wrapper
             <Modal
               classes={modalClasses}
               key={task.id}
@@ -287,10 +288,11 @@ export default function CalendarMonthly() {
                 />
               }
             >
-              {modalChildren(task)}
+              {renderTaskItem(task)}
             </Modal>
           ))}
 
+          {/* Renders ellipsis btn and new task highlighted box  */}
           <Modal
             classes={modalClasses}
             key={task.id}
@@ -308,30 +310,15 @@ export default function CalendarMonthly() {
             }
           >
             {clickedCellIndex === id && renderNewTaskBox()}
-            {showEllipsis && renderEllipsis()}
+            {showEllipsis && renderEllipsis(taskRestSum,ellipsisId)}
           </Modal>
         </ul>
-      </div>
     );
   };
-  /**
-   * Function to render list of weekdays.
-   * @returns {JSX.Element} - JSX Element representing list of weekdays
-   */
-  const renderDays = () => (
-    <ol className="calendar-monthly-days">
-      {calendarUtils()
-        .weekDays()
-        .map((day, index) => (
-          <li key={index} className="day-name">
-            {day}
-          </li>
-        ))}
-    </ol>
-  );
-  const renderDateChildren = (id, date) => (
+
+  const renderDateItem = (id, date) => (
     <li
-      className={`${getActiveDateClass(date, currentDate, selectedDate)} date`}
+      className={getDateActiveClass(date, currentDate, selectedDate)}
       onClick={(event) =>
         handleOnDateClick({
           event: event,
@@ -347,64 +334,70 @@ export default function CalendarMonthly() {
     </li>
   );
 
-  // Render the main component
-  return loading ? (
-    <Loading />
-  ) : (
-    <div className="calendar-monthly">
-      <div className="dates-switcher-container">
-        <span
-          onClick={goToPrevMonth}
-          className="material-symbols-rounded dates-switcher__block"
-        >
-          chevron_left
-        </span>
-        <span className="dates-switcher__month-name">
-          {getMonthName(month)}
-        </span>
-        <span
-          onClick={goToNextMonth}
-          className="material-symbols-rounded  dates-switcher__block"
-        >
-          chevron_right
-        </span>
-      </div>
-      <div className="calendar-monthly-wrapper">
-        {renderDays()}
 
-        <ol className="calendar-dates calendar-monthly-dates">
-          {dates.map((date, index) => {
-            const id = date.toLocaleDateString();
 
-            // Render modal for each date
-            return (
-              <Modal
-                isModalVisible={openedModalId === id}
-                classes={modalClasses}
-                key={id}
-                content={
-                  <div>
-                    <NewTask
-                      formId={id}
-                      openedModalId={openedModalId}
-                      selectedDate={date}
-                      onDateSelection={handleDateSelection}
-                      onTimeSelection={handleTimeSelection}
-                      handleTaskCreation={handleTaskCreation}
-                      clickedPeriodStart={clickedPeriodStart}
-                      clickedPeriodEnd={clickedPeriodEnd}
-                      onModalClose={onModalClose}
-                      onTitleSet={setNewTaskTitle}
-                    />
-                  </div>
-                }
-              >
-                {renderDateChildren(id, date)}
-              </Modal>
-            );
-          })}
-        </ol>
-      </div>
-    </div>
+  const renderDatesGrid = () => (
+    <ol className="calendar-dates calendar-monthly-dates">
+      {dates.map((date) => {
+        const id = date.toLocaleDateString();
+
+        // Render modal for each date
+        return (
+          <Modal
+            isModalVisible={openedModalId === id}
+            classes={modalClasses}
+            key={id}
+            content={
+                <NewTask
+                  formId={id}
+                  openedModalId={openedModalId}
+                  selectedDate={date}
+                  onDateSelection={handleDateSelection}
+                  onTimeSelection={handleTimeSelection}
+                  handleTaskCreation={handleTaskCreation}
+                  clickedPeriodStart={clickedPeriodStart}
+                  clickedPeriodEnd={clickedPeriodEnd}
+                  onModalClose={onModalClose}
+                  onTitleSet={setNewTaskTitle}
+                />
+            }
+          >
+            {renderDateItem(id, date)}
+          </Modal>
+        );
+      })}
+    </ol>
   );
+
+  const renderMainComponent = () =>
+    loading ? (
+      <Loading />
+    ) : (
+      <div className="calendar-monthly">
+        <div className="dates-switcher-container">
+          <span
+            onClick={goToPrevMonth}
+            className="material-symbols-rounded dates-switcher__block"
+          >
+            chevron_left
+          </span>
+          <span className="dates-switcher__month-name">
+            {getMonthName(month)}
+          </span>
+          <span
+            onClick={goToNextMonth}
+            className="material-symbols-rounded  dates-switcher__block"
+          >
+            chevron_right
+          </span>
+        </div>
+        <div className="calendar-monthly-wrapper">
+          {renderDays()}
+          {renderDatesGrid()}
+        </div>
+      </div>
+    );
+
+
+  return renderMainComponent();
 }

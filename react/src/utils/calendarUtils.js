@@ -198,6 +198,25 @@ export function calendarUtils() {
       .padStart(2, "0")}`;
   };
 
+
+  function getDateActiveClass(date,currentDate,selectedDate) {
+    return 'date ' + getActiveDateClass(date, currentDate, selectedDate);
+  }
+  /**
+   * Toggles active class for tasks in modal
+   * @param {integer} taskId - ID of the task
+   * @returns {any}
+   */
+  const toggleTaskActiveClass = (taskId, openedModalId, isModalVisible) => {
+    return (
+      openedModalId &&
+      openedModalId === taskId &&
+      isModalVisible &&
+      "task-active"
+    );
+  };
+
+
   return {
     getActiveDateClass,
     generateMonths,
@@ -212,5 +231,7 @@ export function calendarUtils() {
     convertTime,
     convertDecimalToTime,
     getDayName,
+    getDateActiveClass,
+    toggleTaskActiveClass
   };
 }

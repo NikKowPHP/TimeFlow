@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState() {
+export function useModalState({modalRef}) {
   // TODO: CALCULATE HEIGHT TO ADJUST THE MODAL
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -22,6 +22,8 @@ export function useModalState() {
 
   const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
   const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
+
+  const [modalReference, setModalReference ] = useState(null);
 
   // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
@@ -68,20 +70,25 @@ export function useModalState() {
     };
   }, [isModalVisible, openedModalId]);
 
+
   // Adjust the modal position based on the mouse click coordinates
   const adjustModalPosition = () => {
-    const mouseCoordinates = getMouseClickCoordinates(event);
-    if (mouseCoordinates.x > screenCenter.x) {
-      setModalPositionClass("modal-left");
-    } else {
-      setModalPositionClass("modal-right");
+    const modalElement = modalRef.current;
+    console.log(modalElement);
+
     }
-    if (mouseCoordinates.y > screenCenter.y) {
-      setModalPositionHeightClass("modal-top");
-    } else {
-      setModalPositionHeightClass("modal-bottom");
-    }
-  };
+    // const mouseCoordinates = getMouseClickCoordinates(event);
+    // if (mouseCoordinates.x > screenCenter.x) {
+    //   setModalPositionClass("modal-left");
+    // } else {
+    //   setModalPositionClass("modal-right");
+    // }
+    // if (mouseCoordinates.y > screenCenter.y) {
+    //   setModalPositionHeightClass("modal-top");
+    // } else {
+    //   setModalPositionHeightClass("modal-bottom");
+    // }
+  // };
 
   // Get the mouse click coordinates
   const getMouseClickCoordinates = (event) => ({

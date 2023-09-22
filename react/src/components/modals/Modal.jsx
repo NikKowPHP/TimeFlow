@@ -1,5 +1,6 @@
 import "../../styles/modal.css";
-import React from "react";
+import React, { useEffect,useRef } from "react";
+import { useModalState } from "../customHooks/useModalState";
 
 /**
  * Modal component is used to display additional information or details when the user interacts with an element.
@@ -22,6 +23,7 @@ export default function Modal({
   style,
   isModalVisible,
   modalId,
+  modalRef
 }) {
 
   /**
@@ -41,6 +43,7 @@ export default function Modal({
 
       {isModalVisible && (
         <div
+          ref={modalRef}
           data-modal-id={modalId}
           className={`modal ${classes}`}
           onClick={handleContentClick}

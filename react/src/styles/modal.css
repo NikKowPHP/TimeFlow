@@ -3,21 +3,8 @@
   width: 100%;
 	display: inline-block;
 }
-.modal-right {
-	left: 270%;
-}
-.modal-left {
-  left: -170% ;
-}
-.modal-top {
-  top: -400px;
-}
-.modal-bottom {
-  top: 0;
-}
 .modal-task-description {
 	position: absolute;
-  transform: translateX(-50%);
   background-color: #ffffff;
   box-shadow: 5px 10px 20px 5px rgba(0, 0, 0, 0.411) ;
   color: #000;

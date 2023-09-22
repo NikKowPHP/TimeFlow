@@ -1,5 +1,5 @@
 import "../../styles/calendar/ellipsis.css";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import svgPaths from "../svgPaths";
 import ExistingTask from "../Task/ExistingTask";
 import Modal from "../modals/Modal";
@@ -11,13 +11,17 @@ export default function ElipsisTaskList({
   onTaskDelete,
   onTaskEdit,
 }) {
+
+  const modalRef = useRef(null);
+
+
   // Get modal's state from custom hook
   const {
-    modalPositionClass,
     nestedOpenedModalId,
     showNestedModal,
     hideNestedModal,
-  } = useModalState();
+    modalPosition,
+  } = useModalState({modalRef});
 
   const handleOnTaskClick = ({ event, nestedModalId }) => {
     // Close opened nested modal
@@ -67,10 +71,11 @@ export default function ElipsisTaskList({
 
       return (
         <Modal
-          classes={`ellipsis-modal__content ${modalPositionClass} `}
+          modalRef={modalRef}
+          position={modalPosition}
+          classes={`ellipsis-modal__content $`}
           key={task.id}
           isModalVisible={nestedOpenedModalId === taskModalId}
-          modalPositionClass={modalPositionClass}
           modalId={nestedOpenedModalId}
           content={
             <ExistingTask

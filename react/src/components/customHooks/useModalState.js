@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState({modalRef}) {
+export function useModalState({ modalRef }) {
   // TODO: CALCULATE HEIGHT TO ADJUST THE MODAL
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,13 +23,10 @@ export function useModalState({modalRef}) {
   const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
   const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
 
-  const [modalReference, setModalReference ] = useState(null);
 
   // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
-  const [modalPositionClass, setModalPositionClass] = useState("modal-right");
-  const [modalPositionHeightClass, setModalPositionHeightClass] =
-    useState("modal-bottom");
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
@@ -70,25 +67,44 @@ export function useModalState({modalRef}) {
     };
   }, [isModalVisible, openedModalId]);
 
-
   // Adjust the modal position based on the mouse click coordinates
   const adjustModalPosition = () => {
+    const mouseCoordinates = event && getMouseClickCoordinates(event);
     const modalElement = modalRef.current;
-    console.log(modalElement);
-
+    console.log(modalRef);
+    let modalWidth = 400;
+    let modalHeight = 400;
+    if (modalElement) {
+      const modalRect = modalElement.getBoundingClientRect();
+      modalWidth = modalRect.width;
+      modalHeight = modalRect.height;
+    } 
+    if(modalHeight < 200) {
+      modalHeight = 250;
     }
-    // const mouseCoordinates = getMouseClickCoordinates(event);
-    // if (mouseCoordinates.x > screenCenter.x) {
-    //   setModalPositionClass("modal-left");
-    // } else {
-    //   setModalPositionClass("modal-right");
-    // }
-    // if (mouseCoordinates.y > screenCenter.y) {
-    //   setModalPositionHeightClass("modal-top");
-    // } else {
-    //   setModalPositionHeightClass("modal-bottom");
-    // }
-  // };
+
+    console.log('modal height', modalHeight)
+    console.log('modal width', modalHeight)
+    console.log('window width',window.innerWidth); // 749
+    console.log('window height',window.innerHeight); // 749
+    console.log('mouse coordinates', mouseCoordinates);
+
+    let positionLeft =  window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3 ;
+    let positionTop = window.innerHeight - modalHeight - mouseCoordinates.y  ;
+    if (positionLeft > 0) {
+      positionLeft = 120;
+    }
+
+    console.log("position top", positionTop);
+    console.log("position left", positionLeft);
+
+    const modalPositionStyles = {
+      top: `${positionTop}px`,
+      left: `${positionLeft}px`,
+    };
+
+    setModalPosition(modalPositionStyles);
+  };
 
   // Get the mouse click coordinates
   const getMouseClickCoordinates = (event) => ({
@@ -131,8 +147,7 @@ export function useModalState({modalRef}) {
     setIsModalVisible,
     isNestedModalVisible,
     setIsNestedModalVisible,
-    modalPositionClass,
-    modalPositionHeightClass,
+    modalPosition,
     setModalVisibility,
     showModal,
     hideModal,

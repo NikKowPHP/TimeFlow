@@ -23,7 +23,8 @@ export default function Modal({
   style,
   isModalVisible,
   modalId,
-  modalRef
+  modalRef,
+  position
 }) {
 
   /**
@@ -43,11 +44,12 @@ export default function Modal({
 
       {isModalVisible && (
         <div
+
           ref={modalRef}
           data-modal-id={modalId}
           className={`modal ${classes}`}
           onClick={handleContentClick}
-          style={style}
+          style={position}
         >
           {content}
         </div>

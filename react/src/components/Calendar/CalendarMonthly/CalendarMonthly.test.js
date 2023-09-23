@@ -49,7 +49,6 @@ describe("CalendarMonthly Component", () => {
   const mockUseModalState = jest.fn(() => ({
     openedModalId: null,
     isModalVisible: false,
-    modalPositionClass: "",
     showModal: jest.fn(),
     hideModal: jest.fn(),
   }));

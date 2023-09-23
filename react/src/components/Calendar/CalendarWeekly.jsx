@@ -37,13 +37,8 @@ export default function CalendarWeekly() {
   const modalRef = useRef(null);
 
   // Get modal's state from custom hook
-  const {
-    openedModalId,
-    isModalVisible,
-    modalPosition,
-    showModal,
-    hideModal,
-  } = useModalState({modalRef});
+  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
+    useModalState({ modalRef });
 
   const {
     dates,
@@ -64,9 +59,9 @@ export default function CalendarWeekly() {
     getActiveDateClass,
     convertTimePeriod,
     convertTime,
-    convertDecimalToTime,
     getCellHalfClassName,
-    initiateNewTask
+    initiateNewTask,
+    toggleTaskActiveClass,
   } = calendarUtils();
 
   const { onTaskDelete } = taskUtils({
@@ -194,7 +189,6 @@ export default function CalendarWeekly() {
 
     // Convert decimal fractions to minutes
     const startMinutes = Math.floor((startHour % 1) * 60);
-    debugger
     const endMinutes = Math.floor((endHour % 1) * 60);
 
     const startTime = new Date(date);
@@ -214,7 +208,7 @@ export default function CalendarWeekly() {
 
     handleOnClick(e, modalId);
     const newTask = initiateNewTask(hour, endHour, date);
-    setTask({...task,...newTask});
+    setTask({ ...task, ...newTask });
   };
 
   /**
@@ -237,20 +231,6 @@ export default function CalendarWeekly() {
   };
 
   /**
-   * Handle click on a task or a date to show the modal
-   * @param {Object} event - The event object
-   * @param {number} id - The id of the modal
-   */
-  const handleOnClick = (event, id) => {
-    // Close opened modal
-    if (openedModalId !== null) {
-      hideModal();
-    }
-    event.stopPropagation();
-    showModal(id);
-  };
-
-  /**
    * Hadles time selection and sets state
    * @param {Date} selectedTime - The selected time
    * @param {boolean} isStart - Whether is start of the time period or the end
@@ -263,6 +243,32 @@ export default function CalendarWeekly() {
       setClickedPeriodEnd(selectedTime);
       setTask({ ...task, time_end: selectedTime });
     }
+  };
+
+  /**
+   * Handle click on a task or a date to show the modal
+   * @param {Object} event - The event object
+   * @param {number} id - The id of the modal
+   */
+  const handleOnClick = (event, id) => {
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
+    }
+    event.stopPropagation();
+    showModal(id);
+  };
+  const closeDateTimeSelectedCell = () => {
+    setClickedCellIndex(null);
+  };
+
+  const onModalClose = () => {
+    hideModal();
+  };
+  const onTaskEdit = (task) => {
+    navigate(`/tasks/${task.id}`, {
+      state: { previousLocation: location.pathname },
+    });
   };
 
   /**
@@ -279,15 +285,9 @@ export default function CalendarWeekly() {
     return [];
   }, [dates, currentWeekStartDate]);
 
-  const closeDateTimeSelectedCell = () => {
-    setClickedCellIndex(null);
-  };
-
   useEffect(() => {
     openedModalId === null && closeDateTimeSelectedCell();
   }, [openedModalId]);
-
-  // TODO: MOVE THIS FUNCTION
 
   /**
    * Determines whether a cell has been clicked or not based on the hour and date indices.
@@ -299,23 +299,6 @@ export default function CalendarWeekly() {
     const cellIndex = `${hourIndex}${dateIndex}`;
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   };
-
-
-  /**
-   * Determines the class name for an active task based on the modal's state and the provided task ID.
-   * @param {string} taskId - The ID of the task being evaluated.
-   * @returns {string} - The class name "task-active" if the task is active; otherwise, an empty string.
-   */
-  const toggleTaskActiveClass = (taskId) => {
-    const isActive = openedModalId === taskId && isModalVisible;
-    return isActive ? "task-active" : "";
-  };
-
-  /**
-   * Renders the header content for the modal.
-   * @returns {JSX.Element} - JSX element containing icons for editing, deleting, and closing the modal.
-   */
-  // TODO: delete unnacessary func's
 
   /**
    * Calculates the height of a task in pixels based on its start and end times.
@@ -354,30 +337,29 @@ export default function CalendarWeekly() {
     });
   };
 
-  const renderModalChildren = (task) => {
-    const toggledTaskActiveClass = toggleTaskActiveClass(task.id);
-    // TODO: style move
+  const renderExistingTaskItem = (task) => {
+    const toggledTaskActiveClass = toggleTaskActiveClass(
+      task.id,
+      openedModalId,
+      isModalVisible
+    );
+    const taskClass = ` calendar-weekly__task-option__wrapper  task-option ${toggledTaskActiveClass}`;
+    const taskHeightDimensions = calculateTaskHeight(task.time_start, task.time_end);
+
     return (
       <div
-        className={` calendar-weekly__task-option__wrapper  task-option ${toggledTaskActiveClass}`}
+        className={taskClass}
         onClick={(event) => handleExistingTaskClick(event, task.id)}
-        style={calculateTaskHeight(task.time_start, task.time_end)}
+        style={taskHeightDimensions}
       >
-        <span className="calendar-weekly__task-option__title">{<TruncatedText text={task.title} maxCharacters={8} />}</span>
+        <span className="calendar-weekly__task-option__title">
+          {<TruncatedText text={task.title} maxCharacters={8} />}
+        </span>
         <span className="calendar-weekly__task-option__time">
           {task.time_start}-{task.time_end}
         </span>
       </div>
     );
-  };
-
-  const onModalClose = () => {
-    hideModal();
-  };
-  const onTaskEdit = (task) => {
-    navigate(`/tasks/${task.id}`, {
-      state: { previousLocation: location.pathname },
-    });
   };
 
   /**
@@ -409,8 +391,8 @@ export default function CalendarWeekly() {
         onClick={handleCellClick}
       >
         <TaskList
-        modalRef={modalRef}
-        modalPosition={modalPosition}
+          modalRef={modalRef}
+          modalPosition={modalPosition}
           date={date}
           hourIndex={hourIndex}
           openedModalId={openedModalId}
@@ -420,7 +402,7 @@ export default function CalendarWeekly() {
           onModalClose={onModalClose}
           onTaskDelete={onTaskDelete}
           onTaskEdit={onTaskEdit}
-          renderModalChildren={renderModalChildren}
+          renderExistingTaskItem={renderExistingTaskItem}
           filterTasksForDateAndHour={filterTasksForDateAndHour}
         />
 

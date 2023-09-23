@@ -12,7 +12,7 @@ const TaskList = ({
   onTaskDelete,
   onModalClose,
   onTaskEdit,
-  renderModalChildren,
+  renderExistingTaskItem,
 	filterTasksForDateAndHour,
   modalPosition,
   modalRef
@@ -58,7 +58,7 @@ const TaskList = ({
               />
             }
           >
-            {renderModalChildren(task)}
+            {renderExistingTaskItem(task)}
           </Modal>
         );
       })}

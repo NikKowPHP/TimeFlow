@@ -1,3 +1,5 @@
+import { dateUtils } from "./dateUtils";
+
 /**
  *
  * @returns {object} - An object containing calendar utility functions.
@@ -7,6 +9,7 @@
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
 export function calendarUtils() {
+  const {convertDateSql} = dateUtils();
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
@@ -216,6 +219,41 @@ export function calendarUtils() {
     );
   };
 
+  /**
+   * Determines whether a cell has been clicked on the first half of the cell or not based on the clickedHalf state variable.
+   * @returns {string} - A string indicating whether the cell is clicked on the first half ("first-half") or second half ("second-half") or neither ("").
+   */
+  const getCellHalfClassName = (clickedHalf) => {
+    switch (clickedHalf) {
+      case "first":
+        return "first-half";
+      case "second":
+        return "second-half";
+      default:
+        return "";
+    }
+  };
+
+
+  /**
+   * Initiates a default new task state based on selected time and date and sets state.
+   * @param {Date} timeStart - represents starting time.
+   * @param {Date} timeEnd - represents ending time.
+   * @param {Date} clickedDate - represents the clicked date.
+   */
+  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
+    const formattedTimeStart = convertDecimalToTime(timeStart);
+    const formattedTimeEnd = convertDecimalToTime(timeEnd);
+    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
+    return  {
+      id: null,
+      title: "",
+      time_start: formattedTimeStart,
+      time_end: formattedTimeEnd,
+      date: formattedDate,
+    };
+  };
+
 
   return {
     getActiveDateClass,
@@ -232,6 +270,8 @@ export function calendarUtils() {
     convertDecimalToTime,
     getDayName,
     getDateActiveClass,
-    toggleTaskActiveClass
+    toggleTaskActiveClass,
+    getCellHalfClassName,
+    initiateNewTask
   };
 }

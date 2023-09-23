@@ -65,13 +65,15 @@ export default function CalendarWeekly() {
     convertTimePeriod,
     convertTime,
     convertDecimalToTime,
+    getCellHalfClassName,
+    initiateNewTask
   } = calendarUtils();
 
   const { onTaskDelete } = taskUtils({
-    onStateReceived: handleTaskState,
+    onStateReceived: handleTaskDeletion,
   });
 
-  function handleTaskState(state) {
+  function handleTaskDeletion(state) {
     // Handle task deletion.
     if (state.status === 204) {
       hideModal();
@@ -192,6 +194,7 @@ export default function CalendarWeekly() {
 
     // Convert decimal fractions to minutes
     const startMinutes = Math.floor((startHour % 1) * 60);
+    debugger
     const endMinutes = Math.floor((endHour % 1) * 60);
 
     const startTime = new Date(date);
@@ -210,7 +213,8 @@ export default function CalendarWeekly() {
     setClickedPeriodEnd(convertTime(endTime));
 
     handleOnClick(e, modalId);
-    initiateNewTask(hour, endHour, date);
+    const newTask = initiateNewTask(hour, endHour, date);
+    setTask({...task,...newTask});
   };
 
   /**
@@ -283,25 +287,7 @@ export default function CalendarWeekly() {
     openedModalId === null && closeDateTimeSelectedCell();
   }, [openedModalId]);
 
-  /**
-   * Initiates a default new task state based on selected time and date and sets state.
-   * @param {Date} timeStart - represents starting time.
-   * @param {Date} timeEnd - represents ending time.
-   * @param {Date} clickedDate - represents the clicked date.
-   */
-  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
-    const formattedTimeStart = convertDecimalToTime(timeStart);
-    const formattedTimeEnd = convertDecimalToTime(timeEnd);
-    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
-    const newTask = {
-      id: null,
-      title: "",
-      time_start: formattedTimeStart,
-      time_end: formattedTimeEnd,
-      date: formattedDate,
-    };
-    setTask({ ...task, ...newTask });
-  };
+  // TODO: MOVE THIS FUNCTION
 
   /**
    * Determines whether a cell has been clicked or not based on the hour and date indices.
@@ -314,20 +300,6 @@ export default function CalendarWeekly() {
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   };
 
-  /**
-   * Determines whether a cell has been clicked on the first half of the cell or not based on the clickedHalf state variable.
-   * @returns {string} - A string indicating whether the cell is clicked on the first half ("first-half") or second half ("second-half") or neither ("").
-   */
-  const getCellHalfClassName = () => {
-    switch (clickedHalf) {
-      case "first":
-        return "first-half";
-      case "second":
-        return "second-half";
-      default:
-        return "";
-    }
-  };
 
   /**
    * Determines the class name for an active task based on the modal's state and the provided task ID.
@@ -419,7 +391,7 @@ export default function CalendarWeekly() {
    */
   const renderCellContent = (date, hour, dateIndex, hourIndex) => {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
-    const cellHalfClassName = getCellHalfClassName();
+    const cellHalfClassName = getCellHalfClassName(clickedHalf);
 
     const handleCellClick = (e) =>
       handleDateHourClick({

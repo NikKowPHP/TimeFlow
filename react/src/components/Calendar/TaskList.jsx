@@ -14,6 +14,8 @@ const TaskList = ({
   onTaskEdit,
   renderModalChildren,
 	filterTasksForDateAndHour,
+  modalPosition,
+  modalRef
 }) => {
   const { convertDateSql } = dateUtils();
 
@@ -40,6 +42,8 @@ const TaskList = ({
         const isModalVisible = () => openedModalId === task.id;
         return (
           <Modal
+            modalRef={modalRef}
+            position={modalPosition}
             classes={classes}
             style={style}
             key={task.id}

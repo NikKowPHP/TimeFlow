@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "../../styles/calendar/calendar-weekly.css";
 import { useCalendarState } from "../customHooks/useCalendarState";
@@ -34,17 +34,16 @@ import { taskUtils } from "../../utils/taskUtils";
  */
 export default function CalendarWeekly() {
   const { navigate } = useLocationState();
+  const modalRef = useRef(null);
 
   // Get modal's state from custom hook
   const {
     openedModalId,
     isModalVisible,
-    modalPositionClass,
-    modalPositionHeightClass,
-    modalPositionStyles,
+    modalPosition,
     showModal,
     hideModal,
-  } = useModalState();
+  } = useModalState({modalRef});
 
   const {
     dates,
@@ -94,7 +93,7 @@ export default function CalendarWeekly() {
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
-  const modalClasses = `modal-task-description ${modalPositionClass} ${modalPositionHeightClass} `;
+  const modalClasses = `modal-task-description`;
 
   useEffect(() => {
     setCurrentWeekDates(currentWeekDays);
@@ -438,11 +437,14 @@ export default function CalendarWeekly() {
         onClick={handleCellClick}
       >
         <TaskList
+        modalRef={modalRef}
+        modalPosition={modalPosition}
           date={date}
           hourIndex={hourIndex}
           openedModalId={openedModalId}
           classes={modalClasses}
-          style={modalPositionStyles}
+          // style={modalPositionStyles}
+
           onModalClose={onModalClose}
           onTaskDelete={onTaskDelete}
           onTaskEdit={onTaskEdit}
@@ -515,6 +517,8 @@ export default function CalendarWeekly() {
   const renderModalWrapper = (cellId, modalContent, cellContent) => (
     <Modal
       isModalVisible={openedModalId === cellId}
+      modalRef={modalRef}
+      position={modalPosition}
       classes={modalClasses}
       key={cellId}
       content={modalContent}

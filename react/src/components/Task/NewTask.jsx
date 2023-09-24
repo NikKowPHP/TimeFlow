@@ -57,7 +57,6 @@ export default function NewTask({
       </svg>
     </div>
   );
-
   /**
    * Renders the modal content for creating a new task with specified parameters.
    * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.

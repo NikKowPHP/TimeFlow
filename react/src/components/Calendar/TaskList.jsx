@@ -9,6 +9,7 @@ const TaskList = ({
   openedModalId,
   classes,
   style,
+  allTasks,
   onTaskDelete,
   onModalClose,
   onTaskEdit,
@@ -28,7 +29,7 @@ const TaskList = ({
     [date]
   );
   const filteredTasks = useMemo(
-    () => filterTasksForDateAndHour(convertedDate, convertedHourIndex),
+    () => filterTasksForDateAndHour(convertedDate, convertedHourIndex, allTasks),
     [convertedDate, convertedHourIndex]
   );
   const maxTasksToShow = useMemo(

@@ -9,7 +9,7 @@ import { dateUtils } from "./dateUtils";
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
 export function calendarUtils() {
-  const {convertDateSql} = dateUtils();
+  const { convertDateSql } = dateUtils();
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
@@ -201,9 +201,8 @@ export function calendarUtils() {
       .padStart(2, "0")}`;
   };
 
-
-  function getDateActiveClass(date,currentDate,selectedDate) {
-    return 'date ' + getActiveDateClass(date, currentDate, selectedDate);
+  function getDateActiveClass(date, currentDate, selectedDate) {
+    return "date " + getActiveDateClass(date, currentDate, selectedDate);
   }
   /**
    * Toggles active class for tasks in modal
@@ -234,7 +233,6 @@ export function calendarUtils() {
     }
   };
 
-
   /**
    * Initiates a default new task state based on selected time and date and sets state.
    * @param {Date} timeStart - represents starting time.
@@ -245,7 +243,7 @@ export function calendarUtils() {
     const formattedTimeStart = convertDecimalToTime(timeStart);
     const formattedTimeEnd = convertDecimalToTime(timeEnd);
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
-    return  {
+    return {
       id: null,
       title: "",
       time_start: formattedTimeStart,
@@ -254,6 +252,39 @@ export function calendarUtils() {
     };
   };
 
+  /**
+   * Calculates the height of a task in pixels based on its start and end times.
+   * @param {string} taskTimeStart - The start time of the task.
+   * @param {string} taskTimeEnd - The end time of the task.
+   * @returns {Object} CSS style object with the calculated height.
+   */
+  const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+    const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
+    const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
+    const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+    const cellTimeAvailableMinutes = 60;
+    const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+    const cellHeight = 64.83;
+    const taskHeight = cellHeight * heightRatio;
+    return {
+      height: `${taskHeight}px`,
+    };
+  };
+
+  /**
+   * Filters allTasks array to extract specific tasks based on date and hour.
+   * @param {string} convertedDate - The convertedDate in format 'yyyy-mm-dd'
+   * @param {string} convertedHourIndex - The convertedHourIndex in format 'h'.
+   * @returns {Array} - An array of task objects that correspond to the filter criteria.
+   */
+  const filterTasksForDateAndHour = (convertedDate, convertedHourIndex, allTasks) => {
+    return allTasks && allTasks.filter((task) => {
+      const slicedTaskTime = task.time_start.split(":")[0];
+      return (
+        task.date === convertedDate && slicedTaskTime === convertedHourIndex
+      );
+    });
+  };
 
   return {
     getActiveDateClass,
@@ -272,6 +303,8 @@ export function calendarUtils() {
     getDateActiveClass,
     toggleTaskActiveClass,
     getCellHalfClassName,
-    initiateNewTask
+    initiateNewTask,
+    calculateTaskHeight,
+    filterTasksForDateAndHour
   };
 }

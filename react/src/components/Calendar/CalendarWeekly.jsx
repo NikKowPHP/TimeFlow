@@ -12,18 +12,13 @@ import TaskList from "./TaskList";
 import Loading from "../Loading";
 import NewTask from "../Task/NewTask";
 import { taskUtils } from "../../utils/taskUtils";
+import { useDataHandlingLogic } from "../customHooks/useDataHandlingLogic";
 
 /**
  * CalendarWeekly component for displaying a weekly calendar view.
  * @component
  */
 export default function CalendarWeekly() {
-  const { navigate } = useLocationState();
-  const modalRef = useRef(null);
-
-  // Get modal's state from custom hook
-  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
-    useModalState({ modalRef });
 
   const {
     dates,
@@ -34,6 +29,23 @@ export default function CalendarWeekly() {
     refreshTasks,
     loading,
   } = useCalendarState();
+
+  const { navigate } = useLocationState();
+  const [currentWeekDates, setCurrentWeekDates] = useState("");
+  const [clickedCellIndex, setClickedCellIndex] = useState(null);
+  const [clickedHalf, setClickedHalf] = useState(null);
+  const [clickedPeriod, setClickedPeriod] = useState(null);
+  const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
+  const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
+  const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
+  const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
+  const modalClasses = `modal-task-description`;
+  const modalRef = useRef(null);
+
+  // Get modal's state from custom hook
+  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
+    useModalState({ modalRef });
+
 
   // Destructure functions from calendarUtils
   const {
@@ -55,19 +67,11 @@ export default function CalendarWeekly() {
     onStateReceived: handleTaskDeletion,
   });
 
+  const {handleDataFromChild} = useDataHandlingLogic({hideModal, setClickedCellIndex});
+
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
   });
-
-  const [currentWeekDates, setCurrentWeekDates] = useState("");
-  const [clickedCellIndex, setClickedCellIndex] = useState(null);
-  const [clickedHalf, setClickedHalf] = useState(null);
-  const [clickedPeriod, setClickedPeriod] = useState(null);
-  const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
-  const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
-  const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
-  const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
-  const modalClasses = `modal-task-description`;
 
   useEffect(() => {
     setCurrentWeekDates(currentWeekDays);
@@ -101,18 +105,6 @@ export default function CalendarWeekly() {
 
   // Event handlers
 
-  /**
-   * Handles data received from a child component (newTaskHandler)
-   * @param {Object} data - Data received from the child component
-   * @returns {any}
-   */
-  function handleDataFromChild(data) {
-    if (data) {
-      hideModal();
-      setClickedCellIndex(null);
-      toast.success(`The task '${data.title}' was successfully created`);
-    }
-  }
 
   function handleTaskDeletion(state) {
     // Handle task deletion.

@@ -13,13 +13,13 @@ import Loading from "../Loading";
 import NewTask from "../Task/NewTask";
 import { taskUtils } from "../../utils/taskUtils";
 import { useDataHandlingLogic } from "../customHooks/useDataHandlingLogic";
+import TaskItem from "./TaskItem";
 
 /**
  * CalendarWeekly component for displaying a weekly calendar view.
  * @component
  */
 export default function CalendarWeekly() {
-
   const {
     dates,
     currentDate,
@@ -46,7 +46,6 @@ export default function CalendarWeekly() {
   const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
     useModalState({ modalRef });
 
-
   // Destructure functions from calendarUtils
   const {
     getCurrentWeekDates,
@@ -67,7 +66,10 @@ export default function CalendarWeekly() {
     onStateReceived: handleTaskDeletion,
   });
 
-  const {handleDataFromChild} = useDataHandlingLogic({hideModal, setClickedCellIndex});
+  const { handleDataFromChild } = useDataHandlingLogic({
+    hideModal,
+    setClickedCellIndex,
+  });
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: handleDataFromChild,
@@ -104,7 +106,6 @@ export default function CalendarWeekly() {
   }, [openedModalId]);
 
   // Event handlers
-
 
   function handleTaskDeletion(state) {
     // Handle task deletion.
@@ -283,7 +284,6 @@ export default function CalendarWeekly() {
     return clickedCellIndex === cellIndex ? "clicked-cell" : "";
   };
 
-
   const renderExistingTaskItem = (task) => {
     const toggledTaskActiveClass = toggleTaskActiveClass(
       task.id,
@@ -291,24 +291,18 @@ export default function CalendarWeekly() {
       isModalVisible
     );
     const taskClass = ` calendar-weekly__task-option__wrapper  task-option ${toggledTaskActiveClass}`;
+
     const taskHeightDimensions = calculateTaskHeight(
       task.time_start,
       task.time_end
     );
-
     return (
-      <div
-        className={taskClass}
-        onClick={(event) => handleExistingTaskClick(event, task.id)}
-        style={taskHeightDimensions}
-      >
-        <span className="calendar-weekly__task-option__title">
-          {<TruncatedText text={task.title} maxCharacters={8} />}
-        </span>
-        <span className="calendar-weekly__task-option__time">
-          {task.time_start}-{task.time_end}
-        </span>
-      </div>
+      <TaskItem
+        task={task}
+        classes={taskClass}
+        handleOnTaskClick={(event) => handleExistingTaskClick(event, task.id)}
+        styles={taskHeightDimensions}
+      />
     );
   };
 
@@ -337,6 +331,9 @@ export default function CalendarWeekly() {
   const renderCellContent = (date, hour, dateIndex, hourIndex) => {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
     const cellHalfClassName = getCellHalfClassName(clickedHalf);
+    const cellClassName =
+      "calendar-weekly__time-cell" +
+      `${cellClassNameSelected} ${cellHalfClassName}`;
 
     const handleCellClick = (e) =>
       handleDateHourClick({
@@ -348,11 +345,7 @@ export default function CalendarWeekly() {
       });
 
     return (
-      <div
-        key={dateIndex}
-        className={`calendar-weekly__time-cell ${cellClassNameSelected} ${cellHalfClassName}`}
-        onClick={handleCellClick}
-      >
+      <div key={dateIndex} className={cellClassName} onClick={handleCellClick}>
         <TaskList
           modalRef={modalRef}
           modalPosition={modalPosition}

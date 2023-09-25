@@ -68,7 +68,6 @@ export default function CalendarMonthly() {
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
-  const modalClasses = `modal-task-description`;
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
 
   /**
@@ -274,7 +273,7 @@ export default function CalendarMonthly() {
         {dateTasks.slice(0, maxTasksToShow).map((task) => (
           // Renders a task with modal wrapper
             <Modal
-              classes={modalClasses}
+              classes={'modal-task-description'}
               position={modalPosition}
               key={task.id}
               isModalVisible={openedModalId === task.id}
@@ -294,7 +293,7 @@ export default function CalendarMonthly() {
 
         {/* Renders ellipsis btn and new task highlighted box  */}
         <Modal
-          classes={modalClasses}
+          classes={'modal-task-description'}
           modalRef={modalRef}
           position={modalPosition}
           key={task.id}
@@ -347,7 +346,7 @@ export default function CalendarMonthly() {
           position={modalPosition}
           modalRef={modalRef}
             isModalVisible={openedModalId === id}
-            classes={modalClasses}
+            classes={'modal-task-description'}
             key={id}
             content={
               <NewTask

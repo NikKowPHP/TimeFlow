@@ -39,7 +39,6 @@ export default function CalendarWeekly() {
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState(null);
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
-  const modalClasses = `modal-task-description`;
   const modalRef = useRef(null);
 
   // Get modal's state from custom hook
@@ -353,7 +352,7 @@ export default function CalendarWeekly() {
           hourIndex={hourIndex}
           allTasks={allTasks}
           openedModalId={openedModalId}
-          classes={modalClasses}
+          classes={'modal-task-description'}
           onModalClose={onModalClose}
           onTaskDelete={onTaskDelete}
           onTaskEdit={onTaskEdit}
@@ -379,7 +378,7 @@ export default function CalendarWeekly() {
       isModalVisible={openedModalId === cellId}
       modalRef={modalRef}
       position={modalPosition}
-      classes={modalClasses}
+      classes={'modal-task-description'}
       key={cellId}
       content={modalContent}
     >

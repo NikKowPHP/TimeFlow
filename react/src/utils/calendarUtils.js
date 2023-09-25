@@ -285,6 +285,29 @@ export function calendarUtils() {
       );
     });
   };
+  const defineClickedHalf = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const clickedY = e.clientY - rect.top;
+    const cellHeight = rect.height;
+    return clickedY < cellHeight / 2 ? "first" : "second";
+  };
+  const modifyStartEndTime = ({ hour, date, clickedHalf }) => {
+    let startHour = hour;
+    let endHour = hour + 1;
+    if (clickedHalf === "second") {
+      startHour += 0.5;
+      endHour += 0.5;
+    }
+    // Convert decimal fractions to minutes
+    const startMinutes = Math.floor((startHour % 1) * 60);
+    const endMinutes = Math.floor((endHour % 1) * 60);
+
+    const startTime = new Date(date);
+    const endTime = new Date(date);
+    startTime.setHours(Math.floor(startHour), startMinutes, 0, 0);
+    endTime.setHours(Math.floor(endHour), endMinutes, 0, 0);
+    return { startTime: startTime, endTime: endTime };
+  };
 
   return {
     getActiveDateClass,
@@ -305,6 +328,8 @@ export function calendarUtils() {
     getCellHalfClassName,
     initiateNewTask,
     calculateTaskHeight,
-    filterTasksForDateAndHour
+    filterTasksForDateAndHour,
+    defineClickedHalf,
+    modifyStartEndTime
   };
 }

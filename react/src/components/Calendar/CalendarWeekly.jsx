@@ -59,6 +59,8 @@ export default function CalendarWeekly() {
     toggleTaskActiveClass,
     calculateTaskHeight,
     filterTasksForDateAndHour,
+    modifyStartEndTime,
+    defineClickedHalf
   } = calendarUtils();
 
   const { onTaskDelete } = taskUtils({
@@ -157,29 +159,14 @@ export default function CalendarWeekly() {
    */
   const handleDateHourClick = (params) => {
     const { date, hour, e, dateIndex, hourIndex } = params;
-    const rect = e.target.getBoundingClientRect();
-    const clickedY = e.clientY - rect.top;
-    const cellHeight = rect.height;
-
-    const clickedHalf = clickedY < cellHeight / 2 ? "first" : "second";
-    const modalId = `${hourIndex}${dateIndex}`;
-    let startHour = hour;
-    let endHour = hour + 1;
-    if (clickedHalf === "second") {
-      startHour += 0.5;
-      endHour += 0.5;
-    }
-
-    // Convert decimal fractions to minutes
-    const startMinutes = Math.floor((startHour % 1) * 60);
-    const endMinutes = Math.floor((endHour % 1) * 60);
-
-    const startTime = new Date(date);
-    const endTime = new Date(date);
-    startTime.setHours(Math.floor(startHour), startMinutes, 0, 0);
-    endTime.setHours(Math.floor(endHour), endMinutes, 0, 0);
-
     const clickedCellIndex = `${hourIndex}${dateIndex}`;
+    const clickedHalf = defineClickedHalf(e);
+
+    const { startTime, endTime } = modifyStartEndTime({
+      hour: hour,
+      date: date,
+      clickedHalf: clickedHalf,
+    });
 
     setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
@@ -189,8 +176,8 @@ export default function CalendarWeekly() {
     setClickedPeriodStart(convertTime(startTime));
     setClickedPeriodEnd(convertTime(endTime));
 
-    handleOnClick(e, modalId);
-    const newTask = initiateNewTask(hour, endHour, date);
+    handleOnClick(e, clickedCellIndex);
+    const newTask = initiateNewTask(hour, hour + 1, date);
     setTask({ ...task, ...newTask });
   };
 
@@ -352,7 +339,7 @@ export default function CalendarWeekly() {
           hourIndex={hourIndex}
           allTasks={allTasks}
           openedModalId={openedModalId}
-          classes={'modal-task-description'}
+          classes={"modal-task-description"}
           onModalClose={onModalClose}
           onTaskDelete={onTaskDelete}
           onTaskEdit={onTaskEdit}
@@ -378,7 +365,7 @@ export default function CalendarWeekly() {
       isModalVisible={openedModalId === cellId}
       modalRef={modalRef}
       position={modalPosition}
-      classes={'modal-task-description'}
+      classes={"modal-task-description"}
       key={cellId}
       content={modalContent}
     >

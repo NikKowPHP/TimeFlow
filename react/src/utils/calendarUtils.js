@@ -193,9 +193,9 @@ export function calendarUtils() {
     return hoursOfDay;
   };
 
-  const convertDecimalToTime = (decimalTime) => {
-    const hours = Math.floor(decimalTime);
-    const minutes = Math.round((decimalTime - hours) * 60);
+  const convertDateToTime = (dateObject) => {
+    const hours = dateObject.getHours();
+    const minutes = dateObject.getMinutes();
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}`;
@@ -239,10 +239,15 @@ export function calendarUtils() {
    * @param {Date} timeEnd - represents ending time.
    * @param {Date} clickedDate - represents the clicked date.
    */
-  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
-    const formattedTimeStart = convertDecimalToTime(timeStart);
-    const formattedTimeEnd = convertDecimalToTime(timeEnd);
+  const initiateNewTask = (timeStartObj, timeEndObj, clickedDate) => {
+    const formattedTimeStart = convertDateToTime(timeStartObj);
+
+    const formattedTimeEnd = convertDateToTime(timeEndObj);
+    debugger
+
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
+
+    
     return {
       id: null,
       title: "",
@@ -291,6 +296,7 @@ export function calendarUtils() {
     const cellHeight = rect.height;
     return clickedY < cellHeight / 2 ? "first" : "second";
   };
+
   const modifyStartEndTime = ({ hour, date, clickedHalf }) => {
     let startHour = hour;
     let endHour = hour + 1;
@@ -321,7 +327,7 @@ export function calendarUtils() {
     generateHoursOfDay,
     convertTimePeriod,
     convertTime,
-    convertDecimalToTime,
+    convertDateToTime,
     getDayName,
     getDateActiveClass,
     toggleTaskActiveClass,

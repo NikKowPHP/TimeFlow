@@ -177,7 +177,7 @@ export default function CalendarWeekly() {
     setClickedPeriodEnd(convertTime(endTime));
 
     handleOnClick(e, clickedCellIndex);
-    const newTask = initiateNewTask(hour, hour + 1, date);
+    const newTask = initiateNewTask(startTime, endTime, date);
     setTask({ ...task, ...newTask });
   };
 

@@ -90,9 +90,9 @@ export default function CalendarWeekly() {
   useEffect(() => {
     const initialDatesByCells = {};
     const hoursOfDay = generateHoursOfDay();
-    hoursOfDay.map((hour, hourIndex) => {
+    hoursOfDay.forEach((hour, hourIndex) => {
       currentWeekDates &&
-        currentWeekDates.map((date, dateIndex) => {
+        currentWeekDates.forEach((date, dateIndex) => {
           const dateWithHours = new Date(date);
           dateWithHours.setHours(hour);
           const cellId = `${hourIndex}${dateIndex}`;

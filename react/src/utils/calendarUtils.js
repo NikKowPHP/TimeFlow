@@ -264,6 +264,7 @@ export function calendarUtils() {
    * @returns {Object} CSS style object with the calculated height.
    */
   const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+    debugger
     const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
     const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
     const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
@@ -271,7 +272,9 @@ export function calendarUtils() {
     const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
     const cellHeight = 64.83;
     const taskHeight = cellHeight * heightRatio;
+    const top = taskTimeStart.includes('30') ? '-65px' : '-100px';
     return {
+      top: top,
       height: `${taskHeight}px`,
     };
   };

@@ -12,6 +12,7 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'date', 'time_start', 'time_end', 'title'];
+    protected $appends = ['due_datetime'];
 
     /**
      * Get the user that owns the Task
@@ -22,4 +23,9 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function getDueDatetimeAttribute()
+    {
+        return "{$this->date} {$this->time_start}";
+    }
+
 }

@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Task;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class CheckDueTasks extends Command
 {
@@ -25,6 +27,10 @@ class CheckDueTasks extends Command
      */
     public function handle()
     {
-        //
+        $tasks = Task::where('due_datetime', '>=', now())
+            ->where('due_datetime', '<=', now()->addMinutes(15))
+            ->where('notified', 0)
+            ->get();
+        Log::debug('Due tasks are comming ', $tasks);
     }
 }

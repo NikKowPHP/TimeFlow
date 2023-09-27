@@ -2,6 +2,7 @@ import React from "react";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import svgPaths from "../svgPaths";
+import { useNotificationState } from "../customHooks/useNotificationState";
 
 export default function NewTask({
   selectedDate,
@@ -12,7 +13,11 @@ export default function NewTask({
   clickedPeriodEnd,
   onModalClose,
   onTitleSet,
+  handleNotificationClick,
+  displayNotification
 }) {
+  const { isNotificationGranted } = useNotificationState();
+
   /**
    * Renders DateSelection component with specified props.
    * @returns {JSX.Element} JSX element representing the DateSelection component.
@@ -92,10 +97,17 @@ export default function NewTask({
         <div className="modal-task-additional">
           {/* TODO: create notifications */}
           <div className="modal-task-notification">
-            <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+            <svg
+              onClick={handleNotificationClick}
+              focusable="false"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+            >
               {svgPaths.notification}
             </svg>
-            <p>in 5 minutes before</p>
+
+            {isNotificationGranted ? <p onClick={displayNotification}>in 5 minutes before</p> : <p>set notification</p>}
           </div>
           <div className="modal-task-owner">
             <i className="fa fa-calendar"></i>

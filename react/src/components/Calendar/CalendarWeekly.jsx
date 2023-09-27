@@ -14,6 +14,7 @@ import NewTask from "../Task/NewTask";
 import { taskUtils } from "../../utils/taskUtils";
 import { useDataHandlingLogic } from "../customHooks/useDataHandlingLogic";
 import TaskItem from "./TaskItem";
+import { useNotificationState } from "../customHooks/useNotificationState";
 
 /**
  * CalendarWeekly component for displaying a weekly calendar view.
@@ -29,6 +30,8 @@ export default function CalendarWeekly() {
     refreshTasks,
     loading,
   } = useCalendarState();
+  const { requestNotificationPermission, displayNotification } =
+    useNotificationState();
 
   const { navigate } = useLocationState();
   const [currentWeekDates, setCurrentWeekDates] = useState("");
@@ -60,7 +63,7 @@ export default function CalendarWeekly() {
     calculateTaskHeight,
     filterTasksForDateAndHour,
     modifyStartEndTime,
-    defineClickedHalf
+    defineClickedHalf,
   } = calendarUtils();
 
   const { onTaskDelete } = taskUtils({
@@ -228,6 +231,15 @@ export default function CalendarWeekly() {
     event.stopPropagation();
     showModal(id);
   };
+
+  const handleNotificationClick = () => {
+    requestNotificationPermission();
+
+  };
+  const handleDisplayNotification = () => {
+    displayNotification('your task', {body: 'clicked'})
+  }
+
   const closeDateTimeSelectedCell = () => {
     setClickedCellIndex(null);
   };
@@ -385,6 +397,8 @@ export default function CalendarWeekly() {
       clickedPeriodEnd={clickedPeriodEnd}
       onModalClose={onModalClose}
       onTitleSet={onTitleChangeNewTask}
+      handleNotificationClick={handleNotificationClick}
+      displayNotification={handleDisplayNotification}
     />
   );
 

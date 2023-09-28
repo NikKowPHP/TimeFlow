@@ -11,7 +11,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'date', 'time_start', 'time_end', 'title'];
+    protected $fillable = ['user_id', 'date', 'time_start', 'time_end', 'title', 'notification_preference', 'notified'];
     protected $appends = ['due_datetime'];
 
     /**

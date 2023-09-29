@@ -14,6 +14,8 @@ export default function newTaskHandler({ onDataReceived }) {
 		time_start: '',
 		time_end: '',
 		date: '',
+		notified: false,
+		notification_preference: '',
 		// description: ''
 	})
 	useEffect(() => {

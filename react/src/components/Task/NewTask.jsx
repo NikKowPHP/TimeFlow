@@ -14,7 +14,8 @@ export default function NewTask({
   onModalClose,
   onTitleSet,
   handleNotificationClick,
-  displayNotification
+  onNotificationSelection,
+  displayNotification,
 }) {
   const { isNotificationGranted } = useNotificationState();
 
@@ -62,6 +63,14 @@ export default function NewTask({
       </svg>
     </div>
   );
+
+  const renderNotificationSelection = () => (
+    <select defaultValue={"1_day_before"} onChange={(event) => onNotificationSelection(event)}>
+      <option value="1_day_before">1 day before</option>
+      <option value="1_hour_before">1 hour before</option>
+    </select>
+  );
+
   /**
    * Renders the modal content for creating a new task with specified parameters.
    * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.
@@ -96,18 +105,14 @@ export default function NewTask({
         </div>
         <div className="modal-task-additional">
           {/* TODO: create notifications */}
-          <div className="modal-task-notification">
-            <svg
-              onClick={handleNotificationClick}
-              focusable="false"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-            >
+          <div
+            className="modal-task-notification"
+            onClick={handleNotificationClick}
+          >
+            <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
               {svgPaths.notification}
             </svg>
-
-            {isNotificationGranted ? <p onClick={displayNotification}>in 5 minutes before</p> : <p>set notification</p>}
+            {renderNotificationSelection()}
           </div>
           <div className="modal-task-owner">
             <i className="fa fa-calendar"></i>

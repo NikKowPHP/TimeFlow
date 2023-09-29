@@ -217,6 +217,9 @@ export default function CalendarWeekly() {
       setTask({ ...task, time_end: selectedTime });
     }
   };
+  const handleNotificationSelection = (event) => {
+    setTask({ ...task, notification_preference: event.target.value });
+  };
 
   /**
    * Handle click on a task or a date to show the modal
@@ -234,11 +237,10 @@ export default function CalendarWeekly() {
 
   const handleNotificationClick = () => {
     requestNotificationPermission();
-
   };
   const handleDisplayNotification = () => {
-    displayNotification('your task', {body: 'clicked'})
-  }
+    displayNotification("your task", { body: "clicked" });
+  };
 
   const closeDateTimeSelectedCell = () => {
     setClickedCellIndex(null);
@@ -399,6 +401,7 @@ export default function CalendarWeekly() {
       onTitleSet={onTitleChangeNewTask}
       handleNotificationClick={handleNotificationClick}
       displayNotification={handleDisplayNotification}
+      onNotificationSelection={handleNotificationSelection}
     />
   );
 

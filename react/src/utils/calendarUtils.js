@@ -243,7 +243,6 @@ export function calendarUtils() {
     const formattedTimeStart = convertDateToTime(timeStartObj);
 
     const formattedTimeEnd = convertDateToTime(timeEndObj);
-    debugger
 
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
 
@@ -254,6 +253,7 @@ export function calendarUtils() {
       time_start: formattedTimeStart,
       time_end: formattedTimeEnd,
       date: formattedDate,
+      notification_preference: '1_day_before'
     };
   };
 
@@ -264,7 +264,6 @@ export function calendarUtils() {
    * @returns {Object} CSS style object with the calculated height.
    */
   const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
-    debugger
     const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
     const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
     const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;

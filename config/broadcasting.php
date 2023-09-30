@@ -57,6 +57,12 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
         ],
+        'socketio' => [
+            'driver' => 'socket.io',
+            'host' => env('SOCKET_IO_HOST', 'localhost'),
+            'port' => env('SOCKET_IO_PORT', 6001),
+            'namespace' => env('SOCKET_IO_NAMESPACE', '/socket.io'),
+        ],
 
         'log' => [
             'driver' => 'log',

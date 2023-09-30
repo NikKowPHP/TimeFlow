@@ -7,20 +7,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import CalendarAside from "./Calendar/CalendarAside.jsx";
 import { useCalendarState } from "./customHooks/useCalendarState";
+import NotificationListener from "./NotificationListener";
+import { useNotificationState } from "./customHooks/useNotificationState";
 
 function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
   const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
 
+  const { requestNotificationPermission, isNotificationGranted } = useNotificationState();
   const navigate = useNavigate();
 
-  // show calendar in aside section 
+  // show calendar in aside section
   const location = useLocation().pathname;
   const isCalendar = location.includes("calendar");
-  // show/hide aside 
+  // show/hide aside
   const [asideShown, setAsideShown] = useState(true);
-
 
   if (!token) {
     return <Navigate to="/login" />;
@@ -31,12 +33,13 @@ function DefaultLayout() {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);
     });
+    if(!isNotificationGranted) requestNotificationPermission();
   }, []);
 
   // hide/show aside
   const handleToggleAside = () => {
     setAsideShown(!asideShown);
-  }
+  };
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 970) {
@@ -44,14 +47,13 @@ function DefaultLayout() {
       } else {
         setAsideShown(true);
       }
-    }
+    };
     handleResize();
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener("resize", handleResize);
     };
-
   }, []);
 
   const onLogout = (ev) => {
@@ -60,7 +62,7 @@ function DefaultLayout() {
     axiosClient.post("/logout").then(() => {
       setUser({});
       setToken(null);
-      navigate('/login');
+      navigate("/login");
     });
   };
 
@@ -72,9 +74,12 @@ function DefaultLayout() {
 
   return (
     <div id="defaultLayout">
+      {/* Notification listener to show notifications from the backend */}
+      <NotificationListener />
+
       <ToastContainer />
       {asideShown && (
-        <aside className='default-aside'>
+        <aside className="default-aside">
           <Link to={"/calendar"}>Calendar</Link>
           <Link to={"/tasks"}>Tasks</Link>
 
@@ -88,25 +93,29 @@ function DefaultLayout() {
               </>
             )}
 
-          {isCalendar && 
-          <CalendarAside currentDate={currentDate} selectedDate={selectedDate} />}
+          {isCalendar && (
+            <CalendarAside
+              currentDate={currentDate}
+              selectedDate={selectedDate}
+            />
+          )}
         </aside>
       )}
 
       <div className="content">
         <header>
-          <button
-            className="btn-hamburger"
-            onClick={() => handleToggleAside()}
-          >
+          <button className="btn-hamburger" onClick={() => handleToggleAside()}>
             <i className="fa fa-bars"></i>
           </button>
           <div>{user && user.name}</div>
 
-            {/* show selection of calendar types */}
+          {/* show selection of calendar types */}
           {isCalendar && (
             <>
-              <select value={layout} onChange={(e) => handleOptionSelect(e.target.value)}>
+              <select
+                value={layout}
+                onChange={(e) => handleOptionSelect(e.target.value)}
+              >
                 <option value="month">Month</option>
                 <option value="week">Week</option>
                 <option value="agenda">Agenda</option>

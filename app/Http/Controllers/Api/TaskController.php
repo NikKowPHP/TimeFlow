@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
+use App\Notifications\TaskDueNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -61,9 +62,9 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-       $task_data_validated = $request->validated();
-       $task->update($task_data_validated);
-       return new TaskResource($task);
+        $task_data_validated = $request->validated();
+        $task->update($task_data_validated);
+        return new TaskResource($task);
     }
 
     /**
@@ -74,4 +75,21 @@ class TaskController extends Controller
         $task->delete();
         return response('', 204);
     }
+
+    public function getDueTasks()
+    {
+        $tasks = Task::where('due_datetime', '>=', now())
+            ->where('due_datetime', '<=', now()->addMinutes(15))
+            ->where('notified', 0)
+            ->get();
+        Log::debug('Due tasks are comming ', $tasks);
+
+        foreach($tasks as $task) {
+            $task->update(['notified' => 1]);
+        }
+        return TaskResource::collection($tasks);
+    }
+
+
+
 }

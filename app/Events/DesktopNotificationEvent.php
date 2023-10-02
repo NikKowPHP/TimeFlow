@@ -34,7 +34,7 @@ class DesktopNotificationEvent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('notifications'),
+            new Channel('notifications'),
         ];
     }
 

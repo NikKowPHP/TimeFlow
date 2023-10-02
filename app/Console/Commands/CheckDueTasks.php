@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\DesktopNotificationEvent;
 use App\Models\Task;
 use App\Notifications\DesktopNotification;
 use Illuminate\Console\Command;
@@ -52,6 +53,9 @@ class CheckDueTasks extends Command
     {
         $user = $task->user;
         try {
+
+            event(new DesktopNotificationEvent($task->title, 'The task is about to start'));
+            $task->update(['notified'=> 1]);
 
         } catch (\Exception $e) {
             $user->notify(new DesktopNotification($task));

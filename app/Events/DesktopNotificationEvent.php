@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class DesktopNotificationEvent
+class DesktopNotificationEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -31,11 +31,9 @@ class DesktopNotificationEvent
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn():array
     {
-        return [
-            new Channel('notifications'),
-        ];
+        return ['notifications'];
     }
 
     public function broadcastWith(): array
@@ -44,5 +42,9 @@ class DesktopNotificationEvent
             'title' => $this->title,
             'message' => $this->message,
         ];
+    }
+    public function broadcastAs(): string
+    {
+        return 'DesktopNotificationEvent';
     }
 }

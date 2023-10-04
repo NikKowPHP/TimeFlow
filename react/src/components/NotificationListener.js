@@ -1,14 +1,10 @@
 import { useEffect } from "react";
 import { useNotificationState } from "./customHooks/useNotificationState";
 import Pusher from "pusher-js";
-import axiosClient from "../axios-client";
 
 
 export default function NotificationListener() {
   const { isNotificationGranted, displayNotification } = useNotificationState();
-  axiosClient.get('/calendar/calendar/test').then((data)=> {
-    console.log(data)
-  })
 
   useEffect(() => {
     if (isNotificationGranted) {
@@ -16,9 +12,7 @@ export default function NotificationListener() {
         cluster:'eu'
       });
       const channel = pusher.subscribe("notifications");
-      channel.bind('DesktopNotificationEvent', (notification) => {
-        const event = JSON.parse(notification);
-        debugger;
+      channel.bind('DesktopNotificationEvent', (event) => {
 
         const { title, message } = event;
         console.log("received notification: ", event);

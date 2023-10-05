@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Task;
-use App\Notifications\TaskDueNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreTaskRequest;
+use App\Events\DesktopNotificationEvent;
 use App\Http\Requests\UpdateTaskRequest;
+use Illuminate\Support\Facades\Broadcast;
 
 class TaskController extends Controller
 {
@@ -75,21 +76,5 @@ class TaskController extends Controller
         $task->delete();
         return response('', 204);
     }
-
-    public function getDueTasks()
-    {
-        $tasks = Task::where('due_datetime', '>=', now())
-            ->where('due_datetime', '<=', now()->addMinutes(15))
-            ->where('notified', 0)
-            ->get();
-        Log::debug('Due tasks are comming ', $tasks);
-
-        foreach($tasks as $task) {
-            $task->update(['notified' => 1]);
-        }
-        return TaskResource::collection($tasks);
-    }
-
-
 
 }

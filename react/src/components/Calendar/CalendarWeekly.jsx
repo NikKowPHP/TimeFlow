@@ -24,6 +24,7 @@ export default function CalendarWeekly() {
   const {
     dates,
     currentDate,
+    setMonth,
     allTasks,
     selectedDate,
     setSelectedDate,
@@ -119,23 +120,31 @@ export default function CalendarWeekly() {
       toast.success(`The task '${state.task.title}' was successfully deleted`);
     }
   }
+  const checkMonthDiff = (previousStartDate, newStartDate) => {
+    const monthDiff = previousStartDate.getMonth() - newStartDate.getMonth(); 
+    if ( monthDiff !== 0) {
+      setMonth(newStartDate.getMonth());
+    }
+  };
 
   /**
    * Handles the action to move to the previous week
    */
   const handlePreviousWeek = () => {
-    const previousWeekStartDate = new Date(currentWeekStartDate);
-    previousWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
-    setCurrentWeekStartDate(previousWeekStartDate);
+    const newWeekStartDate = new Date(currentWeekStartDate);
+    newWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
+    checkMonthDiff(currentWeekStartDate, newWeekStartDate);
+    setCurrentWeekStartDate(newWeekStartDate);
   };
 
   /**
    * Handles the action to move to the next week
    */
   const handleNextWeek = () => {
-    const nextWeekStartDate = new Date(currentWeekStartDate);
-    nextWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
-    setCurrentWeekStartDate(nextWeekStartDate);
+    const newWeekStartDate = new Date(currentWeekStartDate);
+    newWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
+    checkMonthDiff(currentWeekStartDate, newWeekStartDate);
+    setCurrentWeekStartDate(newWeekStartDate);
   };
 
   /**

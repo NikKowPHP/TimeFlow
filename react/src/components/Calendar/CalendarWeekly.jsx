@@ -341,7 +341,7 @@ export default function CalendarWeekly() {
     const cellClassNameSelected = getCellClassName(hourIndex, dateIndex);
     const cellHalfClassName = getCellHalfClassName(clickedHalf);
     const cellClassName =
-      "calendar-weekly__time-cell" +
+      "calendar-weekly__time-cell " +
       `${cellClassNameSelected} ${cellHalfClassName}`;
 
     const handleCellClick = (e) =>

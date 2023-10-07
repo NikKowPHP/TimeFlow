@@ -26,6 +26,9 @@ export default function Modal({
   modalRef,
   position
 }) {
+  const [dragging, setDragging] = useState(false);
+  const [offset, setOffset] = useState({x:0, y:0});
+  const [modalPosition, setModalPosition] = useState(position);
 
   /**
    * Handle click events on the modal content to prevent event bubbling.
@@ -36,6 +39,12 @@ export default function Modal({
   const handleContentClick = (event) => {
     event.stopPropagation();
   };
+
+
+
+
+
+
   // TODO: create a movable modal
 
   return (

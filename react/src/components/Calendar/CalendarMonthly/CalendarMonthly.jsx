@@ -48,7 +48,7 @@ export default function CalendarMonthly() {
     goToNextMonth,
   } = useCalendarState();
 
-  const { getMonthName, getDateActiveClass, toggleTaskActiveClass } =
+  const { getMonthName, getDateActiveClass, toggleTaskActiveClass, initiateNewTask } =
     calendarUtils();
   const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
@@ -112,23 +112,6 @@ export default function CalendarMonthly() {
       state: { previousLocation: location.pathname },
     });
   }
-  /**
-   * Initiates a default new task state based on selected time and date and sets state.
-   * @param {Date} timeStart - represents starting time.
-   * @param {Date} timeEnd - represents ending time.
-   * @param {Date} clickedDate - represents the clicked date.
-   */
-  const initiateNewTask = (timeStart, timeEnd, clickedDate) => {
-    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
-    const newTask = {
-      id: null,
-      title: "",
-      time_start: timeStart,
-      time_end: timeEnd,
-      date: formattedDate,
-    };
-    setTask({ ...task, ...newTask });
-  };
 
   /**
    * Handles click on a date to initiate new task and show modal
@@ -146,7 +129,12 @@ export default function CalendarMonthly() {
       selectedDate: selectedDate,
     });
     setClickedCellIndex(cellId);
-    initiateNewTask(clickedPeriodStart, clickedPeriodEnd, selectedDate);
+    const startTime = new Date();
+    startTime.setHours(7);
+    const endTime = new Date();
+    endTime.setHours(8);
+    const newTask = initiateNewTask(startTime,endTime, selectedDate);
+    setTask({...task, ...newTask});
   };
 
   /**

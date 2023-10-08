@@ -23,15 +23,97 @@ export function useModalState({ modalRef }) {
   const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
   const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
 
+  const [dragging, setDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [modalPosition, setModalPosition] = useState({
+    top: "15px",
+    left: "100px",
+  });
 
   // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
     setIsModalVisible(isVisible);
   };
+
+  const handleMouseDown = (event) => {
+    console.log("mouseDown");
+    if (!dragging) {
+      const modal = modalRef.current;
+      const modalRect = modal.getBoundingClientRect();
+
+      const offsetX = modalPosition.left;
+      const offsetY = modalPosition.top;
+      setDragging(true);
+      console.log('mouse down dragging ', dragging )
+      setOffset({
+        x: offsetX,
+        y: offsetY,
+      });
+    }
+  };
+
+  const handleMouseMove = (event) => {
+    if (dragging) {
+      console.log(dragging);
+      const modal = modalRef.current;
+      if (!modal) return;
+      const left = event.clientX - offset.x;
+      const top = event.clientY - offset.y;
+      const maxX = window.innerWidth - modal.clientWidth;
+      const maxY = window.innerHeight - modal.clientHeight;
+
+      const constrainedLeft = Math.min(Math.max(left, 0), maxX);
+      const constrainedTop = Math.min(Math.max(top, 0), maxY);
+
+      setModalPosition({
+        left: `${constrainedLeft}px`,
+        top: `${constrainedTop}px`,
+      });
+    }
+  };
+
+  const removeEventListeners = () => {
+    modalRef.current?.removeEventListener("mousedown", handleMouseDown);
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseUp = () => {
+    console.log("mouseUp");
+    if (dragging) {
+      setDragging(false);
+      console.log(dragging);
+      removeEventListeners();
+    }
+  };
+
+  useEffect(() => {
+    if (isModalVisible) {
+      modalRef.current.addEventListener("mousedown", handleMouseDown);
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      adjustModalPosition();
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      removeEventListeners();
+      document.removeEventListener("click", handleClickOutside);
+    }
+
+    // Clean up the event listeners on unmount
+    return () => {
+      removeEventListeners();
+    };
+  }, [isModalVisible, openedModalId]);
+
+  // useEffect(() => {
+  //   if(dragging) {
+
+  //   }
+
+  // }, [dragging])
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -53,19 +135,12 @@ export function useModalState({ modalRef }) {
     };
   }, []);
 
-  // Event listener to handle click outside the modal
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Check if the modal is visible and the click is not the opened modal
-      if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
-        hideModal();
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.addEventListener("click", handleClickOutside);
-    };
-  }, [isModalVisible, openedModalId]);
+  const handleClickOutside = (event) => {
+    // Check if the modal is visible and the click is not the opened modal
+    if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
+      hideModal();
+    }
+  };
 
   // Adjust the modal position based on the mouse click coordinates
   const adjustModalPosition = () => {
@@ -78,19 +153,20 @@ export function useModalState({ modalRef }) {
       const modalRect = modalElement.getBoundingClientRect();
       modalWidth = modalRect.width;
       modalHeight = modalRect.height;
-    } 
-    if(modalHeight < 200) {
+    }
+    if (modalHeight < 200) {
       modalHeight = 250;
     }
 
-    console.log('modal height', modalHeight)
-    console.log('modal width', modalHeight)
-    console.log('window width',window.innerWidth); // 749
-    console.log('window height',window.innerHeight); // 749
-    console.log('mouse coordinates', mouseCoordinates);
+    console.log("modal height", modalHeight);
+    console.log("modal width", modalHeight);
+    console.log("window width", window.innerWidth); // 749
+    console.log("window height", window.innerHeight); // 749
+    console.log("mouse coordinates", mouseCoordinates);
 
-    let positionLeft =  window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3 ;
-    let positionTop = window.innerHeight - modalHeight - mouseCoordinates.y  ;
+    let positionLeft =
+      window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3;
+    let positionTop = window.innerHeight - modalHeight - mouseCoordinates.y;
     if (positionLeft > 0) {
       positionLeft = 120;
     }
@@ -102,6 +178,10 @@ export function useModalState({ modalRef }) {
       top: `${positionTop}px`,
       left: `${positionLeft}px`,
     };
+    // const modalPositionStyles = {
+      // top: positionLeft,
+      // left: "100px",
+    // };
 
     setModalPosition(modalPositionStyles);
   };
@@ -117,7 +197,7 @@ export function useModalState({ modalRef }) {
     setIsModalVisible(true);
     setOpenedModalId(modalId);
     // Adjust the modal position based on the click event
-    adjustModalPosition();
+    // adjustModalPosition();
   };
   // Hide the modal
   const hideModal = () => {

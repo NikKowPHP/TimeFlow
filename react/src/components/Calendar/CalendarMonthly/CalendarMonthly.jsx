@@ -62,7 +62,7 @@ export default function CalendarMonthly() {
     modalPosition,
     showModal,
     hideModal,
-  } = useModalState({ modalRef });
+  } = useModalState({ modalRef: modalRef });
 
   const { navigate } = useLocationState();
   // State for clicked time period
@@ -262,7 +262,7 @@ export default function CalendarMonthly() {
           // Renders a task with modal wrapper
             <Modal
               classes={'modal-task-description'}
-              position={modalPosition}
+              modalPosition={modalPosition}
               key={task.id}
               isModalVisible={openedModalId === task.id}
               modalId={openedModalId}
@@ -283,7 +283,7 @@ export default function CalendarMonthly() {
         <Modal
           classes={'modal-task-description'}
           modalRef={modalRef}
-          position={modalPosition}
+          modalPosition={modalPosition}
           key={task.id}
           isModalVisible={openedModalId === ellipsisId}
           modalId={openedModalId}
@@ -331,7 +331,7 @@ export default function CalendarMonthly() {
         // Render modal for each date
         return (
           <Modal
-          position={modalPosition}
+          modalPosition={modalPosition}
           modalRef={modalRef}
             isModalVisible={openedModalId === id}
             classes={'modal-task-description'}

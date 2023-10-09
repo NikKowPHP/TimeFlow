@@ -25,10 +25,10 @@ export function useModalState({ modalRef }) {
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [modalPosition, setModalPosition] = useState({
-    top: "15px",
-    left: "100px",
-  });
+  const [modalPosition, setModalPosition] = useState(// top: "0px",
+    // left: "0px",
+    null
+  );
 
   // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
@@ -44,8 +44,16 @@ export function useModalState({ modalRef }) {
       const modal = modalRef.current;
       const modalRect = modal.getBoundingClientRect();
 
-      const offsetX = modalPosition.left;
-      const offsetY = modalPosition.top;
+      // const offsetX = event.clientX - modalRect.left;
+      // const offsetY = event.clientY- modalRect.top;
+      const offsetX = event.clientX;
+      const offsetY = event.clientY;
+      console.log('offsetX', offsetX)
+      console.log('offsetY', offsetY)
+      console.log('modalRectLeft', modalRect.left)
+      console.log('modalRect', modalRect.top)
+      // const offsetX = event.clientX - modalPosition.left;
+      // const offsetY = event.clientY - modalPosition.top;
       setDragging(true);
       console.log('mouse down dragging ', dragging )
       setOffset({
@@ -57,20 +65,19 @@ export function useModalState({ modalRef }) {
 
   const handleMouseMove = (event) => {
     if (dragging) {
-      console.log(dragging);
       const modal = modalRef.current;
-      if (!modal) return;
+      console.log(dragging);
+      if(!modalRef.current) return;
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
-      const maxX = window.innerWidth - modal.clientWidth;
-      const maxY = window.innerHeight - modal.clientHeight;
+      console.log('left', left);
+      console.log('top', top);
+      console.log('continue');
 
-      const constrainedLeft = Math.min(Math.max(left, 0), maxX);
-      const constrainedTop = Math.min(Math.max(top, 0), maxY);
 
       setModalPosition({
-        left: `${constrainedLeft}px`,
-        top: `${constrainedTop}px`,
+        left: `${left}px`,
+        top: `${top}px`,
       });
     }
   };
@@ -85,7 +92,6 @@ export function useModalState({ modalRef }) {
     console.log("mouseUp");
     if (dragging) {
       setDragging(false);
-      console.log(dragging);
       removeEventListeners();
     }
   };
@@ -106,14 +112,15 @@ export function useModalState({ modalRef }) {
     return () => {
       removeEventListeners();
     };
-  }, [isModalVisible, openedModalId]);
+  }, [isModalVisible, openedModalId, offset, dragging]);
 
   // useEffect(() => {
   //   if(dragging) {
 
+
   //   }
 
-  // }, [dragging])
+  // }, [dragging, offset])
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -158,6 +165,7 @@ export function useModalState({ modalRef }) {
       modalHeight = 250;
     }
 
+    // TODO: adjust modal position in the wrong place, make it seperate with dragging to trigger
     console.log("modal height", modalHeight);
     console.log("modal width", modalHeight);
     console.log("window width", window.innerWidth); // 749

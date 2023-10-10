@@ -43,19 +43,14 @@ export function useModalState({ modalRef }) {
     if (!dragging) {
       const modal = modalRef.current;
       const modalRect = modal.getBoundingClientRect();
+      const modalComputedStyle = window.getComputedStyle(modal);
 
-      // const offsetX = event.clientX - modalRect.left;
-      // const offsetY = event.clientY- modalRect.top;
-      const offsetX = event.clientX;
-      const offsetY = event.clientY;
-      console.log('offsetX', offsetX)
-      console.log('offsetY', offsetY)
-      console.log('modalRectLeft', modalRect.left)
-      console.log('modalRect', modalRect.top)
-      // const offsetX = event.clientX - modalPosition.left;
-      // const offsetY = event.clientY - modalPosition.top;
+      const currentLeft = parseFloat(modalComputedStyle.left);
+      const currentTop = parseFloat(modalComputedStyle.top);
+
+      const offsetX = event.clientX - currentLeft;
+      const offsetY = event.clientY - currentTop;
       setDragging(true);
-      console.log('mouse down dragging ', dragging )
       setOffset({
         x: offsetX,
         y: offsetY,
@@ -66,14 +61,11 @@ export function useModalState({ modalRef }) {
   const handleMouseMove = (event) => {
     if (dragging) {
       const modal = modalRef.current;
-      console.log(dragging);
       if(!modalRef.current) return;
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
-      console.log('left', left);
-      console.log('top', top);
-      console.log('continue');
 
+      // TODO: control out of boundaries 
 
       setModalPosition({
         left: `${left}px`,
@@ -92,16 +84,19 @@ export function useModalState({ modalRef }) {
     console.log("mouseUp");
     if (dragging) {
       setDragging(false);
-      removeEventListeners();
+      // removeEventListeners();
     }
   };
+  useEffect(() => {
+    adjustModalPosition();
+
+  }, [openedModalId])
 
   useEffect(() => {
     if (isModalVisible) {
       modalRef.current.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
-      adjustModalPosition();
       document.addEventListener("click", handleClickOutside);
     } else {
       removeEventListeners();
@@ -112,15 +107,7 @@ export function useModalState({ modalRef }) {
     return () => {
       removeEventListeners();
     };
-  }, [isModalVisible, openedModalId, offset, dragging]);
-
-  // useEffect(() => {
-  //   if(dragging) {
-
-
-  //   }
-
-  // }, [dragging, offset])
+  }, [openedModalId, offset, dragging]);
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -166,11 +153,11 @@ export function useModalState({ modalRef }) {
     }
 
     // TODO: adjust modal position in the wrong place, make it seperate with dragging to trigger
-    console.log("modal height", modalHeight);
-    console.log("modal width", modalHeight);
-    console.log("window width", window.innerWidth); // 749
-    console.log("window height", window.innerHeight); // 749
-    console.log("mouse coordinates", mouseCoordinates);
+    // console.log("modal height", modalHeight);
+    // console.log("modal width", modalHeight);
+    // console.log("window width", window.innerWidth); // 749
+    // console.log("window height", window.innerHeight); // 749
+    // console.log("mouse coordinates", mouseCoordinates);
 
     let positionLeft =
       window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3;
@@ -179,8 +166,8 @@ export function useModalState({ modalRef }) {
       positionLeft = 120;
     }
 
-    console.log("position top", positionTop);
-    console.log("position left", positionLeft);
+    // console.log("position top", positionTop);
+    // console.log("position left", positionLeft);
 
     const modalPositionStyles = {
       top: `${positionTop}px`,

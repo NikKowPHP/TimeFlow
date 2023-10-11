@@ -25,10 +25,12 @@ export function useModalState({ modalRef }) {
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [modalPosition, setModalPosition] = useState(// top: "0px",
+  const [modalPosition, setModalPosition] = useState(
+    // top: "0px",
     // left: "0px",
     null
   );
+  const [initialPosition, setInitialPosition] = useState({});
 
   // State for modal position
   const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
@@ -42,7 +44,6 @@ export function useModalState({ modalRef }) {
     console.log("mouseDown");
     if (!dragging) {
       const modal = modalRef.current;
-      const modalRect = modal.getBoundingClientRect();
       const modalComputedStyle = window.getComputedStyle(modal);
 
       const currentLeft = parseFloat(modalComputedStyle.left);
@@ -61,16 +62,48 @@ export function useModalState({ modalRef }) {
   const handleMouseMove = (event) => {
     if (dragging) {
       const modal = modalRef.current;
-      if(!modalRef.current) return;
+      if (!modalRef.current) return;
+      const modalRect = modal.getBoundingClientRect();
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
 
-      // TODO: control out of boundaries 
+      const scrollLeft = window.pageXOffset;
+      const absoluteLeft = modalRect.left + scrollLeft;
 
-      setModalPosition({
-        left: `${left}px`,
-        top: `${top}px`,
-      });
+      const absoluteRight = absoluteLeft + modalRect.width;
+
+
+      // Calculate the boundaries
+      const boundedLeft = Math.max(1, absoluteLeft);
+      const boundedRight = Math.max(window.innerWidth, absoluteRight);
+
+      console.log("absolute left", boundedLeft);
+      console.log("right", absoluteRight);
+
+      const minX = 1;
+
+      if(absoluteLeft <= minX) {
+        console.log('hits the border');
+        setModalPosition({
+          left: `${left + 5}px`,
+          top: `${top}px`,
+        });
+      } else if (absoluteRight >= window.innerWidth) {
+        setModalPosition({
+          left: `${left - 5}px`,
+          top: `${top}px`,
+        });
+      } else {
+        setModalPosition({
+          left: `${left}px`,
+          top: `${top}px`,
+        });
+      }
+
+
+
+
+
     }
   };
 
@@ -88,9 +121,10 @@ export function useModalState({ modalRef }) {
     }
   };
   useEffect(() => {
-    adjustModalPosition();
-
-  }, [openedModalId])
+    if (openedModalId) {
+      adjustModalPosition();
+    }
+  }, [openedModalId]);
 
   useEffect(() => {
     if (isModalVisible) {
@@ -152,31 +186,22 @@ export function useModalState({ modalRef }) {
       modalHeight = 250;
     }
 
-    // TODO: adjust modal position in the wrong place, make it seperate with dragging to trigger
-    // console.log("modal height", modalHeight);
-    // console.log("modal width", modalHeight);
-    // console.log("window width", window.innerWidth); // 749
-    // console.log("window height", window.innerHeight); // 749
-    // console.log("mouse coordinates", mouseCoordinates);
-
-    let positionLeft =
-      window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3;
-    let positionTop = window.innerHeight - modalHeight - mouseCoordinates.y;
+    let positionLeft = Math.round(
+      window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3
+    );
+    let positionTop = Math.round(
+      window.innerHeight - modalHeight - mouseCoordinates.y
+    );
     if (positionLeft > 0) {
       positionLeft = 120;
     }
-
-    // console.log("position top", positionTop);
-    // console.log("position left", positionLeft);
 
     const modalPositionStyles = {
       top: `${positionTop}px`,
       left: `${positionLeft}px`,
     };
-    // const modalPositionStyles = {
-      // top: positionLeft,
-      // left: "100px",
-    // };
+
+    setInitialPosition({ left: positionLeft, top: positionTop });
 
     setModalPosition(modalPositionStyles);
   };

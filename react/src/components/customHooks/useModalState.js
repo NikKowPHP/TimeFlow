@@ -25,6 +25,7 @@ export function useModalState({ modalRef }) {
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [absoluteLeft, setAbsoluteLeft] = useState(0);
   const [modalPosition, setModalPosition] = useState(
     // top: "0px",
     // left: "0px",
@@ -39,6 +40,17 @@ export function useModalState({ modalRef }) {
   const setModalVisibility = (isVisible) => {
     setIsModalVisible(isVisible);
   };
+
+  const getAbsoluteLeftPosition = () => {
+    const modal = modalRef.current;
+    if (!modalRef.current) return;
+    const modalRect = modal.getBoundingClientRect();
+
+    const scrollLeft = window.pageXOffset;
+    return  modalRect.left + scrollLeft;
+    
+
+  }
 
   const handleMouseDown = (event) => {
     console.log("mouseDown");
@@ -66,43 +78,36 @@ export function useModalState({ modalRef }) {
       const modalRect = modal.getBoundingClientRect();
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
+      console.log('left',left)
 
-      const scrollLeft = window.pageXOffset;
-      const absoluteLeft = modalRect.left + scrollLeft;
+      // const scrollLeft = window.pageXOffset;
+      // const absoluteLeft = modalRect.left + scrollLeft;
 
-      const absoluteRight = absoluteLeft + modalRect.width;
-
+      // const absoluteRight = absoluteLeft + modalRect.width;
 
       // Calculate the boundaries
-      const boundedLeft = Math.max(1, absoluteLeft);
-      const boundedRight = Math.max(window.innerWidth, absoluteRight);
 
-      console.log("absolute left", boundedLeft);
-      console.log("right", absoluteRight);
+      
 
-      const minX = 1;
+      const minX = -absoluteLeft; 
+      const minY = 50; 
+      console.log('minx', minX)
 
-      if(absoluteLeft <= minX) {
-        console.log('hits the border');
-        setModalPosition({
-          left: `${left + 5}px`,
-          top: `${top}px`,
-        });
-      } else if (absoluteRight >= window.innerWidth) {
-        setModalPosition({
-          left: `${left - 5}px`,
-          top: `${top}px`,
-        });
-      } else {
-        setModalPosition({
-          left: `${left}px`,
-          top: `${top}px`,
-        });
-      }
+      // Calculate the boundaries based on the screen dimensions and minX/minY
+      const maxX = window.innerWidth - modalRect.width;
+      const maxY = window.innerHeight - modalRect.height;
 
+      const boundedLeft = Math.min(maxX, Math.max(minX, left));
+      const boundedTop = Math.min(maxY, Math.max(-500, top));
 
+      console.log('maxX', maxX)
+      console.log("bounded left", boundedLeft);
+      console.log("absolute top", boundedTop);
 
-
+      setModalPosition({
+        left: `${boundedLeft}px`,
+        top: `${boundedTop}px`,
+      })
 
     }
   };
@@ -141,7 +146,7 @@ export function useModalState({ modalRef }) {
     return () => {
       removeEventListeners();
     };
-  }, [openedModalId, offset, dragging]);
+  }, [openedModalId, offset, dragging, absoluteLeft]);
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -201,7 +206,10 @@ export function useModalState({ modalRef }) {
       left: `${positionLeft}px`,
     };
 
+
     setInitialPosition({ left: positionLeft, top: positionTop });
+
+    setAbsoluteLeft(getAbsoluteLeftPosition());
 
     setModalPosition(modalPositionStyles);
   };

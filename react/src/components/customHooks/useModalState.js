@@ -46,8 +46,14 @@ export function useModalState({ modalRef }) {
     if (!modalRef.current) return;
     const modalRect = modal.getBoundingClientRect();
 
-    const scrollLeft = window.pageXOffset;
-    return  modalRect.left + scrollLeft;
+    const stylesLeft = Math.abs(parseFloat(modal.style.left));
+    console.log('styles left', stylesLeft)
+
+    console.log('absolute from function', modalRect.left + stylesLeft);
+
+    setAbsoluteLeft(modalRect.left + stylesLeft);
+    debugger;
+    return  modalRect.left + stylesLeft;
     
 
   }
@@ -80,10 +86,6 @@ export function useModalState({ modalRef }) {
       const top = event.clientY - offset.y;
       console.log('left',left)
 
-      // const scrollLeft = window.pageXOffset;
-      // const absoluteLeft = modalRect.left + scrollLeft;
-
-      // const absoluteRight = absoluteLeft + modalRect.width;
 
       // Calculate the boundaries
 
@@ -125,11 +127,19 @@ export function useModalState({ modalRef }) {
       // removeEventListeners();
     }
   };
+
+
   useEffect(() => {
     if (openedModalId) {
       adjustModalPosition();
     }
   }, [openedModalId]);
+
+  useEffect(() => {
+    getAbsoluteLeftPosition();
+
+  }, [initialPosition])
+
 
   useEffect(() => {
     if (isModalVisible) {
@@ -147,6 +157,9 @@ export function useModalState({ modalRef }) {
       removeEventListeners();
     };
   }, [openedModalId, offset, dragging, absoluteLeft]);
+
+
+
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -205,13 +218,11 @@ export function useModalState({ modalRef }) {
       top: `${positionTop}px`,
       left: `${positionLeft}px`,
     };
-
-
-    setInitialPosition({ left: positionLeft, top: positionTop });
-
-    setAbsoluteLeft(getAbsoluteLeftPosition());
-
     setModalPosition(modalPositionStyles);
+    setInitialPosition({
+      left: positionLeft,
+      top: positionTop,
+    })
   };
 
   // Get the mouse click coordinates

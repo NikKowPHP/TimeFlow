@@ -261,6 +261,7 @@ export default function CalendarMonthly() {
         {dateTasks.slice(0, maxTasksToShow).map((task) => (
           // Renders a task with modal wrapper
             <Modal
+              modalRef={modalRef}
               classes={'modal-task-description'}
               modalPosition={modalPosition}
               key={task.id}

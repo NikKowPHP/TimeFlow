@@ -177,11 +177,13 @@ export function useModalState({ modalRef }) {
       mouseClickY: mouseCoordinates.y
     }
 
+    const modalHeightOffset = dimensions.modalHeight < 300 ? 1 : 4;
+
     let positionLeft = Math.round(
       dimensions.windowWidth - dimensions.modalWidth - dimensions.mouseClickX - dimensions.modalWidth / 3
     );
     let positionTop = Math.round(
-      dimensions.windowHeight - dimensions.modalHeight - dimensions.modalHeight / 4 - mouseCoordinates.y
+      dimensions.windowHeight - dimensions.modalHeight - dimensions.modalHeight / modalHeightOffset - mouseCoordinates.y
     );
     // Adjust offset to fit the screen width
     if (positionLeft > 0) {

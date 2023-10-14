@@ -51,25 +51,26 @@ export function useModalState({ modalRef }) {
 
     const absoluteLeftCalc = Math.floor(modalRect.left - stylesLeft);
     const absoluteRightCalc = Math.round(
-      window.innerWidth - absoluteLeftCalc - (modalWidth +18)
+      window.innerWidth - absoluteLeftCalc - (modalWidth + 18)
     );
     const absoluteTopCalc = Math.round(modalRect.top - styleTop);
-    const absoluteBottomCalc = Math.round(window.innerHeight - absoluteTopCalc - modalHeight);
+    const absoluteBottomCalc = Math.round(
+      window.innerHeight - absoluteTopCalc - modalHeight
+    );
 
     const absolutePosition = {
       top: absoluteTopCalc,
       right: absoluteRightCalc,
       bottom: absoluteBottomCalc,
-      left: absoluteLeftCalc
-    }
+      left: absoluteLeftCalc,
+    };
     console.log(absolutePosition);
-    debugger
+    debugger;
     setAbsolutePosition(absolutePosition);
-      // TODO: set modal top absolute value and make from this func create general position like the obj top right left 
+    // TODO: set modal top absolute value and make from this func create general position like the obj top right left
 
     setAbsoluteRight(absoluteRightCalc);
     setAbsoluteLeft(absoluteLeftCalc);
-    
   };
 
   const handleMouseDown = (event) => {
@@ -90,15 +91,21 @@ export function useModalState({ modalRef }) {
       });
     }
   };
+  const disableSelection = (flag) => {
+    const rootElement = document.getElementById("root");
+    flag
+      ? rootElement.classList.add("disable-selection")
+      : rootElement.classList.remove("disable-selection");
+  };
 
   const handleMouseMove = (event) => {
     if (dragging) {
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
-      
+
       // Set minimum coordinates
       const minX = -absoluteLeft;
-      const minY = -absolutePosition.top
+      const minY = -absolutePosition.top;
       console.log("minx", minX);
 
       // Set maximum coordinates
@@ -111,11 +118,12 @@ export function useModalState({ modalRef }) {
       console.log("maxX", maxX);
       console.log("bounded left", boundedLeft);
       console.log("absolute top", boundedTop);
+      disableSelection(true);
 
       setModalPosition({
         left: `${boundedLeft}px`,
         top: `${boundedTop}px`,
-        userSelect: 'none',
+        userSelect: "none",
       });
     }
   };
@@ -130,7 +138,7 @@ export function useModalState({ modalRef }) {
     console.log("mouseUp");
     if (dragging) {
       setDragging(false);
-      // removeEventListeners();
+      disableSelection(false);
     }
   };
 

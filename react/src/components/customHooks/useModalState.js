@@ -26,11 +26,9 @@ export function useModalState({ modalRef }) {
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [absoluteLeft, setAbsoluteLeft] = useState(0);
-  const [modalPosition, setModalPosition] = useState(
-    // top: "0px",
-    // left: "0px",
-    null
-  );
+  const [absoluteRight, setAbsoluteRight] = useState(0);
+  const [absolutePosition, setAbsolutePosition] = useState({});
+  const [modalPosition, setModalPosition] = useState(null);
   const [initialPosition, setInitialPosition] = useState({});
 
   // State for modal position
@@ -45,18 +43,34 @@ export function useModalState({ modalRef }) {
     const modal = modalRef.current;
     if (!modalRef.current) return;
     const modalRect = modal.getBoundingClientRect();
+    const modalWidth = modalRect.width;
+    const modalHeight = modalRect.height;
 
-    const stylesLeft = Math.abs(parseFloat(modal.style.left));
-    console.log('styles left', stylesLeft)
+    const stylesLeft = parseFloat(modal.style.left);
+    const styleTop = parseFloat(modal.style.top);
 
-    console.log('absolute from function', modalRect.left + stylesLeft);
+    const absoluteLeftCalc = Math.floor(modalRect.left - stylesLeft);
+    const absoluteRightCalc = Math.round(
+      window.innerWidth - absoluteLeftCalc - (modalWidth +18)
+    );
+    const absoluteTopCalc = Math.round(modalRect.top - styleTop);
+    const absoluteBottomCalc = Math.round(window.innerHeight - absoluteTopCalc - modalHeight);
 
-    setAbsoluteLeft(modalRect.left + stylesLeft);
-    debugger;
-    return  modalRect.left + stylesLeft;
+    const absolutePosition = {
+      top: absoluteTopCalc,
+      right: absoluteRightCalc,
+      bottom: absoluteBottomCalc,
+      left: absoluteLeftCalc
+    }
+    console.log(absolutePosition);
+    debugger
+    setAbsolutePosition(absolutePosition);
+      // TODO: set modal top absolute value and make from this func create general position like the obj top right left 
+
+    setAbsoluteRight(absoluteRightCalc);
+    setAbsoluteLeft(absoluteLeftCalc);
     
-
-  }
+  };
 
   const handleMouseDown = (event) => {
     console.log("mouseDown");
@@ -79,38 +93,30 @@ export function useModalState({ modalRef }) {
 
   const handleMouseMove = (event) => {
     if (dragging) {
-      const modal = modalRef.current;
-      if (!modalRef.current) return;
-      const modalRect = modal.getBoundingClientRect();
       const left = event.clientX - offset.x;
       const top = event.clientY - offset.y;
-      console.log('left',left)
-
-
-      // Calculate the boundaries
-
       
+      // Set minimum coordinates
+      const minX = -absoluteLeft;
+      const minY = -absolutePosition.top
+      console.log("minx", minX);
 
-      const minX = -absoluteLeft; 
-      const minY = 50; 
-      console.log('minx', minX)
-
-      // Calculate the boundaries based on the screen dimensions and minX/minY
-      const maxX = window.innerWidth - modalRect.width;
-      const maxY = window.innerHeight - modalRect.height;
+      // Set maximum coordinates
+      const maxX = absoluteRight;
+      const maxY = absolutePosition.bottom;
 
       const boundedLeft = Math.min(maxX, Math.max(minX, left));
-      const boundedTop = Math.min(maxY, Math.max(-500, top));
+      const boundedTop = Math.min(maxY, Math.max(minY, top));
 
-      console.log('maxX', maxX)
+      console.log("maxX", maxX);
       console.log("bounded left", boundedLeft);
       console.log("absolute top", boundedTop);
 
       setModalPosition({
         left: `${boundedLeft}px`,
         top: `${boundedTop}px`,
-      })
-
+        userSelect: 'none',
+      });
     }
   };
 
@@ -128,7 +134,6 @@ export function useModalState({ modalRef }) {
     }
   };
 
-
   useEffect(() => {
     if (openedModalId) {
       adjustModalPosition();
@@ -137,9 +142,7 @@ export function useModalState({ modalRef }) {
 
   useEffect(() => {
     getAbsoluteLeftPosition();
-
-  }, [initialPosition])
-
+  }, [initialPosition]);
 
   useEffect(() => {
     if (isModalVisible) {
@@ -157,9 +160,6 @@ export function useModalState({ modalRef }) {
       removeEventListeners();
     };
   }, [openedModalId, offset, dragging, absoluteLeft]);
-
-
-
 
   // Calculate the center of the screen and update on window resize
   useEffect(() => {
@@ -222,7 +222,7 @@ export function useModalState({ modalRef }) {
     setInitialPosition({
       left: positionLeft,
       top: positionTop,
-    })
+    });
   };
 
   // Get the mouse click coordinates

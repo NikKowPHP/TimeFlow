@@ -176,6 +176,10 @@ table > tbody > tr > td {
   cursor: pointer;
 }
 
+.disable-selection {
+  user-select: none;
+}
+
 .dates-switcher-container {
   display: flex;
   justify-content: center;

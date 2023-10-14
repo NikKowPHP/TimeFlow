@@ -15,7 +15,6 @@ import { useState, useEffect } from "react";
  */
 
 export function useModalState({ modalRef }) {
-  // TODO: CALCULATE HEIGHT TO ADJUST THE MODAL
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
@@ -25,18 +24,20 @@ export function useModalState({ modalRef }) {
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [absoluteLeft, setAbsoluteLeft] = useState(0);
-  const [absoluteRight, setAbsoluteRight] = useState(0);
   const [absolutePosition, setAbsolutePosition] = useState({});
   const [modalPosition, setModalPosition] = useState(null);
   const [initialPosition, setInitialPosition] = useState({});
 
-  // State for modal position
-  const [screenCenter, setScreenCenter] = useState({ x: 0, y: 0 });
-
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
     setIsModalVisible(isVisible);
+  };
+
+  const disableSelection = (isDisabled) => {
+    const rootElement = document.getElementById("root");
+    isDisabled
+      ? rootElement.classList.add("disable-selection")
+      : rootElement.classList.remove("disable-selection");
   };
 
   const getAbsoluteLeftPosition = () => {
@@ -46,14 +47,14 @@ export function useModalState({ modalRef }) {
     const modalWidth = modalRect.width;
     const modalHeight = modalRect.height;
 
-    const stylesLeft = parseFloat(modal.style.left);
-    const styleTop = parseFloat(modal.style.top);
+    const modalstyleLeft = parseFloat(modal.style.left);
+    const modalStyleTop = parseFloat(modal.style.top);
 
-    const absoluteLeftCalc = Math.floor(modalRect.left - stylesLeft);
+    const absoluteLeftCalc = Math.floor(modalRect.left - modalstyleLeft);
     const absoluteRightCalc = Math.round(
       window.innerWidth - absoluteLeftCalc - (modalWidth + 18)
     );
-    const absoluteTopCalc = Math.round(modalRect.top - styleTop);
+    const absoluteTopCalc = Math.round(modalRect.top - modalStyleTop);
     const absoluteBottomCalc = Math.round(
       window.innerHeight - absoluteTopCalc - modalHeight
     );
@@ -64,17 +65,10 @@ export function useModalState({ modalRef }) {
       bottom: absoluteBottomCalc,
       left: absoluteLeftCalc,
     };
-    console.log(absolutePosition);
-    debugger;
     setAbsolutePosition(absolutePosition);
-    // TODO: set modal top absolute value and make from this func create general position like the obj top right left
-
-    setAbsoluteRight(absoluteRightCalc);
-    setAbsoluteLeft(absoluteLeftCalc);
   };
 
   const handleMouseDown = (event) => {
-    console.log("mouseDown");
     if (!dragging) {
       const modal = modalRef.current;
       const modalComputedStyle = window.getComputedStyle(modal);
@@ -84,18 +78,14 @@ export function useModalState({ modalRef }) {
 
       const offsetX = event.clientX - currentLeft;
       const offsetY = event.clientY - currentTop;
+
       setDragging(true);
+
       setOffset({
         x: offsetX,
         y: offsetY,
       });
     }
-  };
-  const disableSelection = (flag) => {
-    const rootElement = document.getElementById("root");
-    flag
-      ? rootElement.classList.add("disable-selection")
-      : rootElement.classList.remove("disable-selection");
   };
 
   const handleMouseMove = (event) => {
@@ -104,26 +94,22 @@ export function useModalState({ modalRef }) {
       const top = event.clientY - offset.y;
 
       // Set minimum coordinates
-      const minX = -absoluteLeft;
+      const minX = -absolutePosition.left;
       const minY = -absolutePosition.top;
-      console.log("minx", minX);
 
       // Set maximum coordinates
-      const maxX = absoluteRight;
+      const maxX = absolutePosition.right;
       const maxY = absolutePosition.bottom;
 
       const boundedLeft = Math.min(maxX, Math.max(minX, left));
       const boundedTop = Math.min(maxY, Math.max(minY, top));
 
-      console.log("maxX", maxX);
-      console.log("bounded left", boundedLeft);
-      console.log("absolute top", boundedTop);
       disableSelection(true);
 
       setModalPosition({
         left: `${boundedLeft}px`,
         top: `${boundedTop}px`,
-        userSelect: "none",
+        userSelect: "none", // Disable selection within the modal
       });
     }
   };
@@ -167,27 +153,7 @@ export function useModalState({ modalRef }) {
     return () => {
       removeEventListeners();
     };
-  }, [openedModalId, offset, dragging, absoluteLeft]);
-
-  // Calculate the center of the screen and update on window resize
-  useEffect(() => {
-    const calculateScreenCenter = () => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      setScreenCenter({ x: centerX, y: centerY });
-    };
-    calculateScreenCenter();
-
-    const handleResize = () => {
-      calculateScreenCenter();
-    };
-    window.addEventListener("resize", handleResize);
-
-    // Clean up the event listener on unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  }, [openedModalId, offset, dragging, absolutePosition]);
 
   const handleClickOutside = (event) => {
     // Check if the modal is visible and the click is not the opened modal
@@ -201,23 +167,23 @@ export function useModalState({ modalRef }) {
     const mouseCoordinates = event && getMouseClickCoordinates(event);
     const modalElement = modalRef.current;
     console.log(modalRef);
-    let modalWidth = 400;
-    let modalHeight = 400;
-    if (modalElement) {
-      const modalRect = modalElement.getBoundingClientRect();
-      modalWidth = modalRect.width;
-      modalHeight = modalRect.height;
-    }
-    if (modalHeight < 200) {
-      modalHeight = 250;
+    const modalRect = modalElement.getBoundingClientRect();
+    const dimensions = {
+      modalWidth: modalRect.width,
+      modalHeight: modalRect.height,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      mouseClickX: mouseCoordinates.x,
+      mouseClickY: mouseCoordinates.y
     }
 
     let positionLeft = Math.round(
-      window.innerWidth - modalWidth - mouseCoordinates.x - modalWidth / 3
+      dimensions.windowWidth - dimensions.modalWidth - dimensions.mouseClickX - dimensions.modalWidth / 3
     );
     let positionTop = Math.round(
-      window.innerHeight - modalHeight - mouseCoordinates.y
+      dimensions.windowHeight - dimensions.modalHeight - dimensions.modalHeight / 4 - mouseCoordinates.y
     );
+    // Adjust offset to fit the screen width
     if (positionLeft > 0) {
       positionLeft = 120;
     }
@@ -243,8 +209,6 @@ export function useModalState({ modalRef }) {
   const showModal = (modalId) => {
     setIsModalVisible(true);
     setOpenedModalId(modalId);
-    // Adjust the modal position based on the click event
-    // adjustModalPosition();
   };
   // Hide the modal
   const hideModal = () => {

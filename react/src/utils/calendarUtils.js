@@ -29,6 +29,10 @@ export function calendarUtils() {
     return "";
   }
 
+  function replaceUnderscoresWithSpaces(inputString) {
+    return inputString.replace(/_/g, ' ');
+  }
+
   // Generates an array of month indices (0 to 11) representing the months of the year.
   function generateMonths() {
     const months = [];
@@ -338,6 +342,7 @@ export function calendarUtils() {
     calculateTaskHeight,
     filterTasksForDateAndHour,
     defineClickedHalf,
-    modifyStartEndTime
+    modifyStartEndTime,
+    replaceUnderscoresWithSpaces
   };
 }

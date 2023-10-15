@@ -47,7 +47,7 @@ export default function CalendarWeekly() {
 
   // Get modal's state from custom hook
   const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
-    useModalState({ modalRef });
+    useModalState({ modalRef: modalRef });
 
   // Destructure functions from calendarUtils
   const {
@@ -121,8 +121,8 @@ export default function CalendarWeekly() {
     }
   }
   const checkMonthDiff = (previousStartDate, newStartDate) => {
-    const monthDiff = previousStartDate.getMonth() - newStartDate.getMonth(); 
-    if ( monthDiff !== 0) {
+    const monthDiff = previousStartDate.getMonth() - newStartDate.getMonth();
+    if (monthDiff !== 0) {
       setMonth(newStartDate.getMonth());
     }
   };
@@ -307,6 +307,7 @@ export default function CalendarWeekly() {
     );
     return (
       <TaskItem
+        modalPosition={modalPosition}
         task={task}
         classes={taskClass}
         handleOnTaskClick={(event) => handleExistingTaskClick(event, task.id)}
@@ -387,7 +388,7 @@ export default function CalendarWeekly() {
     <Modal
       isModalVisible={openedModalId === cellId}
       modalRef={modalRef}
-      position={modalPosition}
+      modalPosition={modalPosition}
       classes={"modal-task-description"}
       key={cellId}
       content={modalContent}

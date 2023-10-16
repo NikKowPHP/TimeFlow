@@ -257,7 +257,7 @@ export function calendarUtils() {
       time_start: formattedTimeStart,
       time_end: formattedTimeEnd,
       date: formattedDate,
-      notification_preference: '1_day_before'
+      notification_preference: null
     };
   };
 

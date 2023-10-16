@@ -65,9 +65,11 @@ export default function NewTask({
   );
 
   const renderNotificationSelection = () => (
-    <select defaultValue={"1_day_before"} onChange={(event) => onNotificationSelection(event)}>
+    <select defaultValue={null} onChange={(event) => onNotificationSelection(event)}>
+      <option value={null}>Do not notify me</option>
       <option value="1_day_before">1 day before</option>
       <option value="1_hour_before">1 hour before</option>
+      <option value="15_minutes_before">15 minutes before</option>
     </select>
   );
 
@@ -104,7 +106,6 @@ export default function NewTask({
           </div>
         </div>
         <div className="modal-task-additional">
-          {/* TODO: create notifications */}
           <div
             className="modal-task-notification"
             onClick={handleNotificationClick}

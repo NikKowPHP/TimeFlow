@@ -174,21 +174,26 @@ export function useModalState({ modalRef }) {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
       mouseClickX: mouseCoordinates.x,
-      mouseClickY: mouseCoordinates.y
-    }
+      mouseClickY: mouseCoordinates.y,
+    };
 
-    const modalHeightOffset = dimensions.modalHeight < 300 ? 1 : 4;
+    const modalHeightOffset = dimensions.modalHeight < 300 ? 1.5 : 1;
 
     let positionLeft = Math.round(
-      dimensions.windowWidth - dimensions.modalWidth - dimensions.mouseClickX - dimensions.modalWidth / 3
+      dimensions.windowWidth -
+        dimensions.modalWidth -
+        dimensions.mouseClickX -
+        dimensions.modalWidth / 3
     );
     let positionTop = Math.round(
-      dimensions.windowHeight - dimensions.modalHeight - dimensions.modalHeight / modalHeightOffset - mouseCoordinates.y
+      dimensions.windowHeight -
+        dimensions.mouseClickY -
+        dimensions.modalHeight * modalHeightOffset
     );
-    // Adjust offset to fit the screen width
     if (positionLeft > 0) {
-      positionLeft = 120;
+      positionLeft = dimensions.modalHeight > 300 ? 120 : 100;
     }
+    positionTop = positionTop > 0 ? 0 : positionTop;
 
     const modalPositionStyles = {
       top: `${positionTop}px`,

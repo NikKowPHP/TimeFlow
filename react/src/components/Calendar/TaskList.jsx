@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import Modal from "../modals/Modal";
 import { dateUtils } from "../../utils/dateUtils";
 import ExistingTask from "../Task/ExistingTask";
@@ -44,7 +44,7 @@ const TaskList = ({
         return (
           <Modal
             modalRef={modalRef}
-            position={modalPosition}
+            modalPosition={modalPosition}
             classes={classes}
             style={style}
             key={task.id}

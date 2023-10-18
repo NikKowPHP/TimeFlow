@@ -30,7 +30,7 @@ export function calendarUtils() {
   }
 
   function replaceUnderscoresWithSpaces(inputString) {
-    return inputString.replace(/_/g, ' ');
+    return inputString.replace(/_/g, " ");
   }
 
   // Generates an array of month indices (0 to 11) representing the months of the year.
@@ -46,8 +46,11 @@ export function calendarUtils() {
   // Generates an array of dates for the specified month and year to fill the calendar grid
   function generateMonthDates(year, month) {
     const firstDayOfMonth = new Date(year, month, 1);
+    const startingDay = firstDayOfMonth.getDay();
+    // COMMIT: Resolve issue with displaying first day of month 'sunday';
+
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const fullCalendarDates = 42;
+    const fullCalendarDates = startingDay === 0 ? 42 : 35;
 
     const previousMonthYear = month === 0 ? year - 1 : year;
     const previousMonth = month === 0 ? 11 : month - 1;
@@ -55,19 +58,20 @@ export function calendarUtils() {
       previousMonthYear,
       previousMonth + 1,
       0
-    ).getDate();
+    ).getDate(); // previous month's dates quantity;
 
     const nextMonth = month === 11 ? 0 : month + 1;
     const nextMonthYear = month === 11 ? year + 1 : year;
-    const startingDay = firstDayOfMonth.getDay();
 
     const currentMonthDates = [];
 
+    const datesFromPreviousMonth = startingDay === 0 ? 6 : startingDay - 1;
+
     // Generates dates from the previous month
-    for (let i = startingDay - 2; i >= 0; i--) {
+    for (let i = previousMonthDays - datesFromPreviousMonth + 1; i <= previousMonthDays; i++) {
       const modifiedMonth =
         previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
-      const modifiedDate = previousMonthDays - i;
+      const modifiedDate = i < 10 ? "0" + i : i;
       const fullDate = `${previousMonthYear}-${modifiedMonth}-${modifiedDate}`;
       const fullDateObj = new Date(fullDate);
       currentMonthDates.push(fullDateObj);
@@ -98,15 +102,15 @@ export function calendarUtils() {
 
   // Function to get the current week dates array based on the current date
   const getCurrentWeekDates = (dates, currentDate) => {
-    const weeks = 6; // Is always 6 weeks based on the type of the calendar
+    const weeks = 5; // Is always 5 weeks based on the type of the calendar
     let currentWeekIndex = -1; // Initialize with an invalid value
     let currentWeekDates = [];
-
     // Find the week index of the current date
     for (let weekIndex = 0; weekIndex < weeks; weekIndex++) {
       const startIndex = weekIndex * 7;
       const endIndex = startIndex + 7;
       const weekDates = dates.slice(startIndex, endIndex);
+      console.log(dates);
       if (
         weekDates.some(
           (date) => date.toDateString() === currentDate.toDateString()
@@ -250,14 +254,13 @@ export function calendarUtils() {
 
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
 
-    
     return {
       id: null,
       title: "",
       time_start: formattedTimeStart,
       time_end: formattedTimeEnd,
       date: formattedDate,
-      notification_preference: null
+      notification_preference: null,
     };
   };
 
@@ -275,7 +278,7 @@ export function calendarUtils() {
     const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
     const cellHeight = 64.83;
     const taskHeight = cellHeight * heightRatio;
-    const top = taskTimeStart.includes('30') ? '-65px' : '-100px';
+    const top = taskTimeStart.includes("30") ? "-65px" : "-100px";
     return {
       top: top,
       height: `${taskHeight}px`,
@@ -288,13 +291,20 @@ export function calendarUtils() {
    * @param {string} convertedHourIndex - The convertedHourIndex in format 'h'.
    * @returns {Array} - An array of task objects that correspond to the filter criteria.
    */
-  const filterTasksForDateAndHour = (convertedDate, convertedHourIndex, allTasks) => {
-    return allTasks && allTasks.filter((task) => {
-      const slicedTaskTime = task.time_start.split(":")[0];
-      return (
-        task.date === convertedDate && slicedTaskTime === convertedHourIndex
-      );
-    });
+  const filterTasksForDateAndHour = (
+    convertedDate,
+    convertedHourIndex,
+    allTasks
+  ) => {
+    return (
+      allTasks &&
+      allTasks.filter((task) => {
+        const slicedTaskTime = task.time_start.split(":")[0];
+        return (
+          task.date === convertedDate && slicedTaskTime === convertedHourIndex
+        );
+      })
+    );
   };
   const defineClickedHalf = (e) => {
     const rect = e.target.getBoundingClientRect();
@@ -343,6 +353,6 @@ export function calendarUtils() {
     filterTasksForDateAndHour,
     defineClickedHalf,
     modifyStartEndTime,
-    replaceUnderscoresWithSpaces
+    replaceUnderscoresWithSpaces,
   };
 }

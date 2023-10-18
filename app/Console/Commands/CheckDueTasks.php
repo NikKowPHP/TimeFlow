@@ -45,7 +45,6 @@ class CheckDueTasks extends Command
         }
 
     }
-    // TODO: 1 hour before 15 min before
     protected function calculateNotificationTime($task)
     {
         $due_date_time = Carbon::parse($task->due_datetime);

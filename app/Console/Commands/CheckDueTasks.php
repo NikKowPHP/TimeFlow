@@ -45,14 +45,26 @@ class CheckDueTasks extends Command
         }
 
     }
+    // TODO: 1 hour before 15 min before
     protected function calculateNotificationTime($task)
     {
-        if ($task->notification_preference === '1_day_before') {
-            $dueDateTime = Carbon::parse($task->due_datetime);
-            $dayBefore = $dueDateTime->subDay()->toDateTimeString();
-            return $dayBefore;
+        $due_date_time = Carbon::parse($task->due_datetime);
+        $notification_day = $due_date_time;
+        switch ($task->notification_preference) {
+            case "1_day_before":
+                $notification_day = $due_date_time->subDay()->toDateTimeString();
+                break;
+            case "1_hour_before":
+                $notification_day = $due_date_time->subHour()->toDateTimeString();
+                break;
+            case "15_minutes_before":
+                $notification_day = $due_date_time->subMinutes(15)->toDateTimeString();
+                break;
+            default:
+                return $task->due_dateTime;
+
         }
-        return $task->due_datetime;
+        return $notification_day;
     }
     protected function sendNotification($task)
     {

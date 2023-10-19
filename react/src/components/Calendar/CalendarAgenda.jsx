@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import Loading from "../Loading";
 import "../../styles/calendar/calendar-agenda.css";
+import { calendarUtils } from "../../utils/calendarUtils";
 
 export default function CalendarAgenda() {
   const { loading, allTasks } = useCalendarState();
+  const { formatDateToDDMonDay } = calendarUtils();
 
   const [groupedTasks, setGroupedTasks] = useState({});
 
@@ -31,12 +33,14 @@ export default function CalendarAgenda() {
     return Object.entries(groupedTasks).map(([date, tasks]) => (
       <div className="calendar-agenda__group-wrapper">
         <div key={date} className="calendar-agenda__group-date">
-          {date}
+          {formatDateToDDMonDay(date)}
         </div>
         <div className="calendar-agenda__group-info">
           {tasks.map((task) => (
             <div className="calendar-agenda__group-time-title">
-              <div className="calendar-agenda__group-time">{task.time_start}-{task.time_end}</div>
+              <div className="calendar-agenda__group-time">
+                {task.time_start}-{task.time_end}
+              </div>
               <div className="calendar-agenda__group-title"> {task.title}</div>
             </div>
           ))}

@@ -68,7 +68,11 @@ export function calendarUtils() {
     const datesFromPreviousMonth = startingDay === 0 ? 6 : startingDay - 1;
 
     // Generates dates from the previous month
-    for (let i = previousMonthDays - datesFromPreviousMonth + 1; i <= previousMonthDays; i++) {
+    for (
+      let i = previousMonthDays - datesFromPreviousMonth + 1;
+      i <= previousMonthDays;
+      i++
+    ) {
       const modifiedMonth =
         previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
       const modifiedDate = i < 10 ? "0" + i : i;
@@ -182,6 +186,15 @@ export function calendarUtils() {
   const getDayName = (dayIndex) => {
     return weekDays()[dayIndex];
   };
+  function formatDateToDDMonDay(dateStr) {
+    const date = new Date(dateStr);
+
+    const month = getMonthName(date.getUTCMonth()).substring(0,3);
+    const dayOfMonth = date.getUTCDate();
+    const dayOfWeek = getDayName(date.getUTCDay());
+
+    return `${dayOfMonth} ${month}, ${dayOfWeek}`;
+  }
 
   const convertHour = (hour) => {
     const date = new Date();
@@ -354,5 +367,6 @@ export function calendarUtils() {
     defineClickedHalf,
     modifyStartEndTime,
     replaceUnderscoresWithSpaces,
+    formatDateToDDMonDay,
   };
 }

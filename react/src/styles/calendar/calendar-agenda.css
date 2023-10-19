@@ -2,11 +2,12 @@
 	border: 1px solid black;
 	display:flex;
 	padding: 10px;
-	align-items: center;
+	/* align-items: center; */
 }
 .calendar-agenda__group-date{
+	margin-left: 50px;
 	margin-right: 50px;
-
+	width: 120px;
 	padding: 10px;
 }
 
@@ -19,4 +20,17 @@
 }
 .calendar-agenda__group-time{
 	margin-right: 50px;
+	width: 120px;
+	position: relative;
+}
+.calendar-agenda__group-time::before {
+	content: " ";
+	display: block;
+	position:absolute;
+	left: -29px;
+	top: 2px;
+	border-radius: 50%;
+	width: 15px;
+	height: 15px;
+	background-color: rgb(190 3 229);
 }

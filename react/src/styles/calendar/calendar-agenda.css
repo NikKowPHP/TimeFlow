@@ -1,0 +1,22 @@
+.calendar-agenda__group-wrapper {
+	border: 1px solid black;
+	display:flex;
+	padding: 10px;
+	align-items: center;
+}
+.calendar-agenda__group-date{
+	margin-right: 50px;
+
+	padding: 10px;
+}
+
+.calendar-agenda__group-time-title {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 10px;
+}
+.calendar-agenda__group-time{
+	margin-right: 50px;
+}

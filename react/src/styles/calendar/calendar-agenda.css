@@ -12,6 +12,8 @@
 	margin-right: 50px;
 	width: 120px;
 	padding: 10px;
+	display: flex;
+	align-items: center;
 }
 
 .calendar-agenda__group-time-title {
@@ -36,4 +38,15 @@
 	width: 15px;
 	height: 15px;
 	background-color: rgb(190 3 229);
+}
+.calendar-agenda__group-date__dayOfMonth {
+	font-size: 1.5rem;
+	margin-right: 10px;
+}
+.calendar-agenda__group-date__month {
+	color: rgba(0, 0, 0, 0.685);
+}
+
+.calendar-agenda__group-date__dayOfWeek {
+	color: rgba(0, 0, 0, 0.685);
 }

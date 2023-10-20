@@ -26,18 +26,30 @@ export default function CalendarAgenda() {
       grouped[date].push(task);
       return grouped;
     }, {});
-  const renderGroupTaskDate = (date) => (
-    <div key={date} className="calendar-agenda__group-date">
-      {formatDateToDDMonDay(date)}
-    </div>
-  );
+  const renderGroupTaskDate = (date) => {
+    const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
+    return (
+      <div key={date} className="calendar-agenda__group-date">
+        <span className="calendar-agenda__group-date__dayOfMonth">
+          {dayOfMonth}
+        </span>
+        <span className="calendar-agenda__group-date__month">{month}</span>,
+        <span className="calendar-agenda__group-date__dayOfWeek">
+          {dayOfWeek}
+        </span>
+      </div>
+    );
+  };
 
   const renderGroupTaskInfo = (task) => (
     <>
       <div className="calendar-agenda__group-time">
         {task.time_start}-{task.time_end}
       </div>
-      <div className="calendar-agenda__group-title"> {task.title}</div>
+      <div className="calendar-agenda__group-title font-bold">
+        {" "}
+        {task.title}
+      </div>
     </>
   );
 

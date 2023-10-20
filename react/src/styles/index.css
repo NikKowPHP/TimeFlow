@@ -112,6 +112,10 @@ input:focus {
   background-color: rgba(164, 94, 192, 0.116);
 }
 
+.font-bold {
+  font-weight: 500;
+}
+
 .svg-control {
   cursor: pointer;
 }

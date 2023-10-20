@@ -51,10 +51,8 @@
 	cursor: pointer;
 }
 
-.calendar-agenda__group-date__month {
-	color: rgba(0, 0, 0, 0.685);
-}
-
+.calendar-agenda__group-date__month,
 .calendar-agenda__group-date__dayOfWeek {
 	color: rgba(0, 0, 0, 0.685);
+	text-transform: uppercase;
 }

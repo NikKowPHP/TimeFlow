@@ -189,11 +189,11 @@ export function calendarUtils() {
   function formatDateToDDMonDay(dateStr) {
     const date = new Date(dateStr);
 
-    const month = getMonthName(date.getUTCMonth()).substring(0,3);
+    const month = getMonthName(date.getUTCMonth()).substring(0, 3);
     const dayOfMonth = date.getUTCDate();
     const dayOfWeek = getDayName(date.getUTCDay());
 
-    return `${dayOfMonth} ${month}, ${dayOfWeek}`;
+    return { dayOfMonth: dayOfMonth, month: month, dayOfWeek: dayOfWeek };
   }
 
   const convertHour = (hour) => {

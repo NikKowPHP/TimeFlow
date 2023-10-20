@@ -1,5 +1,8 @@
+.calendar-agenda-wrapper {
+	border: 1px solid rgba(0, 0, 0, 0.26);
+}
 .calendar-agenda__group-wrapper {
-	border: 1px solid black;
+	border-bottom: 1px solid rgba(0,0,0,0.26);
 	display:flex;
 	padding: 10px;
 	/* align-items: center; */

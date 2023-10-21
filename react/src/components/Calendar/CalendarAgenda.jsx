@@ -1,12 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCalendarState } from "../customHooks/useCalendarState";
 import Loading from "../Loading";
 import "../../styles/calendar/calendar-agenda.css";
 import { calendarUtils } from "../../utils/calendarUtils";
+import { useModalState } from "../customHooks/useModalState";
+import newTaskHandler from "./newTaskHandler";
+import Modal from "../modals/Modal";
+import NewTask from "../Task/NewTask";
 
 export default function CalendarAgenda() {
-  const { loading, allTasks } = useCalendarState();
-  const { formatDateToDDMonDay } = calendarUtils();
+  const modalRef = useRef(null);
+  // TODO: when task created update the state of AllTask then trigger rerender by effect
+
+  const {
+    loading,
+    allTasks,
+    setAllTasks,
+    setSelectedDate,
+    selectedDate,
+    currentDate,
+  } = useCalendarState();
+  const { formatDateToDDMonDay, initiateNewTask, convertDateToTime } = calendarUtils();
+
+  // Modal import
+  const { openedModalId, isModalVisible, showModal, modalPosition, hideModal } =
+    useModalState({ modalRef: modalRef });
+
+  // Task import
+  const { task, setTask, handleTaskCreation } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+  });
 
   const [groupedTasks, setGroupedTasks] = useState({});
 
@@ -26,13 +49,113 @@ export default function CalendarAgenda() {
       grouped[date].push(task);
       return grouped;
     }, {});
+
+  function displaySuccessTaskCreation(data) {
+    if (data) {
+      hideModal();
+      setSelectedDate(null);
+      setClickedCellIndex(null);
+      toast.success(`The task '${data.title}' was successfully created`);
+    }
+  }
+
+  const handleDateSelection = (newSelectedDate) => {
+    const formattedSelectedDate = new Date(newSelectedDate);
+    formattedSelectedDate;
+    setSelectedDate(formattedSelectedDate);
+    setTask({ ...task, date: newSelectedDate });
+  };
+
+  const handleOnClick = ({
+    event,
+    modalId,
+    startTime,
+    endTime,
+    selectedDate,
+  }) => {
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
+      resetDateState();
+    }
+    event.stopPropagation();
+    showModal(modalId);
+    const newTask = initiateNewTask(startTime, endTime, selectedDate);
+    setTask({ ...task, ...newTask });
+  };
+
+  /**
+   * Handles time selection and sets state
+   * @param {Date} selectedTime - The selected time
+   * @param {boolean} isStart - Whether is start of the time period or the end
+   * @returns {void}
+   */
+  const handleTimeSelection = (selectedTime, isStart) => {
+    if (isStart) {
+      setClickedPeriodStart(selectedTime);
+      setTask({ ...task, time_start: selectedTime });
+    } else {
+      setClickedPeriodEnd(selectedTime);
+      setTask({ ...task, time_end: selectedTime });
+    }
+  };
+
   const renderGroupTaskDate = (date) => {
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
+    const dateObj = new Date(date);
+    const id = date;
+
+    const currentDate = new Date();
+
+    const currentMinutes = currentDate.getMinutes();
+    const currentHours = currentDate.getHours();
+
+    const timePeriodStartObj = currentDate;
+    const timePeriodEndObj = new Date;
+    timePeriodEndObj.setHours(currentHours+1);
+    const timePeriodStartString = convertDateToTime(timePeriodStartObj);
+    const timePeriodEndString = convertDateToTime(timePeriodEndObj);
     return (
-      <div key={date} className="calendar-agenda__group-date">
-        <span className="calendar-agenda__group-date__dayOfMonth">
-          {dayOfMonth}
-        </span>
+      <div className="calendar-agenda__group-date">
+        <Modal
+          modalPosition={modalPosition}
+          modalRef={modalRef}
+          isModalVisible={openedModalId === id}
+          classes={"modal-task-description"}
+          key={id}
+          content={
+            <NewTask
+              formId={id}
+              openedModalId={openedModalId}
+              selectedDate={dateObj}
+              onDateSelection={handleDateSelection}
+              onTimeSelection={handleTimeSelection}
+              handleTaskCreation={handleTaskCreation}
+              clickedPeriodStart={timePeriodStartString}
+              clickedPeriodEnd={timePeriodEndString}
+              onModalClose={hideModal}
+              onTitleSet={(event) =>
+                setTask({ ...task, title: event.target.value })
+              }
+            />
+          }
+        >
+          <span
+            className="calendar-agenda__group-date__dayOfMonth"
+            onClick={(event) =>
+              handleOnClick({
+                event: event,
+                modalId: id,
+                startTime: timePeriodStartObj,
+                endTime: timePeriodEndObj,
+                selectedDate: dateObj,
+                // TODO: convertDateTime error
+              })
+            }
+          >
+            {dayOfMonth}
+          </span>
+        </Modal>
         <span className="calendar-agenda__group-date__month">{month}</span>,
         <span className="calendar-agenda__group-date__dayOfWeek">
           {dayOfWeek}
@@ -56,11 +179,11 @@ export default function CalendarAgenda() {
   const renderTaskList = () => {
     if (!groupedTasks) return;
     return Object.entries(groupedTasks).map(([date, tasks]) => (
-      <div className="calendar-agenda__group-wrapper">
+      <div key={date} className="calendar-agenda__group-wrapper">
         {renderGroupTaskDate(date)}
         <div className="calendar-agenda__group-info">
           {tasks.map((task) => (
-            <div className="calendar-agenda__group-time-title">
+            <div key={task.id} className="calendar-agenda__group-time-title">
               {renderGroupTaskInfo(task)}
             </div>
           ))}

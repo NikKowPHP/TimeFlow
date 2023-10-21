@@ -7,6 +7,8 @@ import { useModalState } from "../customHooks/useModalState";
 import newTaskHandler from "./newTaskHandler";
 import Modal from "../modals/Modal";
 import NewTask from "../Task/NewTask";
+import ExistingTask from "../Task/ExistingTask";
+import { taskUtils } from "../../utils/taskUtils";
 
 export default function CalendarAgenda() {
   const modalRef = useRef(null);
@@ -20,11 +22,23 @@ export default function CalendarAgenda() {
     selectedDate,
     currentDate,
   } = useCalendarState();
-  const { formatDateToDDMonDay, initiateNewTask, convertDateToTime } = calendarUtils();
+  const { formatDateToDDMonDay, initiateNewTask, convertDateToTime } =
+    calendarUtils();
+
+  const { onTaskDelete, onTaskEdit } = taskUtils({
+    onStateReceived: handleTaskState,
+  });
+  function handleTaskState() {}
 
   // Modal import
-  const { openedModalId, isModalVisible, showModal, modalPosition, hideModal } =
-    useModalState({ modalRef: modalRef });
+  const {
+    openedModalId,
+    isModalVisible,
+    showModal,
+    modalPosition,
+    hideModal,
+    onModalClose,
+  } = useModalState({ modalRef: modalRef });
 
   // Task import
   const { task, setTask, handleTaskCreation } = newTaskHandler({
@@ -72,16 +86,19 @@ export default function CalendarAgenda() {
     startTime,
     endTime,
     selectedDate,
+    newTask = false,
+
   }) => {
     // Close opened modal
     if (openedModalId !== null) {
       hideModal();
-      resetDateState();
     }
     event.stopPropagation();
     showModal(modalId);
-    const newTask = initiateNewTask(startTime, endTime, selectedDate);
-    setTask({ ...task, ...newTask });
+    if (newTask) {
+      const newTask = initiateNewTask(startTime, endTime, selectedDate);
+      setTask({ ...task, ...newTask });
+    }
   };
 
   /**
@@ -111,8 +128,8 @@ export default function CalendarAgenda() {
     const currentHours = currentDate.getHours();
 
     const timePeriodStartObj = currentDate;
-    const timePeriodEndObj = new Date;
-    timePeriodEndObj.setHours(currentHours+1);
+    const timePeriodEndObj = new Date();
+    timePeriodEndObj.setHours(currentHours + 1);
     const timePeriodStartString = convertDateToTime(timePeriodStartObj);
     const timePeriodEndString = convertDateToTime(timePeriodEndObj);
     return (
@@ -149,7 +166,6 @@ export default function CalendarAgenda() {
                 startTime: timePeriodStartObj,
                 endTime: timePeriodEndObj,
                 selectedDate: dateObj,
-                // TODO: convertDateTime error
               })
             }
           >
@@ -165,15 +181,21 @@ export default function CalendarAgenda() {
   };
 
   const renderGroupTaskInfo = (task) => (
-    <>
+    <div
+      className="calendar-agenda__group-time-title"
+      onClick={(event) =>
+        handleOnClick({
+          event: event,
+          modalId: task.id,
+          newTask: false
+        })
+      }
+    >
       <div className="calendar-agenda__group-time">
         {task.time_start}-{task.time_end}
       </div>
-      <div className="calendar-agenda__group-title font-bold">
-        {" "}
-        {task.title}
-      </div>
-    </>
+      <div className="calendar-agenda__group-title font-bold">{task.title}</div>
+    </div>
   );
 
   const renderTaskList = () => {
@@ -182,11 +204,28 @@ export default function CalendarAgenda() {
       <div key={date} className="calendar-agenda__group-wrapper">
         {renderGroupTaskDate(date)}
         <div className="calendar-agenda__group-info">
-          {tasks.map((task) => (
-            <div key={task.id} className="calendar-agenda__group-time-title">
-              {renderGroupTaskInfo(task)}
-            </div>
-          ))}
+          {tasks.map((task) => {
+            return (
+              <Modal
+                modalRef={modalRef}
+                classes={"modal-task-description"}
+                modalPosition={modalPosition}
+                key={task.id}
+                isModalVisible={openedModalId === task.id}
+                modalId={task.id}
+                content={
+                  <ExistingTask
+                    task={task}
+                    onModalClose={onModalClose}
+                    onDelete={onTaskDelete}
+                    onTaskEdit={onTaskEdit}
+                  />
+                }
+              >
+                {renderGroupTaskInfo(task)}
+              </Modal>
+            );
+          })}
         </div>
       </div>
     ));

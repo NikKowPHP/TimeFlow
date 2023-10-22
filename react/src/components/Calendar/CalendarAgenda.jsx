@@ -22,7 +22,7 @@ export default function CalendarAgenda() {
     selectedDate,
     currentDate,
   } = useCalendarState();
-  const { formatDateToDDMonDay, initiateNewTask, convertDateToTime } =
+  const { toggleTaskActiveClass,formatDateToDDMonDay, initiateNewTask, convertDateToTime } =
     calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
@@ -87,7 +87,6 @@ export default function CalendarAgenda() {
     endTime,
     selectedDate,
     newTask = false,
-
   }) => {
     // Close opened modal
     if (openedModalId !== null) {
@@ -180,23 +179,28 @@ export default function CalendarAgenda() {
     );
   };
 
-  const renderGroupTaskInfo = (task) => (
-    <div
-      className="calendar-agenda__group-time-title"
-      onClick={(event) =>
-        handleOnClick({
-          event: event,
-          modalId: task.id,
-          newTask: false
-        })
-      }
-    >
-      <div className="calendar-agenda__group-time">
-        {task.time_start}-{task.time_end}
+  const renderGroupTaskInfo = (task) => {
+    const activeClass = toggleTaskActiveClass(task.id, openedModalId, isModalVisible);
+    return (
+      <div
+        className={`calendar-agenda__group-time-title ${activeClass}`}
+        onClick={(event) =>
+          handleOnClick({
+            event: event,
+            modalId: task.id,
+            newTask: false,
+          })
+        }
+      >
+        <div className="calendar-agenda__group-time">
+          {task.time_start}-{task.time_end}
+        </div>
+        <div className="calendar-agenda__group-title font-bold">
+          {task.title}
+        </div>
       </div>
-      <div className="calendar-agenda__group-title font-bold">{task.title}</div>
-    </div>
-  );
+    );
+  };
 
   const renderTaskList = () => {
     if (!groupedTasks) return;

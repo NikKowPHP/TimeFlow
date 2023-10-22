@@ -9,6 +9,7 @@ import Modal from "../modals/Modal";
 import NewTask from "../Task/NewTask";
 import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
+import { toast } from "react-toastify";
 
 export default function CalendarAgenda() {
   const modalRef = useRef(null);
@@ -41,7 +42,7 @@ export default function CalendarAgenda() {
   } = useModalState({ modalRef: modalRef });
 
   // Task import
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
+  const { task, setTask, handleTaskCreation, handleDateSelection, handleTimeSelection } = newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
   });
 
@@ -63,22 +64,16 @@ export default function CalendarAgenda() {
       grouped[date].push(task);
       return grouped;
     }, {});
+    // TODO: FIX when creating a new task group task by date is not working 
 
   function displaySuccessTaskCreation(data) {
     if (data) {
       hideModal();
       setSelectedDate(null);
-      setClickedCellIndex(null);
+      // setClickedCellIndex(null);
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
-
-  const handleDateSelection = (newSelectedDate) => {
-    const formattedSelectedDate = new Date(newSelectedDate);
-    formattedSelectedDate;
-    setSelectedDate(formattedSelectedDate);
-    setTask({ ...task, date: newSelectedDate });
-  };
 
   const handleOnClick = ({
     event,
@@ -100,21 +95,6 @@ export default function CalendarAgenda() {
     }
   };
 
-  /**
-   * Handles time selection and sets state
-   * @param {Date} selectedTime - The selected time
-   * @param {boolean} isStart - Whether is start of the time period or the end
-   * @returns {void}
-   */
-  const handleTimeSelection = (selectedTime, isStart) => {
-    if (isStart) {
-      setClickedPeriodStart(selectedTime);
-      setTask({ ...task, time_start: selectedTime });
-    } else {
-      setClickedPeriodEnd(selectedTime);
-      setTask({ ...task, time_end: selectedTime });
-    }
-  };
 
   const renderGroupTaskDate = (date) => {
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
@@ -165,6 +145,7 @@ export default function CalendarAgenda() {
                 startTime: timePeriodStartObj,
                 endTime: timePeriodEndObj,
                 selectedDate: dateObj,
+                newTask: true,
               })
             }
           >

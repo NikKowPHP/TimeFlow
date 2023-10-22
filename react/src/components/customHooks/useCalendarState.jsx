@@ -29,12 +29,13 @@ export function useCalendarState() {
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
+  const [clickedCellIndex, setClickedCellIndex] = useState('');
 
   // Select calendar layout
   const [layout, setLayout] = useState('month');
 
   // Use the useCalendarApi hook to access the functions
-  const { allTasks, getAllTasks, loading } = useCalendarApiContext();
+  const { allTasks, getAllTasks, setAllTasks, loading } = useCalendarApiContext();
 
   // Fetch tasks when component mounts
   useEffect(() => {
@@ -45,6 +46,9 @@ export function useCalendarState() {
   // Refresh list of tasks
   const refreshTasks = () => {
     getAllTasks();
+  }
+  const updateTasks = (newTask) => {
+    setAllTasks([ newTask, ...allTasks]);
   }
 
   // Get url pathname
@@ -101,9 +105,13 @@ export function useCalendarState() {
 		setLayout,
 		selectedDate,
 		setSelectedDate,
+    clickedCellIndex,
+    setClickedCellIndex,
     currentDate,
     allTasks,
+    updateTasks,
     refreshTasks,
     loading,
+
 	};
 }

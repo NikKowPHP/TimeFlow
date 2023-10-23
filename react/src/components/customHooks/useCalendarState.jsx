@@ -43,6 +43,13 @@ export function useCalendarState() {
   }, []);
 
 
+  const resetDateState = () => {
+    if (selectedDate) {
+      setSelectedDate(null);
+      setClickedCellIndex(null);
+    }
+  };
+
   // Refresh list of tasks
   const refreshTasks = () => {
     getAllTasks();
@@ -112,6 +119,7 @@ export function useCalendarState() {
     updateTasks,
     refreshTasks,
     loading,
+    resetDateState,
 
 	};
 }

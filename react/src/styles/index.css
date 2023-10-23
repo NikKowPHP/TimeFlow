@@ -119,8 +119,17 @@ input:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  transition: box-shadow, background-color 0.3s ease-in-out;
+  cursor: pointer;
 }
+.btn__add-task-wrapper:hover {
+  box-shadow: 1px 1px 15px -4px;
+}
+.btn__add-task-wrapper:active {
+  box-shadow: 1px 1px 13px -2px;
+  background-color: rgba(0, 0, 0, 0.11);
+}
+
 .btn__add-task {
   width: 40px;
   height: 40px;

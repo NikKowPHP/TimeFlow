@@ -15,7 +15,8 @@ function DefaultLayout() {
     useStateContext();
   const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
 
-  const { requestNotificationPermission, isNotificationGranted } = useNotificationState();
+  const { requestNotificationPermission, isNotificationGranted } =
+    useNotificationState();
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -33,7 +34,7 @@ function DefaultLayout() {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);
     });
-    if(!isNotificationGranted) requestNotificationPermission();
+    if (!isNotificationGranted) requestNotificationPermission();
   }, []);
 
   // hide/show aside
@@ -71,6 +72,18 @@ function DefaultLayout() {
     setLayout(option);
     navigate(`/calendar/${option}`);
   };
+
+  const renderAddNewTaskBtn = () => (
+    <div className="btn__add-task-wrapper">
+      <svg className="btn__add-task" width="36" height="36" viewBox="0 0 36 36">
+        <path fill="#d442bc" d="M16 16v14h4V20z"></path>
+        <path fill="#7d42d4" d="M30 16H20l-4 4h14z"></path>
+        <path fill="#42d3d4" d="M6 16v4h10l4-4z"></path>
+        <path fill="#EA4335" d="M20 16V6h-4v14z"></path>
+        <path fill="none" d="M0 0h36v36H0z"></path>
+      </svg>
+    </div>
+  );
 
   return (
     <div id="defaultLayout">
@@ -120,6 +133,7 @@ function DefaultLayout() {
                 <option value="week">Week</option>
                 <option value="agenda">Agenda</option>
               </select>
+              {renderAddNewTaskBtn()}
             </>
           )}
 

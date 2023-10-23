@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import axiosClient from "../axios-client";
@@ -9,14 +9,32 @@ import CalendarAside from "./Calendar/CalendarAside.jsx";
 import { useCalendarState } from "./customHooks/useCalendarState";
 import NotificationListener from "./NotificationListener";
 import { useNotificationState } from "./customHooks/useNotificationState";
+import Modal from "./modals/Modal";
+import { useModalState } from "./customHooks/useModalState";
+import NewTask from "./Task/NewTask";
+import newTaskHandler from "./Calendar/newTaskHandler";
+import { calendarUtils } from "../utils/calendarUtils";
 
 function DefaultLayout() {
+  const modalRef = useRef(null);
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
   const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
+  const {
+    modalPosition,
+    openedModalId,
+    hideModal,
+    showModal,
+    handleTaskCreation,
+    isModalVisible,
+  } = useModalState({
+    modalRef: modalRef,
+  });
+  const { initiateNewTask, convertDateToTime, toggleTaskActiveClass, } = calendarUtils();
 
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
+  const { handleDateSelection, handleTimeSelection } = newTaskHandler();
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -36,6 +54,26 @@ function DefaultLayout() {
     });
     if (!isNotificationGranted) requestNotificationPermission();
   }, []);
+
+  const handleOnClick = ({
+    event,
+    modalId,
+    startTime,
+    endTime,
+    selectedDate,
+    newTask = false,
+  }) => {
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
+    }
+    event.stopPropagation();
+    showModal(modalId);
+    if (newTask) {
+      const newTask = initiateNewTask(startTime, endTime, selectedDate);
+      setTask({ ...task, ...newTask });
+    }
+  };
 
   // hide/show aside
   const handleToggleAside = () => {
@@ -73,17 +111,67 @@ function DefaultLayout() {
     navigate(`/calendar/${option}`);
   };
 
-  const renderAddNewTaskBtn = () => (
-    <div className="btn__add-task-wrapper">
-      <svg className="btn__add-task" width="36" height="36" viewBox="0 0 36 36">
-        <path fill="#d442bc" d="M16 16v14h4V20z"></path>
-        <path fill="#7d42d4" d="M30 16H20l-4 4h14z"></path>
-        <path fill="#42d3d4" d="M6 16v4h10l4-4z"></path>
-        <path fill="#EA4335" d="M20 16V6h-4v14z"></path>
-        <path fill="none" d="M0 0h36v36H0z"></path>
-      </svg>
-    </div>
-  );
+  const renderAddNewTaskBtn = () => {
+    const id = "addNewTaskBtn";
+    const activeClass = toggleTaskActiveClass(id, openedModalId, isModalVisible);
+    const currentDate = new Date();
+    const currentHours = currentDate.getHours();
+    const timePeriodStartObj = currentDate;
+    const timePeriodEndObj = new Date();
+    timePeriodEndObj.setHours(currentHours + 1);
+    const timePeriodStartString = convertDateToTime(timePeriodStartObj);
+    const timePeriodEndString = convertDateToTime(timePeriodEndObj);
+
+    return (
+      <Modal
+        modalPosition={modalPosition}
+        modalRef={modalRef}
+        isModalVisible={openedModalId === id}
+        classes={`modal-task-description `}
+        key={id}
+        content={
+          <NewTask
+            formId={id}
+            openedModalId={openedModalId}
+            selectedDate={currentDate}
+            onDateSelection={handleDateSelection}
+            onTimeSelection={handleTimeSelection}
+            handleTaskCreation={handleTaskCreation}
+            clickedPeriodStart={timePeriodStartString}
+            clickedPeriodEnd={timePeriodEndString}
+            onModalClose={hideModal}
+            onTitleSet={(event) =>
+              setTask({ ...task, title: event.target.value })
+            }
+          />
+        }
+      >
+        <div
+          onClick={(event) =>
+            handleOnClick({
+              event: event,
+              modalId: id,
+              newTask: true,
+            })
+          }
+          className={`btn__add-task-wrapper ${activeClass}`}
+        >
+          <svg
+            className="btn__add-task"
+            width="36"
+            height="36"
+            viewBox="0 0 36 36"
+          >
+            <path fill="#d442bc" d="M16 16v14h4V20z"></path>
+            <path fill="#7d42d4" d="M30 16H20l-4 4h14z"></path>
+            <path fill="#42d3d4" d="M6 16v4h10l4-4z"></path>
+            <path fill="#EA4335" d="M20 16V6h-4v14z"></path>
+            <path fill="none" d="M0 0h36v36H0z"></path>
+          </svg>
+        </div>
+      </Modal>
+    );
+  };
 
   return (
     <div id="defaultLayout">

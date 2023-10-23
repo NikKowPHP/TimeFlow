@@ -111,6 +111,21 @@ input:focus {
 .btn-transparent:focus {
   background-color: rgba(164, 94, 192, 0.116);
 }
+.btn__add-task-wrapper {
+  width: 60px;
+  height: 60px;
+  box-shadow: 1px 1px 5px -1px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.btn__add-task {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
 
 .font-bold {
   font-weight: 500;

@@ -3,6 +3,9 @@
   width: 100%;
 	display: inline-block;
 }
+header .modal-container {
+  width: inherit;
+}
 .modal-task-description {
 	position: absolute;
   background-color: #ffffff;

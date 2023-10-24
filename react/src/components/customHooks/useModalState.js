@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { modalUtils } from "../../utils/modalUtils";
+import { useCalendarState } from "./useCalendarState";
+import { toast } from "react-toastify";
 
 /**
  * useModalState Hook
@@ -15,6 +18,7 @@ import { useState, useEffect } from "react";
  */
 
 export function useModalState({ modalRef }) {
+  const { selectedDate, setSelectedDate, resetDateState, setClickedCellIndex, clickedCellIndex } = useCalendarState();
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
@@ -39,6 +43,15 @@ export function useModalState({ modalRef }) {
       ? rootElement.classList.add("disable-selection")
       : rootElement.classList.remove("disable-selection");
   };
+
+  function displaySuccessTaskCreation(data) {
+    if (data) {
+      hideModal();
+      setSelectedDate(null);
+      setClickedCellIndex(null);
+      toast.success(`The task '${data.title}' was successfully created`);
+    }
+  }
 
   const getAbsoluteLeftPosition = () => {
     const modal = modalRef.current;
@@ -162,6 +175,12 @@ export function useModalState({ modalRef }) {
     }
   };
 
+  // Function handles closing the current modal
+  const onModalClose = () => {
+    resetDateState();
+    hideModal();
+  };
+
   // Adjust the modal position based on the mouse click coordinates
   const adjustModalPosition = () => {
     const mouseCoordinates = event && getMouseClickCoordinates(event);
@@ -251,5 +270,7 @@ export function useModalState({ modalRef }) {
     hideModal,
     showNestedModal,
     hideNestedModal,
+    onModalClose,
+    displaySuccessTaskCreation,
   };
 }

@@ -20,21 +20,22 @@ function DefaultLayout() {
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
   const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
-  const {
-    modalPosition,
-    openedModalId,
-    hideModal,
-    showModal,
-    handleTaskCreation,
-    isModalVisible,
-  } = useModalState({
-    modalRef: modalRef,
-  });
-  const { initiateNewTask, convertDateToTime, toggleTaskActiveClass, } = calendarUtils();
+  const { modalPosition, openedModalId, hideModal, showModal, isModalVisible, displaySuccessTaskCreation } =
+    useModalState({
+      modalRef: modalRef,
+    });
+  const { initiateNewTask, convertDateToTime, toggleTaskActiveClass } =
+    calendarUtils();
 
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
-  const { handleDateSelection, handleTimeSelection } = newTaskHandler();
+  const {
+    handleDateSelection,
+    handleTimeSelection,
+    handleTaskCreation,
+    setTask,
+    task,
+  } = newTaskHandler({ onDataReceived: displaySuccessTaskCreation});
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -113,7 +114,11 @@ function DefaultLayout() {
 
   const renderAddNewTaskBtn = () => {
     const id = "addNewTaskBtn";
-    const activeClass = toggleTaskActiveClass(id, openedModalId, isModalVisible);
+    const activeClass = toggleTaskActiveClass(
+      id,
+      openedModalId,
+      isModalVisible
+    );
     const currentDate = new Date();
     const currentHours = currentDate.getHours();
     const timePeriodStartObj = currentDate;
@@ -152,6 +157,9 @@ function DefaultLayout() {
               event: event,
               modalId: id,
               newTask: true,
+              startTime: timePeriodStartObj,
+              endTime: timePeriodEndObj,
+              selectedDate: currentDate,
             })
           }
           className={`btn__add-task-wrapper ${activeClass}`}

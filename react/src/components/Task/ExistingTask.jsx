@@ -67,7 +67,7 @@ export default function ExistingTask({
         </div>
         <div className="modal-task-owner">
           <i className="fa fa-calendar"></i>
-          {task.user.name}
+          {task.user?.name}
         </div>
       </div>
     </div>

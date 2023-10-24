@@ -32,9 +32,6 @@ import ElipsisTaskList from "../EllipsisTaskList";
 export default function CalendarMonthly() {
   const modalRef = useRef(null);
   // Import states and functions
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
-    onDataReceived: displaySuccessTaskCreation,
-  });
   const {
     dates,
     month,
@@ -42,6 +39,7 @@ export default function CalendarMonthly() {
     selectedDate,
     setSelectedDate,
     refreshTasks,
+    updateTasks,
     allTasks,
     loading,
     goToPrevMonth,
@@ -60,8 +58,20 @@ export default function CalendarMonthly() {
   });
 
   // Get modal's state from custom hook
-  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
-    useModalState({ modalRef: modalRef });
+  const {
+    openedModalId,
+    isModalVisible,
+    modalPosition,
+    showModal,
+    hideModal,
+    displaySuccessTaskCreation,
+    onModalClose,
+    handleOnTriggerClick,
+  } = useModalState({ modalRef: modalRef });
+
+  const { task, setTask, handleTaskCreation } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+  });
 
   const { navigate } = useLocationState();
   // State for clicked time period
@@ -69,36 +79,19 @@ export default function CalendarMonthly() {
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
   const [clickedCellIndex, setClickedCellIndex] = useState(null);
 
-  /**
-   * Displays a new task creation success message
-   * @param {Object} data - Data received from the child component
-   * TODO: move function to utils
-   */
-  function displaySuccessTaskCreation(data) {
-    if (data) {
-      hideModal();
-      setSelectedDate(null);
-      setClickedCellIndex(null);
-      toast.success(`The task '${data.title}' was successfully created`);
-    }
-  }
-  useEffect(() => {
-    openedModalId === null && resetDateState();
-  }, [openedModalId]);
+  // const resetDateState = () => {
+  //   if (selectedDate) {
+  //     setSelectedDate(null);
+  //     setClickedCellIndex(null);
+  //   }
+  // };
 
-  const resetDateState = () => {
-    if (selectedDate) {
-      setSelectedDate(null);
-      setClickedCellIndex(null);
-    }
-  };
-
-  // Function handles closing the current modal
-  // TODO: move to modal utils
-  const onModalClose = () => {
-    resetDateState();
-    hideModal();
-  };
+  // // Function handles closing the current modal
+  // // TODO: move to modal utils
+  // const onModalClose = () => {
+  //   resetDateState();
+  //   hideModal();
+  // };
 
   // Handles the task state from task utils file.
   // TODO: move to task utils
@@ -126,19 +119,25 @@ export default function CalendarMonthly() {
    * @returns {void}
    */
   const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
-    setSelectedDate(selectedDate);
-    handleOnClick({
-      event: event,
-      modalId: modalId,
-      selectedDate: selectedDate,
-    });
+    // setSelectedDate(selectedDate);
+    // handleOnClick({
+    //   event: event,
+    //   modalId: modalId,
+    //   selectedDate: selectedDate,
+    // });
     setClickedCellIndex(cellId);
     const startTime = new Date();
     startTime.setHours(7);
     const endTime = new Date();
     endTime.setHours(8);
-    const newTask = initiateNewTask(startTime, endTime, selectedDate);
-    setTask({ ...task, ...newTask });
+    handleOnTriggerClick({
+      event: event,
+      modalId: modalId,
+      startTime: startTime,
+      endTime: endTime,
+      selectedDate: selectedDate,
+      newTask: true,
+    });
   };
 
   /**
@@ -149,15 +148,15 @@ export default function CalendarMonthly() {
    * @returns {void}
    * TODO: move function
    */
-  const handleOnClick = ({ event, modalId }) => {
-    // Close opened modal
-    if (openedModalId !== null) {
-      hideModal();
-      resetDateState();
-    }
-    event.stopPropagation();
-    showModal(modalId);
-  };
+  // const handleOnClick = ({ event, modalId }) => {
+  //   // Close opened modal
+  //   if (openedModalId !== null) {
+  //     hideModal();
+  //     resetDateState();
+  //   }
+  //   event.stopPropagation();
+  //   showModal(modalId);
+  // };
 
   /**
    * Sets new task title in state
@@ -204,7 +203,7 @@ export default function CalendarMonthly() {
         openedModalId,
         isModalVisible
       )} `}
-      onClick={(event) => handleOnClick({ event: event, modalId: task.id })}
+      onClick={(event) => handleOnTriggerClick({ event: event, modalId: task.id })}
     >
       <TruncatedText text={task.title} maxCharacters={6} />
       {` ${task.time_start}-${task.time_end}`}
@@ -215,7 +214,7 @@ export default function CalendarMonthly() {
     return (
       <h5
         onClick={(event) =>
-          handleOnClick({ event: event, modalId: ellipsisId })
+          handleOnTriggerClick({ event: event, modalId: ellipsisId })
         }
         className="date-tasks__ellipsis"
       >
@@ -272,7 +271,7 @@ export default function CalendarMonthly() {
             modalPosition={modalPosition}
             key={task.id}
             isModalVisible={openedModalId === task.id}
-            modalId={openedModalId}
+            modalId={task.id}
             content={
               <ExistingTask
                 task={task}
@@ -301,7 +300,7 @@ export default function CalendarMonthly() {
               onTaskDelete={onTaskDelete}
               onTaskEdit={onTaskEdit}
               taskList={dateTasks}
-              handleOnTaskClick={handleOnClick}
+              handleOnTaskClick={handleOnTriggerClick}
             />
           }
         >

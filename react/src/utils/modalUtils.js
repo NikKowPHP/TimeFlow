@@ -1,5 +1,7 @@
 import { toast } from "react-toastify";
 import newTaskHandler from "../components/Calendar/newTaskHandler";
+import { useCalendarState } from "../components/customHooks/useCalendarState";
+import { useModalState } from "../components/customHooks/useModalState";
 
 export function modalUtils() {
   const { setSelectedDate, selectedDate } = useCalendarState();

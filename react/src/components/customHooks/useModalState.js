@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { modalUtils } from "../../utils/modalUtils";
 import { useCalendarState } from "./useCalendarState";
 import { toast } from "react-toastify";
+import { calendarUtils } from "../../utils/calendarUtils";
+import newTaskHandler from "../Calendar/newTaskHandler";
 
 /**
  * useModalState Hook
@@ -31,6 +33,20 @@ export function useModalState({ modalRef }) {
   const [absolutePosition, setAbsolutePosition] = useState({});
   const [modalPosition, setModalPosition] = useState(null);
   const [initialPosition, setInitialPosition] = useState({});
+
+  const {
+    task,
+    setTask,
+    handleTaskCreation,
+    handleDateSelection,
+    handleTimeSelection,
+  } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+  });
+
+  const {
+    initiateNewTask,
+  } = calendarUtils();
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
@@ -254,6 +270,26 @@ export function useModalState({ modalRef }) {
     setNestedOpenedModalId(null);
   };
 
+  const handleOnTriggerClick = ({
+    event,
+    modalId,
+    startTime,
+    endTime,
+    selectedDate,
+    newTask = false,
+  }) => {
+    // Close opened modal
+    if (openedModalId !== null) {
+      hideModal();
+    }
+    event.stopPropagation();
+    showModal(modalId);
+    if (newTask) {
+      const newTask = initiateNewTask(startTime, endTime, selectedDate);
+      setTask({ ...task, ...newTask });
+    }
+  };
+
   // Return the state and functions to be used by the component
   return {
     openedModalId,
@@ -272,5 +308,6 @@ export function useModalState({ modalRef }) {
     hideNestedModal,
     onModalClose,
     displaySuccessTaskCreation,
+    handleOnTriggerClick,
   };
 }

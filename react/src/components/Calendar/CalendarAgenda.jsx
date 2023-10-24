@@ -42,7 +42,8 @@ export default function CalendarAgenda() {
     modalPosition,
     hideModal,
     onModalClose,
-    displaySuccessTaskCreation
+    displaySuccessTaskCreation,
+    handleOnTriggerClick,
   } = useModalState({ modalRef: modalRef });
 
   // Task import
@@ -76,25 +77,25 @@ export default function CalendarAgenda() {
     }, {});
   // TODO: FIX when creating a new task group task by date is not working
 
-  const handleOnClick = ({
-    event,
-    modalId,
-    startTime,
-    endTime,
-    selectedDate,
-    newTask = false,
-  }) => {
-    // Close opened modal
-    if (openedModalId !== null) {
-      hideModal();
-    }
-    event.stopPropagation();
-    showModal(modalId);
-    if (newTask) {
-      const newTask = initiateNewTask(startTime, endTime, selectedDate);
-      setTask({ ...task, ...newTask });
-    }
-  };
+  // const handleOnClick = ({
+  //   event,
+  //   modalId,
+  //   startTime,
+  //   endTime,
+  //   selectedDate,
+  //   newTask = false,
+  // }) => {
+  //   // Close opened modal
+  //   if (openedModalId !== null) {
+  //     hideModal();
+  //   }
+  //   event.stopPropagation();
+  //   showModal(modalId);
+  //   if (newTask) {
+  //     const newTask = initiateNewTask(startTime, endTime, selectedDate);
+  //     setTask({ ...task, ...newTask });
+  //   }
+  // };
 
   const renderGroupTaskDate = (date) => {
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
@@ -139,7 +140,7 @@ export default function CalendarAgenda() {
           <span
             className="calendar-agenda__group-date__dayOfMonth"
             onClick={(event) =>
-              handleOnClick({
+              handleOnTriggerClick({
                 event: event,
                 modalId: id,
                 startTime: timePeriodStartObj,

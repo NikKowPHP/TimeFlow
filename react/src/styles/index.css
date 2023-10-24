@@ -125,7 +125,8 @@ input:focus {
 .btn__add-task-wrapper:hover {
   box-shadow: 1px 1px 15px -4px;
 }
-.btn__add-task-wrapper:active {
+.btn__add-task-wrapper:active,
+.btn__add-task-wrapper.task-active {
   box-shadow: 1px 1px 13px -2px;
   background-color: rgba(0, 0, 0, 0.11);
 }

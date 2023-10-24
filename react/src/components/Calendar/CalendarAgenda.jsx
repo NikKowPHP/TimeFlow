@@ -9,7 +9,6 @@ import Modal from "../modals/Modal";
 import NewTask from "../Task/NewTask";
 import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
-import { toast } from "react-toastify";
 
 export default function CalendarAgenda() {
   const modalRef = useRef(null);
@@ -23,8 +22,12 @@ export default function CalendarAgenda() {
     selectedDate,
     currentDate,
   } = useCalendarState();
-  const { toggleTaskActiveClass,formatDateToDDMonDay, initiateNewTask, convertDateToTime } =
-    calendarUtils();
+  const {
+    toggleTaskActiveClass,
+    formatDateToDDMonDay,
+    initiateNewTask,
+    convertDateToTime,
+  } = calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
     onStateReceived: handleTaskState,
@@ -39,10 +42,17 @@ export default function CalendarAgenda() {
     modalPosition,
     hideModal,
     onModalClose,
+    displaySuccessTaskCreation
   } = useModalState({ modalRef: modalRef });
 
   // Task import
-  const { task, setTask, handleTaskCreation, handleDateSelection, handleTimeSelection } = newTaskHandler({
+  const {
+    task,
+    setTask,
+    handleTaskCreation,
+    handleDateSelection,
+    handleTimeSelection,
+  } = newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
   });
 
@@ -64,16 +74,7 @@ export default function CalendarAgenda() {
       grouped[date].push(task);
       return grouped;
     }, {});
-    // TODO: FIX when creating a new task group task by date is not working 
-
-  function displaySuccessTaskCreation(data) {
-    if (data) {
-      hideModal();
-      setSelectedDate(null);
-      // setClickedCellIndex(null);
-      toast.success(`The task '${data.title}' was successfully created`);
-    }
-  }
+  // TODO: FIX when creating a new task group task by date is not working
 
   const handleOnClick = ({
     event,
@@ -94,7 +95,6 @@ export default function CalendarAgenda() {
       setTask({ ...task, ...newTask });
     }
   };
-
 
   const renderGroupTaskDate = (date) => {
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
@@ -161,7 +161,11 @@ export default function CalendarAgenda() {
   };
 
   const renderGroupTaskInfo = (task) => {
-    const activeClass = toggleTaskActiveClass(task.id, openedModalId, isModalVisible);
+    const activeClass = toggleTaskActiveClass(
+      task.id,
+      openedModalId,
+      isModalVisible
+    );
     return (
       <div
         className={`calendar-agenda__group-time-title ${activeClass}`}

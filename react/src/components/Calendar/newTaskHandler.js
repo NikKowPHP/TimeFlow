@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../../contexts/ContextProvider";
 import { useCalendarState } from "../customHooks/useCalendarState";
-import { useModalState } from "../customHooks/useModalState";
 
-export default function newTaskHandler() {
+export default function newTaskHandler({onDataReceived}) {
   const { user } = useStateContext();
-  const { refreshTasks, updateTasks,  setSelectedDate, setClickedCellIndex } = useCalendarState();
+  const { refreshTasks, updateTasks, setSelectedDate, setClickedCellIndex } =
+    useCalendarState();
 
-const [task, setTask] = useState({
+  const [task, setTask] = useState({
     id: null,
     user_id: user?.id || "",
     title: "",
@@ -23,14 +23,7 @@ const [task, setTask] = useState({
     setTask({ ...task, user_id: user?.id });
   }, [user]);
 
-	function displaySuccessTaskCreation(data) {
-    if (data) {
-      hideModal();
-      setSelectedDate(null);
-      setClickedCellIndex(null);
-      toast.success(`The task '${data.title}' was successfully created`);
-    }
-  }
+
 
   const handleTaskCreation = (ev) => {
     ev.preventDefault();
@@ -41,7 +34,6 @@ const [task, setTask] = useState({
       onDataReceived(data);
     });
   };
-  
 
   /**
    * Handles time selection and sets state
@@ -72,6 +64,5 @@ const [task, setTask] = useState({
     handleTaskCreation,
     handleDateSelection,
     handleTimeSelection,
-    displaySuccessTaskCreation,
   };
 }

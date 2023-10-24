@@ -48,21 +48,20 @@ export default function CalendarMonthly() {
     goToNextMonth,
   } = useCalendarState();
 
-  const { getMonthName, getDateActiveClass, toggleTaskActiveClass, initiateNewTask } =
-    calendarUtils();
+  const {
+    getMonthName,
+    getDateActiveClass,
+    toggleTaskActiveClass,
+    initiateNewTask,
+  } = calendarUtils();
   const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
   });
 
   // Get modal's state from custom hook
-  const {
-    openedModalId,
-    isModalVisible,
-    modalPosition,
-    showModal,
-    hideModal,
-  } = useModalState({ modalRef: modalRef });
+  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
+    useModalState({ modalRef: modalRef });
 
   const { navigate } = useLocationState();
   // State for clicked time period
@@ -73,6 +72,7 @@ export default function CalendarMonthly() {
   /**
    * Displays a new task creation success message
    * @param {Object} data - Data received from the child component
+   * TODO: move function to utils
    */
   function displaySuccessTaskCreation(data) {
     if (data) {
@@ -87,17 +87,21 @@ export default function CalendarMonthly() {
   }, [openedModalId]);
 
   const resetDateState = () => {
-    setSelectedDate(null);
-    setClickedCellIndex(null);
+    if (selectedDate) {
+      setSelectedDate(null);
+      setClickedCellIndex(null);
+    }
   };
 
   // Function handles closing the current modal
+  // TODO: move to modal utils
   const onModalClose = () => {
     resetDateState();
     hideModal();
   };
 
   // Handles the task state from task utils file.
+  // TODO: move to task utils
   function handleTaskState(state) {
     // Handle task deletion.
     if (state.status === 204) {
@@ -133,8 +137,8 @@ export default function CalendarMonthly() {
     startTime.setHours(7);
     const endTime = new Date();
     endTime.setHours(8);
-    const newTask = initiateNewTask(startTime,endTime, selectedDate);
-    setTask({...task, ...newTask});
+    const newTask = initiateNewTask(startTime, endTime, selectedDate);
+    setTask({ ...task, ...newTask });
   };
 
   /**
@@ -143,6 +147,7 @@ export default function CalendarMonthly() {
    * @param {Event} options.event - Click event
    * @param {string} options.modalId - ID of the modal
    * @returns {void}
+   * TODO: move function
    */
   const handleOnClick = ({ event, modalId }) => {
     // Close opened modal
@@ -167,6 +172,7 @@ export default function CalendarMonthly() {
    * Handles date selection and sets states
    * @param {Date} newSelectedDate - The selected date
    * @returns {void}
+   * TODO: move handlers to a custom hook
    */
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
@@ -260,29 +266,29 @@ export default function CalendarMonthly() {
       <ul className="calendar-monthly__date-task-list__list">
         {dateTasks.slice(0, maxTasksToShow).map((task) => (
           // Renders a task with modal wrapper
-            <Modal
-              modalRef={modalRef}
-              classes={'modal-task-description'}
-              modalPosition={modalPosition}
-              key={task.id}
-              isModalVisible={openedModalId === task.id}
-              modalId={openedModalId}
-              content={
-                <ExistingTask
-                  task={task}
-                  onModalClose={onModalClose}
-                  onDelete={onTaskDelete}
-                  onTaskEdit={onTaskEdit}
-                />
-              }
-            >
-              {renderTaskItem(task)}
-            </Modal>
+          <Modal
+            modalRef={modalRef}
+            classes={"modal-task-description"}
+            modalPosition={modalPosition}
+            key={task.id}
+            isModalVisible={openedModalId === task.id}
+            modalId={openedModalId}
+            content={
+              <ExistingTask
+                task={task}
+                onModalClose={onModalClose}
+                onDelete={onTaskDelete}
+                onTaskEdit={onTaskEdit}
+              />
+            }
+          >
+            {renderTaskItem(task)}
+          </Modal>
         ))}
 
         {/* Renders ellipsis btn and new task highlighted box  */}
         <Modal
-          classes={'modal-task-description'}
+          classes={"modal-task-description"}
           modalRef={modalRef}
           modalPosition={modalPosition}
           key={task.id}
@@ -332,10 +338,10 @@ export default function CalendarMonthly() {
         // Render modal for each date
         return (
           <Modal
-          modalPosition={modalPosition}
-          modalRef={modalRef}
+            modalPosition={modalPosition}
+            modalRef={modalRef}
             isModalVisible={openedModalId === id}
-            classes={'modal-task-description'}
+            classes={"modal-task-description"}
             key={id}
             content={
               <NewTask
@@ -345,8 +351,8 @@ export default function CalendarMonthly() {
                 onDateSelection={handleDateSelection}
                 onTimeSelection={handleTimeSelection}
                 handleTaskCreation={handleTaskCreation}
-                clickedPeriodStart={clickedPeriodStart}
-                clickedPeriodEnd={clickedPeriodEnd}
+                clickedPeriodStart={"07:00"}
+                clickedPeriodEnd={"08:00"}
                 onModalClose={onModalClose}
                 onTitleSet={setNewTaskTitle}
               />

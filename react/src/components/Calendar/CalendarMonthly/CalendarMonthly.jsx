@@ -203,7 +203,9 @@ export default function CalendarMonthly() {
         openedModalId,
         isModalVisible
       )} `}
-      onClick={(event) => handleOnTriggerClick({ event: event, modalId: task.id })}
+      onClick={(event) =>
+        handleOnTriggerClick({ event: event, modalId: task.id })
+      }
     >
       <TruncatedText text={task.title} maxCharacters={6} />
       {` ${task.time_start}-${task.time_end}`}
@@ -248,18 +250,49 @@ export default function CalendarMonthly() {
         ))}
     </ol>
   );
+  const renderEllipsisModalTrigger = (
+    date,
+    dateTasks,
+    maxTasksToShow,
+    cellId
+  ) => {
+    const dateTasksLength = dateTasks.length;
+
+    const taskRestSum = dateTasksLength - maxTasksToShow;
+
+    const ellipsisId = date.toLocaleDateString() + `${dateTasksLength}`;
+
+      return (
+        <Modal
+          classes={"modal-task-description"}
+          modalRef={modalRef}
+          modalPosition={modalPosition}
+          isModalVisible={openedModalId === ellipsisId}
+          modalId={ellipsisId}
+          content={
+            <ElipsisTaskList
+              onModalClose={onModalClose}
+              onTaskDelete={onTaskDelete}
+              onTaskEdit={onTaskEdit}
+              taskList={dateTasks}
+            />
+          }
+        >
+          {clickedCellIndex === cellId && renderNewTaskBox()}
+          {dateTasksLength > 3 && renderEllipsis(taskRestSum, ellipsisId)}
+        </Modal>
+        //TODO: fix ellipsis
+      );
+  };
 
   /**
    * Render the list of tasks for a specific date.
    * @param {Date} date - specific date to render tasks.
    * @returns {JSX.Element} - JSX element representing the list of tasks.
    */
-  const renderDateTasks = (date, id) => {
+  const renderDateTasks = (date, cellId) => {
     const dateTasks = getTasksByDate(date, allTasks);
     const maxTasksToShow = Math.min(dateTasks.length, 3);
-    const taskRestSum = dateTasks.length - maxTasksToShow;
-    const showEllipsis = dateTasks.length > 3;
-    const ellipsisId = date.toLocaleDateString() + `${dateTasks.length}`;
 
     return (
       <ul className="calendar-monthly__date-task-list__list">
@@ -284,29 +317,7 @@ export default function CalendarMonthly() {
             {renderTaskItem(task)}
           </Modal>
         ))}
-
-        {/* Renders ellipsis btn and new task highlighted box  */}
-        <Modal
-          classes={"modal-task-description"}
-          modalRef={modalRef}
-          modalPosition={modalPosition}
-          key={task.id}
-          isModalVisible={openedModalId === ellipsisId}
-          modalId={openedModalId}
-          content={
-            <ElipsisTaskList
-              openedModalId={openedModalId}
-              onModalClose={onModalClose}
-              onTaskDelete={onTaskDelete}
-              onTaskEdit={onTaskEdit}
-              taskList={dateTasks}
-              handleOnTaskClick={handleOnTriggerClick}
-            />
-          }
-        >
-          {clickedCellIndex === id && renderNewTaskBox()}
-          {showEllipsis && renderEllipsis(taskRestSum, ellipsisId)}
-        </Modal>
+        {renderEllipsisModalTrigger(date, dateTasks, maxTasksToShow, cellId)}
       </ul>
     );
   };

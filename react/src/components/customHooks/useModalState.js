@@ -20,13 +20,11 @@ import newTaskHandler from "../Calendar/newTaskHandler";
  */
 
 export function useModalState({ modalRef }) {
-  const { selectedDate, setSelectedDate, resetDateState, setClickedCellIndex, clickedCellIndex } = useCalendarState();
+  const { selectedDate, setSelectedDate, resetDateState, setClickedCellIndex, clickedCellIndex, allTasks } = useCalendarState();
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
 
-  const [nestedOpenedModalId, setNestedOpenedModalId] = useState(null);
-  const [isNestedModalVisible, setIsNestedModalVisible] = useState(false);
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -63,8 +61,6 @@ export function useModalState({ modalRef }) {
   function displaySuccessTaskCreation(data) {
     if (data) {
       hideModal();
-      setSelectedDate(null);
-      setClickedCellIndex(null);
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
@@ -150,7 +146,6 @@ export function useModalState({ modalRef }) {
   };
 
   const handleMouseUp = () => {
-    console.log("mouseUp");
     if (dragging) {
       setDragging(false);
       disableSelection(false);
@@ -190,6 +185,10 @@ export function useModalState({ modalRef }) {
       hideModal();
     }
   };
+
+  useEffect(() => {
+    openedModalId === null && resetDateState();
+  }, [openedModalId]);
 
   // Function handles closing the current modal
   const onModalClose = () => {
@@ -255,19 +254,7 @@ export function useModalState({ modalRef }) {
   // Hide the modal
   const hideModal = () => {
     setIsModalVisible(false);
-    setOpenedModalId(null);
-  };
-  // Show the nested modal with the specified modalId
-  const showNestedModal = (modalId) => {
-    setIsNestedModalVisible(true);
-    setNestedOpenedModalId(modalId);
-    // Adjust the nested modal position based on the click event
-    adjustModalPosition();
-  };
-  // Hide the nested modal
-  const hideNestedModal = () => {
-    setIsNestedModalVisible(false);
-    setNestedOpenedModalId(null);
+    setOpenedModalId(false);
   };
 
   const handleOnTriggerClick = ({
@@ -294,18 +281,12 @@ export function useModalState({ modalRef }) {
   return {
     openedModalId,
     setOpenedModalId,
-    nestedOpenedModalId,
-    setNestedOpenedModalId,
     isModalVisible,
     setIsModalVisible,
-    isNestedModalVisible,
-    setIsNestedModalVisible,
     modalPosition,
     setModalVisibility,
     showModal,
     hideModal,
-    showNestedModal,
-    hideNestedModal,
     onModalClose,
     displaySuccessTaskCreation,
     handleOnTriggerClick,

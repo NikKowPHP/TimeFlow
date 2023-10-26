@@ -5,9 +5,9 @@ import { calendarUtils } from "../../utils/calendarUtils.js";
 
 /**
  * useCalendarState Hook
- * 
+ *
  * This hook manages the state and behavior of a calendar.
- * 
+ *
  * @returns {object} - An object containing calendar state and functions.
  * @property {Date} currentDate - represents the current date.
  * @property {number} year - represents the current year.
@@ -19,29 +19,28 @@ import { calendarUtils } from "../../utils/calendarUtils.js";
  * @function goToPrevMonth - Function to navigate to the previous month.
  * @function fetchTasksAndGenerateDates - Function to fetch tasks and generate dates for the current month.
  * @function fetchTasks - Function to fetch tasks for the selected date.
- * 
+ *
  */
 export function useCalendarState() {
-
-	// State for current date
+  // State for current date
   const currentDate = new Date();
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [clickedCellIndex, setClickedCellIndex] = useState('');
+  const [selectedDate, setSelectedDate] = useState("");
+  const [clickedCellIndex, setClickedCellIndex] = useState("");
 
   // Select calendar layout
-  const [layout, setLayout] = useState('month');
+  const [layout, setLayout] = useState("month");
 
   // Use the useCalendarApi hook to access the functions
-  const { allTasks, getAllTasks, setAllTasks, loading } = useCalendarApiContext();
+  const { allTasks, getAllTasks, setAllTasks, loading } =
+    useCalendarApiContext();
 
   // Fetch tasks when component mounts
   useEffect(() => {
     getAllTasks();
   }, []);
-
 
   const resetDateState = () => {
     if (selectedDate) {
@@ -53,31 +52,29 @@ export function useCalendarState() {
   // Refresh list of tasks
   const refreshTasks = () => {
     getAllTasks();
-  }
+  };
   const updateTasks = (newTask) => {
-    setAllTasks([ newTask, ...allTasks]);
-  }
+    setAllTasks([...allTasks, newTask]);
+  };
 
   // Get url pathname
   const calendarLayout = useLocation().pathname;
 
-  // Set layout depending on the current url 
+  // Set layout depending on the current url
   useEffect(() => {
-    const calendarType = calendarLayout.replace('/calendar/', '');
+    const calendarType = calendarLayout.replace("/calendar/", "");
     setLayout(calendarType);
-  }, [calendarLayout])
+  }, [calendarLayout]);
 
   // Fetch tasks and generate month dates on year and month change
   useEffect(() => {
     fetchTasksAndGenerateDates();
   }, [year, month]);
 
-
   // Function to fetch tasks and generate month dates
   const fetchTasksAndGenerateDates = () => {
     setDates(calendarUtils().generateMonthDates(year, month));
-  }
-
+  };
 
   // Function to calculate the next month
   const goToNextMonth = () => {
@@ -99,19 +96,19 @@ export function useCalendarState() {
     }
   };
 
-	return {
-		year,
-		setYear,
-		month,
-		setMonth,
-		goToNextMonth,
-		goToPrevMonth,
-		dates,
-		setDates,
-		layout,
-		setLayout,
-		selectedDate,
-		setSelectedDate,
+  return {
+    year,
+    setYear,
+    month,
+    setMonth,
+    goToNextMonth,
+    goToPrevMonth,
+    dates,
+    setDates,
+    layout,
+    setLayout,
+    selectedDate,
+    setSelectedDate,
     clickedCellIndex,
     setClickedCellIndex,
     currentDate,
@@ -120,6 +117,5 @@ export function useCalendarState() {
     refreshTasks,
     loading,
     resetDateState,
-
-	};
+  };
 }

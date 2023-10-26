@@ -1,9 +1,9 @@
 import "../../styles/calendar/ellipsis.css";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import svgPaths from "../svgPaths";
 import ExistingTask from "../Task/ExistingTask";
 import Modal from "../modals/Modal";
-import { useModalState } from "../customHooks/useModalState";
+import useNestedModalState from "../customHooks/useNestedModalState";
 
 export default function ElipsisTaskList({
   taskList,
@@ -11,25 +11,32 @@ export default function ElipsisTaskList({
   onTaskDelete,
   onTaskEdit,
 }) {
-
-  const modalRef = useRef(null);
-
+  const nestedModalRef = useRef(null);
 
   // Get modal's state from custom hook
+  // const {
+  //   nestedOpenedModalId,
+  //   showNestedModal,
+  //   hideNestedModal,
+  //   modalPosition,
+  // } = useModalState({nestedModalRef});
+
   const {
-    nestedOpenedModalId,
     showNestedModal,
     hideNestedModal,
-    modalPosition,
-  } = useModalState({modalRef});
+    nestedOpenedModalId,
+    isNestedModalVisible,
+    setIsNestedModalVisible,
+  } = useNestedModalState({ nestedModalRef: nestedModalRef });
 
   const handleOnTaskClick = ({ event, nestedModalId }) => {
     // Close opened nested modal
-    if (nestedOpenedModalId !== null) {
+    if (nestedOpenedModalId !== null && nestedOpenedModalId !== undefined) {
       hideNestedModal();
     }
     event.stopPropagation();
     showNestedModal(nestedModalId);
+
   };
 
   // Render the header of the modal content
@@ -64,19 +71,19 @@ export default function ElipsisTaskList({
   };
   const onNestedModalClose = () => {
     hideNestedModal();
-  }
+  };
   const renderTaskList = () =>
     taskList.map((task) => {
       const taskModalId = `${task.title}-${task.date}-${task.time_start}-${task.time_end}`;
 
       return (
         <Modal
-          modalRef={modalRef}
-          position={modalPosition}
-          classes={`ellipsis-modal__content $`}
+          modalRef={nestedModalRef}
+          // modalPosition={modalPosition}
+          classes={`ellipsis-modal__content `}
           key={task.id}
           isModalVisible={nestedOpenedModalId === taskModalId}
-          modalId={nestedOpenedModalId}
+          modalId={taskModalId}
           content={
             <ExistingTask
               task={task}

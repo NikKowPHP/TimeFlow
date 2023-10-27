@@ -14,20 +14,9 @@ export default function CalendarAgenda() {
   const modalRef = useRef(null);
   // TODO: when task created update the state of AllTask then trigger rerender by effect
 
-  const {
-    loading,
-    allTasks,
-    setAllTasks,
-    setSelectedDate,
-    selectedDate,
-    currentDate,
-  } = useCalendarState();
-  const {
-    toggleTaskActiveClass,
-    formatDateToDDMonDay,
-    initiateNewTask,
-    convertDateToTime,
-  } = calendarUtils();
+  const { loading, allTasks } = useCalendarState();
+  const { toggleTaskActiveClass, formatDateToDDMonDay, convertDateToTime } =
+    calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
     onStateReceived: handleTaskState,
@@ -38,12 +27,11 @@ export default function CalendarAgenda() {
   const {
     openedModalId,
     isModalVisible,
-    showModal,
     modalPosition,
     hideModal,
     onModalClose,
     displaySuccessTaskCreation,
-    handleOnTriggerClick
+    handleOnTriggerClick,
   } = useModalState({ modalRef: modalRef, handleTaskUpdate: handleTaskUpdate });
 
   function handleTaskUpdate(updatedTask) {
@@ -80,22 +68,50 @@ export default function CalendarAgenda() {
     }, {});
   // TODO: FIX when creating a new task group task by date is not working
 
+  const renderNewTaskContent = ({
+    id,
+    selectedDate,
+    timePeriodEndString,
+    timePeriodStartString,
+  }) => (
+    <NewTask
+      formId={id}
+      openedModalId={openedModalId}
+      selectedDate={selectedDate}
+      onDateSelection={handleDateSelection}
+      onTimeSelection={handleTimeSelection}
+      handleTaskCreation={handleTaskCreation}
+      clickedPeriodStart={timePeriodStartString}
+      clickedPeriodEnd={timePeriodEndString}
+      onModalClose={hideModal}
+      onTitleSet={(event) => setTask({ ...task, title: event.target.value })}
+    />
+  );
 
   const renderGroupTaskDate = (date) => {
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
     const dateObj = new Date(date);
     const id = date;
-
     const currentDate = new Date();
-
-    const currentMinutes = currentDate.getMinutes();
     const currentHours = currentDate.getHours();
-
     const timePeriodStartObj = currentDate;
     const timePeriodEndObj = new Date();
     timePeriodEndObj.setHours(currentHours + 1);
     const timePeriodStartString = convertDateToTime(timePeriodStartObj);
     const timePeriodEndString = convertDateToTime(timePeriodEndObj);
+    const newTaskProps = {
+      id: id,
+      selectedDate: dateObj,
+      timePeriodStartString: timePeriodStartString,
+      timePeriodEndString: timePeriodEndString,
+    };
+    const onClickProps = {
+      modalId: id,
+      startTime: timePeriodStartObj,
+      endTime: timePeriodEndObj,
+      selectedDate: dateObj,
+      newTask: true,
+    };
     return (
       <div className="calendar-agenda__group-date">
         <Modal
@@ -104,34 +120,12 @@ export default function CalendarAgenda() {
           isModalVisible={openedModalId === id}
           classes={"modal-task-description"}
           key={id}
-          content={
-            <NewTask
-              formId={id}
-              openedModalId={openedModalId}
-              selectedDate={dateObj}
-              onDateSelection={handleDateSelection}
-              onTimeSelection={handleTimeSelection}
-              handleTaskCreation={handleTaskCreation}
-              clickedPeriodStart={timePeriodStartString}
-              clickedPeriodEnd={timePeriodEndString}
-              onModalClose={hideModal}
-              onTitleSet={(event) =>
-                setTask({ ...task, title: event.target.value })
-              }
-            />
-          }
+          content={renderNewTaskContent(newTaskProps)}
         >
           <span
             className="calendar-agenda__group-date__dayOfMonth"
             onClick={(event) =>
-              handleOnTriggerClick({
-                event: event,
-                modalId: id,
-                startTime: timePeriodStartObj,
-                endTime: timePeriodEndObj,
-                selectedDate: dateObj,
-                newTask: true,
-              })
+              handleOnTriggerClick({ ...onClickProps, event: event })
             }
           >
             {dayOfMonth}

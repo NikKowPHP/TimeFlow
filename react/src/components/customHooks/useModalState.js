@@ -19,12 +19,18 @@ import newTaskHandler from "../Calendar/newTaskHandler";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState({ modalRef }) {
-  const { selectedDate, setSelectedDate, resetDateState, setClickedCellIndex, clickedCellIndex, allTasks } = useCalendarState();
+export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
+  const {
+    selectedDate,
+    setSelectedDate,
+    resetDateState,
+    setClickedCellIndex,
+    clickedCellIndex,
+    allTasks,
+  } = useCalendarState();
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
-
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -42,9 +48,7 @@ export function useModalState({ modalRef }) {
     onDataReceived: displaySuccessTaskCreation,
   });
 
-  const {
-    initiateNewTask,
-  } = calendarUtils();
+  const { initiateNewTask } = calendarUtils();
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
@@ -273,7 +277,9 @@ export function useModalState({ modalRef }) {
     showModal(modalId);
     if (newTask) {
       const newTask = initiateNewTask(startTime, endTime, selectedDate);
+      const updatedTask = { ...task, ...newTask };
       setTask({ ...task, ...newTask });
+      handleTaskUpdate(updatedTask);
     }
   };
 

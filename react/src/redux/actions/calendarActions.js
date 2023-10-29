@@ -6,3 +6,4 @@ export const clickCell = (index) => ({
   type: "CLICK_CELL",
   payload: index,
 });
+

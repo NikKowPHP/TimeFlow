@@ -19,7 +19,7 @@ export function calendarUtils() {
 
     let selectedDateModified = selectedDate;
     if (selectedDate) {
-      selectedDateModified = selectedDate.toLocaleDateString();
+      selectedDateModified = new Date(selectedDate).toLocaleDateString();
     }
     if (presentDateModified === modifiedDate) {
       return "current-date";

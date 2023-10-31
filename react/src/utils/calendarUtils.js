@@ -1,4 +1,5 @@
 import { dateUtils } from "./dateUtils";
+import store from "../redux/store";
 
 /**
  *
@@ -10,6 +11,10 @@ import { dateUtils } from "./dateUtils";
  */
 export function calendarUtils() {
   const { convertDateSql } = dateUtils();
+
+  function resetDateState() {
+    store.dispatch({ type: 'RESET_SELECTED_DATE'});
+  }
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
@@ -368,5 +373,6 @@ export function calendarUtils() {
     modifyStartEndTime,
     replaceUnderscoresWithSpaces,
     formatDateToDDMonDay,
+    resetDateState,
   };
 }

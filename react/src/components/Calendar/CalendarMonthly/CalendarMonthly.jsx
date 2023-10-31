@@ -14,32 +14,21 @@ import { useLocationState } from "../../customHooks/useLocationState";
 import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
 import ElipsisTaskList from "../EllipsisTaskList";
+import { connect, useDispatch } from "react-redux";
+import { selectDate, clickCell } from "../../../redux/actions/calendarActions";
 
-/**
- * CalendarMonthly Component
- *
- * This component represents a monthly calendar view with tasks and modals.
- * It fetches tasks using a custom context API and renders them in a monthly layout.
- * It uses the Modal component to display task details when clicked on a task or date.
- *
- * @param {object} props - The component props.
- * @param {Date[]} props.dates - An array of Date objects representing each day in the month.
- * @param {Date} props.currentDate - The current date.
- * @param {Date} props.selectedDate - The selected date.
- * @returns {JSX.Element} - The JSX element representing the CalendarMonthly component.
- */
 
-export default function CalendarMonthly() {
+function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell }) {
   const modalRef = useRef(null);
+  const dispatch = useDispatch();
+  console.log('selectedDate ', selectedDate, 'clicked' , clickedCellIndex)
+
   // Import states and functions
   const {
     dates,
     month,
     currentDate,
-    selectedDate,
-    setSelectedDate,
     refreshTasks,
-    updateTasks,
     allTasks,
     loading,
     goToPrevMonth,
@@ -50,9 +39,7 @@ export default function CalendarMonthly() {
     getMonthName,
     getDateActiveClass,
     toggleTaskActiveClass,
-    initiateNewTask,
   } = calendarUtils();
-  const { convertDateSql } = dateUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
   });
@@ -67,31 +54,24 @@ export default function CalendarMonthly() {
     displaySuccessTaskCreation,
     onModalClose,
     handleOnTriggerClick,
-  } = useModalState({ modalRef: modalRef });
+  } = useModalState({
+    modalRef: modalRef,
+    dispatch: dispatch,
+    handleTaskUpdate: handleTaskUpdate,
+  });
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
   });
+  function handleTaskUpdate(updatedTask) {
+    setTask(updatedTask);
+  }
 
   const { navigate } = useLocationState();
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
-  const [clickedCellIndex, setClickedCellIndex] = useState(null);
 
-  // const resetDateState = () => {
-  //   if (selectedDate) {
-  //     setSelectedDate(null);
-  //     setClickedCellIndex(null);
-  //   }
-  // };
-
-  // // Function handles closing the current modal
-  // // TODO: move to modal utils
-  // const onModalClose = () => {
-  //   resetDateState();
-  //   hideModal();
-  // };
 
   // Handles the task state from task utils file.
   // TODO: move to task utils
@@ -125,7 +105,8 @@ export default function CalendarMonthly() {
     //   modalId: modalId,
     //   selectedDate: selectedDate,
     // });
-    setClickedCellIndex(cellId);
+    dispatch(clickCell(cellId));
+    dispatch(selectDate(selectedDate.getTime()));
     const startTime = new Date();
     startTime.setHours(7);
     const endTime = new Date();
@@ -173,10 +154,11 @@ export default function CalendarMonthly() {
    * @returns {void}
    * TODO: move handlers to a custom hook
    */
+  // TODO: DISPATCH STATE TO REDUX STORE
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate.setHours(clickedPeriodStart);
-    setSelectedDate(formattedSelectedDate);
+    dispatch(selectDate(formattedSelectedDate));
     setTask({ ...task, date: newSelectedDate });
   };
 
@@ -235,9 +217,7 @@ export default function CalendarMonthly() {
     </li>
   );
 
-  /**
-   * Function to render list of weekdays.
-   * @returns {JSX.Element} - JSX Element representing list of weekdays
+  /** * Function to render list of weekdays.  * @returns {JSX.Element} - JSX Element representing list of weekdays
    */
   const renderDays = () => (
     <ol className="calendar-monthly-days">
@@ -262,27 +242,26 @@ export default function CalendarMonthly() {
 
     const ellipsisId = date.toLocaleDateString() + `${dateTasksLength}`;
 
-      return (
-        <Modal
-          classes={"modal-task-description"}
-          modalRef={modalRef}
-          modalPosition={modalPosition}
-          isModalVisible={openedModalId === ellipsisId}
-          modalId={ellipsisId}
-          content={
-            <ElipsisTaskList
-              onModalClose={onModalClose}
-              onTaskDelete={onTaskDelete}
-              onTaskEdit={onTaskEdit}
-              taskList={dateTasks}
-            />
-          }
-        >
-          {clickedCellIndex === cellId && renderNewTaskBox()}
-          {dateTasksLength > 3 && renderEllipsis(taskRestSum, ellipsisId)}
-        </Modal>
-        //TODO: fix ellipsis
-      );
+    return (
+      <Modal
+        classes={"modal-task-description"}
+        modalRef={modalRef}
+        modalPosition={modalPosition}
+        isModalVisible={openedModalId === ellipsisId}
+        modalId={ellipsisId}
+        content={
+          <ElipsisTaskList
+            onModalClose={onModalClose}
+            onTaskDelete={onTaskDelete}
+            onTaskEdit={onTaskEdit}
+            taskList={dateTasks}
+          />
+        }
+      >
+        {clickedCellIndex === cellId && renderNewTaskBox()}
+        {dateTasksLength > 3 && renderEllipsis(taskRestSum, ellipsisId)}
+      </Modal>
+    );
   };
 
   /**
@@ -406,3 +385,13 @@ export default function CalendarMonthly() {
 
   return renderMainComponent();
 }
+
+const mapStateToProps = (state) => ({
+  selectedDate: state.calendar.selectedDate,
+  clickedCellIndex: state.calendar.clickedCellIndex,
+});
+const mapDispatchToProps = {
+  selectDate,
+  clickCell,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarMonthly);

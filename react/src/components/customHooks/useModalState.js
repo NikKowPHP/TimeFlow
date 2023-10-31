@@ -23,7 +23,6 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const {
     selectedDate,
     setSelectedDate,
-    resetDateState,
     setClickedCellIndex,
     clickedCellIndex,
     allTasks,
@@ -38,17 +37,11 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const [modalPosition, setModalPosition] = useState(null);
   const [initialPosition, setInitialPosition] = useState({});
 
-  const {
-    task,
-    setTask,
-    handleTaskCreation,
-    handleDateSelection,
-    handleTimeSelection,
-  } = newTaskHandler({
+  const { task, setTask } = newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
   });
 
-  const { initiateNewTask } = calendarUtils();
+  const { initiateNewTask, resetDateState } = calendarUtils();
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
@@ -65,6 +58,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   function displaySuccessTaskCreation(data) {
     if (data) {
       hideModal();
+      resetDateState();
       toast.success(`The task '${data.title}' was successfully created`);
     }
   }
@@ -204,7 +198,6 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const adjustModalPosition = () => {
     const mouseCoordinates = event && getMouseClickCoordinates(event);
     const modalElement = modalRef.current;
-    console.log(modalRef);
     const modalRect = modalElement.getBoundingClientRect();
     const dimensions = {
       modalWidth: modalRect.width,

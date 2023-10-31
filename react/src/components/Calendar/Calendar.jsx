@@ -4,7 +4,7 @@ import CalendarMonthly from "./CalendarMonthly/CalendarMonthly";
 import CalendarWeekly from "./CalendarWeekly";
 import CalendarAgenda from "./CalendarAgenda";
 import { CalendarApiProvider } from "./CalendarApiContext";
-import { Provider, connect } from "react-redux";
+import { Provider, connect  } from "react-redux";
 import { selectDate, clickCell } from "../../redux/actions/calendarActions";
 import store from "../../redux/store";
 
@@ -64,6 +64,7 @@ const mapStateToProps = (state) => ({
   dates: state.calendar.selectedDate,
   currentDate: state.calendar.currentDate,
   selectedDate: state.calendar.selectedDate,
+  clickedCellIndex: state.calendar.clickedCellIndex,
 });
 
 const mapDispatchToProps = {

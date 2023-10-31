@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useCalendarApiContext } from "../Calendar/CalendarApiContext";
 import { calendarUtils } from "../../utils/calendarUtils.js";
+import {
+  selectDate,
+  clickCell,
+  resetSelectedDate,
+} from "../../redux/actions/calendarActions";
 
 /**
  * useCalendarState Hook
@@ -23,12 +28,11 @@ import { calendarUtils } from "../../utils/calendarUtils.js";
  */
 export function useCalendarState() {
   // State for current date
+
   const currentDate = new Date();
   const [year, setYear] = useState(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth());
   const [dates, setDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [clickedCellIndex, setClickedCellIndex] = useState("");
 
   // Select calendar layout
   const [layout, setLayout] = useState("month");
@@ -42,12 +46,6 @@ export function useCalendarState() {
     getAllTasks();
   }, []);
 
-  const resetDateState = () => {
-    if (selectedDate) {
-      setSelectedDate(null);
-      setClickedCellIndex(null);
-    }
-  };
 
   // Refresh list of tasks
   const refreshTasks = () => {
@@ -107,15 +105,10 @@ export function useCalendarState() {
     setDates,
     layout,
     setLayout,
-    selectedDate,
-    setSelectedDate,
-    clickedCellIndex,
-    setClickedCellIndex,
     currentDate,
     allTasks,
     updateTasks,
     refreshTasks,
     loading,
-    resetDateState,
   };
 }

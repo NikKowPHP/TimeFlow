@@ -2,6 +2,7 @@ import React from "react";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import svgPaths from "../svgPaths";
+import { useNotificationState } from "../customHooks/useNotificationState";
 
 export default function NewTask({
   selectedDate,
@@ -12,7 +13,12 @@ export default function NewTask({
   clickedPeriodEnd,
   onModalClose,
   onTitleSet,
+  handleNotificationClick,
+  onNotificationSelection,
+  displayNotification,
 }) {
+  const { isNotificationGranted } = useNotificationState();
+
   /**
    * Renders DateSelection component with specified props.
    * @returns {JSX.Element} JSX element representing the DateSelection component.
@@ -58,6 +64,15 @@ export default function NewTask({
     </div>
   );
 
+  const renderNotificationSelection = () => (
+    <select defaultValue={null} onChange={(event) => onNotificationSelection(event)}>
+      <option value={null}>Do not notify me</option>
+      <option value="1_day_before">1 day before</option>
+      <option value="1_hour_before">1 hour before</option>
+      <option value="15_minutes_before">15 minutes before</option>
+    </select>
+  );
+
   /**
    * Renders the modal content for creating a new task with specified parameters.
    * @param {JSX.Element} modalContentHeader - The JSX element representing the header of the modal with icons and layout.
@@ -91,12 +106,14 @@ export default function NewTask({
           </div>
         </div>
         <div className="modal-task-additional">
-          {/* TODO: create notifications */}
-          <div className="modal-task-notification">
+          <div
+            className="modal-task-notification"
+            onClick={handleNotificationClick}
+          >
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
               {svgPaths.notification}
             </svg>
-            <p>in 5 minutes before</p>
+            {renderNotificationSelection()}
           </div>
           <div className="modal-task-owner">
             <i className="fa fa-calendar"></i>

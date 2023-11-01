@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import Modal from "../modals/Modal";
 import { dateUtils } from "../../utils/dateUtils";
 import ExistingTask from "../Task/ExistingTask";
@@ -7,12 +7,16 @@ const TaskList = ({
   date,
   hourIndex,
   openedModalId,
-  modalPositionClass,
+  classes,
+  style,
+  allTasks,
   onTaskDelete,
   onModalClose,
   onTaskEdit,
-  renderModalChildren,
+  renderExistingTaskItem,
 	filterTasksForDateAndHour,
+  modalPosition,
+  modalRef
 }) => {
   const { convertDateSql } = dateUtils();
 
@@ -25,7 +29,7 @@ const TaskList = ({
     [date]
   );
   const filteredTasks = useMemo(
-    () => filterTasksForDateAndHour(convertedDate, convertedHourIndex),
+    () => filterTasksForDateAndHour(convertedDate, convertedHourIndex, allTasks),
     [convertedDate, convertedHourIndex]
   );
   const maxTasksToShow = useMemo(
@@ -39,10 +43,12 @@ const TaskList = ({
         const isModalVisible = () => openedModalId === task.id;
         return (
           <Modal
-            classes={`modal-task-description ${modalPositionClass} `}
+            modalRef={modalRef}
+            modalPosition={modalPosition}
+            classes={classes}
+            style={style}
             key={task.id}
             isModalVisible={isModalVisible()}
-            modalPositionClass={modalPositionClass}
             modalId={openedModalId}
             content={
               <ExistingTask
@@ -53,7 +59,7 @@ const TaskList = ({
               />
             }
           >
-            {renderModalChildren(task)}
+            {renderExistingTaskItem(task)}
           </Modal>
         );
       })}

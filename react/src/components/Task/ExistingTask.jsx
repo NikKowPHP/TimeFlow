@@ -1,5 +1,6 @@
 import React from "react";
 import svgPaths from "../svgPaths";
+import { calendarUtils } from "../../utils/calendarUtils";
 
 export default function ExistingTask({
   task,
@@ -7,6 +8,12 @@ export default function ExistingTask({
   onDelete,
   onTaskEdit,
 }) {
+  const { replaceUnderscoresWithSpaces } = calendarUtils();
+  const showNotificationPreference = () =>
+    task.notification_preference
+      ? replaceUnderscoresWithSpaces(task.notification_preference)
+      : "notification is not set";
+      // COMMIT 
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">
@@ -52,16 +59,15 @@ export default function ExistingTask({
         </p>
       </div>
       <div className="modal-task-additional">
-        {/* TODO: create notifications */}
         <div className="modal-task-notification">
           <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
             <path d="M18 17v-6c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v6H4v2h16v-2h-2zm-2 0H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6zm-4 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></path>
           </svg>
-          <p>in 5 minutes before</p>
+          <p>{showNotificationPreference()}</p>
         </div>
         <div className="modal-task-owner">
           <i className="fa fa-calendar"></i>
-          {task.user.name}
+          {task.user?.name}
         </div>
       </div>
     </div>

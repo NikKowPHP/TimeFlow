@@ -26,7 +26,8 @@ class StoreTaskRequest extends FormRequest
             'time_start' => 'required|string',
             'time_end' => 'required|string',
             'user_id' => 'required',
-            'date' => 'required'
+            'date' => 'required',
+            'notification_preference' => 'nullable|string'
         ];
     }
 }

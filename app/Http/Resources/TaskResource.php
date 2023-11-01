@@ -27,6 +27,7 @@ class TaskResource extends JsonResource
             'date' => $this->date,
             'time_start' => $time_start->format('H:i'),
             'time_end' => $time_end->format('H:i'),
+            'notification_preference' => $this->notification_preference,
             'title' => $this->title,
         ];
 

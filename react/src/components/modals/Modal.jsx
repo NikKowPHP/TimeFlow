@@ -1,5 +1,6 @@
 import "../../styles/modal.css";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useModalState } from "../customHooks/useModalState";
 
 /**
  * Modal component is used to display additional information or details when the user interacts with an element.
@@ -20,20 +21,21 @@ export default function Modal({
   content,
   classes = "",
   isModalVisible,
-  modalPositionClass,
   modalId,
+  modalRef,
+  modalPosition,
 }) {
 
-   /**
+  /**
    * Handle click events on the modal content to prevent event bubbling.
-   * 
+   *
    * @param {React.MouseEvent} event - The click event object.
    */
-  
+
   const handleContentClick = (event) => {
     event.stopPropagation();
   };
-  // TODO: create a movable modal
+
 
   return (
     <div className="modal-container">
@@ -41,9 +43,11 @@ export default function Modal({
 
       {isModalVisible && (
         <div
+          ref={modalRef}
           data-modal-id={modalId}
-          className={`modal ${classes} ${modalPositionClass}`}
+          className={`modal ${classes}`}
           onClick={handleContentClick}
+          style={modalPosition}
         >
           {content}
         </div>

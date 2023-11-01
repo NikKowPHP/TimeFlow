@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
 import axiosClient from "../../axios-client";
-import { toast } from "react-toastify";
 
 /**
  * Calendar API Context

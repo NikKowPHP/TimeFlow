@@ -1,8 +1,16 @@
 import axiosClient from "../axios-client";
 import { dateUtils } from "./dateUtils";
+import { useNavigate } from "react-router-dom";
 
 export function taskUtils({onStateReceived}) {
 
+  const navigate = useNavigate();
+  
+  function onTaskEdit(task) {
+    navigate(`/tasks/${task.id}`, {
+      state: { previousLocation: location.pathname },
+    });
+  }
   // Function to delete the task.
   const onTaskDelete = (task) => {
     console.log(task);
@@ -22,5 +30,6 @@ export function taskUtils({onStateReceived}) {
 	return {
 		onTaskDelete,
     getTasksByDate,
+    onTaskEdit,
 	}
 }

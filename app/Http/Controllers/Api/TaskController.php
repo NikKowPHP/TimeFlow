@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreTaskRequest;
+use App\Events\DesktopNotificationEvent;
 use App\Http\Requests\UpdateTaskRequest;
+use Illuminate\Support\Facades\Broadcast;
 
 class TaskController extends Controller
 {
@@ -61,17 +63,19 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-       $task_data_validated = $request->validated();
-       $task->update($task_data_validated);
-       return new TaskResource($task);
+        $task_data_validated = $request->validated();
+        $task->update($task_data_validated);
+        return new TaskResource($task);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Task $task)
+    public function destroy($taskId)
     {
+        $task = Task::find($taskId);
         $task->delete();
         return response('', 204);
     }
+
 }

@@ -1,3 +1,6 @@
+import { dateUtils } from "./dateUtils";
+import store from "../redux/store";
+
 /**
  *
  * @returns {object} - An object containing calendar utility functions.
@@ -7,6 +10,11 @@
  * @property {function} getMonthName - Returns the name of the month based on the month index.
  */
 export function calendarUtils() {
+  const { convertDateSql } = dateUtils();
+
+  function resetDateState() {
+    store.dispatch({ type: "RESET_SELECTED_DATE" });
+  }
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
@@ -16,7 +24,7 @@ export function calendarUtils() {
 
     let selectedDateModified = selectedDate;
     if (selectedDate) {
-      selectedDateModified = selectedDate.toLocaleDateString();
+      selectedDateModified = new Date(selectedDate).toLocaleDateString();
     }
     if (presentDateModified === modifiedDate) {
       return "current-date";
@@ -24,6 +32,10 @@ export function calendarUtils() {
       return "selected-date";
     }
     return "";
+  }
+
+  function replaceUnderscoresWithSpaces(inputString) {
+    return inputString.replace(/_/g, " ");
   }
 
   // Generates an array of month indices (0 to 11) representing the months of the year.
@@ -39,8 +51,11 @@ export function calendarUtils() {
   // Generates an array of dates for the specified month and year to fill the calendar grid
   function generateMonthDates(year, month) {
     const firstDayOfMonth = new Date(year, month, 1);
+    const startingDay = firstDayOfMonth.getDay();
+    // COMMIT: Resolve issue with displaying first day of month 'sunday';
+
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const fullCalendarDates = 42;
+    const fullCalendarDates = startingDay === 0 ? 42 : 35;
 
     const previousMonthYear = month === 0 ? year - 1 : year;
     const previousMonth = month === 0 ? 11 : month - 1;
@@ -48,19 +63,24 @@ export function calendarUtils() {
       previousMonthYear,
       previousMonth + 1,
       0
-    ).getDate();
+    ).getDate(); // previous month's dates quantity;
 
     const nextMonth = month === 11 ? 0 : month + 1;
     const nextMonthYear = month === 11 ? year + 1 : year;
-    const startingDay = firstDayOfMonth.getDay();
 
     const currentMonthDates = [];
 
+    const datesFromPreviousMonth = startingDay === 0 ? 6 : startingDay - 1;
+
     // Generates dates from the previous month
-    for (let i = startingDay - 2; i >= 0; i--) {
+    for (
+      let i = previousMonthDays - datesFromPreviousMonth + 1;
+      i <= previousMonthDays;
+      i++
+    ) {
       const modifiedMonth =
         previousMonth < 9 ? "0" + (previousMonth + 1) : previousMonth + 1;
-      const modifiedDate = previousMonthDays - i;
+      const modifiedDate = i < 10 ? "0" + i : i;
       const fullDate = `${previousMonthYear}-${modifiedMonth}-${modifiedDate}`;
       const fullDateObj = new Date(fullDate);
       currentMonthDates.push(fullDateObj);
@@ -91,15 +111,15 @@ export function calendarUtils() {
 
   // Function to get the current week dates array based on the current date
   const getCurrentWeekDates = (dates, currentDate) => {
-    const weeks = 6; // Is always 6 weeks based on the type of the calendar
+    const weeks = 5; // Is always 5 weeks based on the type of the calendar
     let currentWeekIndex = -1; // Initialize with an invalid value
     let currentWeekDates = [];
-
     // Find the week index of the current date
     for (let weekIndex = 0; weekIndex < weeks; weekIndex++) {
       const startIndex = weekIndex * 7;
       const endIndex = startIndex + 7;
       const weekDates = dates.slice(startIndex, endIndex);
+      console.log(dates);
       if (
         weekDates.some(
           (date) => date.toDateString() === currentDate.toDateString()
@@ -171,6 +191,15 @@ export function calendarUtils() {
   const getDayName = (dayIndex) => {
     return weekDays()[dayIndex];
   };
+  function formatDateToDDMonDay(dateStr) {
+    const date = new Date(dateStr);
+
+    const month = getMonthName(date.getUTCMonth()).substring(0, 3);
+    const dayOfMonth = date.getUTCDate();
+    const dayOfWeek = getDayName(date.getUTCDay());
+
+    return { dayOfMonth: dayOfMonth, month: month, dayOfWeek: dayOfWeek };
+  }
 
   const convertHour = (hour) => {
     const date = new Date();
@@ -190,12 +219,133 @@ export function calendarUtils() {
     return hoursOfDay;
   };
 
-  const convertDecimalToTime = (decimalTime) => {
-    const hours = Math.floor(decimalTime);
-    const minutes = Math.round((decimalTime - hours) * 60);
+  const convertDateToTime = (dateObject) => {
+    const hours = dateObject.getHours();
+    const minutes = dateObject.getMinutes();
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}`;
+  };
+
+  function getDateActiveClass(date, currentDate, selectedDate) {
+    return "date " + getActiveDateClass(date, currentDate, selectedDate);
+  }
+  /**
+   * Toggles active class for tasks in modal
+   * @param {integer} taskId - ID of the task
+   * @returns {any}
+   */
+  const toggleTaskActiveClass = (taskId, openedModalId, isModalVisible) => {
+    return (
+      openedModalId &&
+      openedModalId === taskId &&
+      isModalVisible &&
+      "task-active"
+    );
+  };
+
+  /**
+   * Determines whether a cell has been clicked on the first half of the cell or not based on the clickedHalf state variable.
+   * @returns {string} - A string indicating whether the cell is clicked on the first half ("first-half") or second half ("second-half") or neither ("").
+   */
+  const getCellHalfClassName = (clickedHalf) => {
+    switch (clickedHalf) {
+      case "first":
+        return "first-half";
+      case "second":
+        return "second-half";
+      default:
+        return "";
+    }
+  };
+
+  /**
+   * Initiates a default new task state based on selected time and date and sets state.
+   * @param {Date} timeStart - represents starting time.
+   * @param {Date} timeEnd - represents ending time.
+   * @param {Date} clickedDate - represents the clicked date.
+   */
+  const initiateNewTask = (timeStartObj, timeEndObj, clickedDate, newTaskId) => {
+
+    const formattedTimeStart = convertDateToTime(timeStartObj);
+    const formattedTimeEnd = convertDateToTime(timeEndObj);
+    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
+
+    return {
+      id: newTaskId,
+      title: "",
+      time_start: formattedTimeStart,
+      time_end: formattedTimeEnd,
+      date: formattedDate,
+      notification_preference: null,
+    };
+  };
+
+  /**
+   * Calculates the height of a task in pixels based on its start and end times.
+   * @param {string} taskTimeStart - The start time of the task.
+   * @param {string} taskTimeEnd - The end time of the task.
+   * @returns {Object} CSS style object with the calculated height.
+   */
+  const calculateTaskHeight = (taskTimeStart, taskTimeEnd) => {
+    const startTimestamp = new Date(`2000-01-01 ${taskTimeStart}`);
+    const endTimestamp = new Date(`2000-01-01 ${taskTimeEnd}`);
+    const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
+    const cellTimeAvailableMinutes = 60;
+    const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
+    const cellHeight = 64.83;
+    const taskHeight = cellHeight * heightRatio;
+    const top = taskTimeStart.includes("30") ? "-65px" : "-100px";
+    return {
+      top: top,
+      height: `${taskHeight}px`,
+    };
+  };
+
+  /**
+   * Filters allTasks array to extract specific tasks based on date and hour.
+   * @param {string} convertedDate - The convertedDate in format 'yyyy-mm-dd'
+   * @param {string} convertedHourIndex - The convertedHourIndex in format 'h'.
+   * @returns {Array} - An array of task objects that correspond to the filter criteria.
+   */
+  const filterTasksForDateAndHour = (
+    convertedDate,
+    convertedHourIndex,
+    allTasks
+  ) => {
+    return (
+      allTasks &&
+      allTasks.filter((task) => {
+        const slicedTaskTime = task.time_start.split(":")[0];
+        return (
+          task.date === convertedDate && slicedTaskTime === convertedHourIndex
+        );
+      })
+    );
+  };
+  const defineClickedHalf = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const clickedY = e.clientY - rect.top;
+    const cellHeight = rect.height;
+    return clickedY < cellHeight / 2 ? "first" : "second";
+  };
+
+  const modifyStartEndTime = ({ hour, date, clickedHalf }) => {
+    let startHour = hour;
+    let endHour = hour + 1;
+    if (clickedHalf === "second") {
+      startHour += 0.5;
+      endHour += 0.5;
+    }
+    // Convert decimal fractions to minutes
+    const startMinutes = Math.floor((startHour % 1) * 60);
+    const endMinutes = Math.floor((endHour % 1) * 60);
+
+    const startTime = new Date(date);
+    const endTime = new Date(date);
+    startTime.setHours(Math.floor(startHour), startMinutes, 0, 0);
+    endTime.setHours(Math.floor(endHour), endMinutes, 0, 0);
+    return { startTime: startTime, endTime: endTime };
   };
 
   return {
@@ -210,7 +360,18 @@ export function calendarUtils() {
     generateHoursOfDay,
     convertTimePeriod,
     convertTime,
-    convertDecimalToTime,
+    convertDateToTime,
     getDayName,
+    getDateActiveClass,
+    toggleTaskActiveClass,
+    getCellHalfClassName,
+    initiateNewTask,
+    calculateTaskHeight,
+    filterTasksForDateAndHour,
+    defineClickedHalf,
+    modifyStartEndTime,
+    replaceUnderscoresWithSpaces,
+    formatDateToDDMonDay,
+    resetDateState,
   };
 }

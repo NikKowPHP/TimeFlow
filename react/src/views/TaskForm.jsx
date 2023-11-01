@@ -12,6 +12,7 @@ export default function TaskForm() {
     date: null,
     time_start: null,
     time_end: null,
+    notification_preference: null,
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
@@ -35,12 +36,15 @@ export default function TaskForm() {
       getTask();
     }, [id]);
   }
+
+  const handleNotificationSelection = (event) => {};
+
   const onSubmitForm = (event) => {
     event.preventDefault();
     if (task.id) {
       axiosClient.put(`/tasks/${task.id}`, task).then(() => {
         toast.success("The task was updated");
-        setTimeout(()=> {
+        setTimeout(() => {
           goBack();
         }, 2000);
       });
@@ -89,6 +93,21 @@ export default function TaskForm() {
                       }
                     />
                   </div>
+                  <select style={{ marginBottom: "10px"}}
+                    defaultValue={task.notification_preference}
+                    onChange={(event) =>
+                      setTask({
+                        ...task,
+                        notification_preference: event.target.value,
+                      })
+                    }
+                  >
+                    <option value={null}>Do not notify me</option>
+                    <option value="1_day_before">1 day before</option>
+                    <option value="1_hour_before">1 hour before</option>
+                    <option value="15_minutes_before">15 minutes before</option>
+                  </select>
+
                   <div className="task-form__btn-group">
                     <button type="submit" className="btn btn-add">
                       Save

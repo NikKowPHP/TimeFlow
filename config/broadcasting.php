@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'null'),
+    'default' => env('BROADCAST_DRIVER', 'pusher'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,15 +37,15 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
-                'port' => env('PUSHER_PORT', 443),
-                'scheme' => env('PUSHER_SCHEME', 'https'),
-                'encrypted' => true,
-                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+                // 'host' => env('PUSHER_HOST') ?: 'api-' . env('PUSHER_APP_CLUSTER', 'eu') . '.pusher.com',
+                // 'port' => env('PUSHER_PORT', 443),
+                // 'scheme' => env('PUSHER_SCHEME', 'https'),
+                // 'encrypted' => true,
+                'useTLS' => true,
             ],
-            'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
+            // 'client_options' => [
+            //     Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+            // ],
         ],
 
         'ably' => [
@@ -57,6 +57,12 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
         ],
+        // 'socketio' => [
+        //     'driver' => 'socket.io',
+        //     'host' => env('SOCKET_IO_HOST', 'localhost'),
+        //     'port' => env('SOCKET_IO_PORT', 6001),
+        //     'namespace' => env('SOCKET_IO_NAMESPACE', '/socket.io'),
+        // ],
 
         'log' => [
             'driver' => 'log',

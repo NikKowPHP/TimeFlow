@@ -13,7 +13,7 @@ export function calendarUtils() {
   const { convertDateSql } = dateUtils();
 
   function resetDateState() {
-    store.dispatch({ type: 'RESET_SELECTED_DATE'});
+    store.dispatch({ type: "RESET_SELECTED_DATE" });
   }
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
@@ -265,15 +265,14 @@ export function calendarUtils() {
    * @param {Date} timeEnd - represents ending time.
    * @param {Date} clickedDate - represents the clicked date.
    */
-  const initiateNewTask = (timeStartObj, timeEndObj, clickedDate) => {
+  const initiateNewTask = (timeStartObj, timeEndObj, clickedDate, newTaskId) => {
+
     const formattedTimeStart = convertDateToTime(timeStartObj);
-
     const formattedTimeEnd = convertDateToTime(timeEndObj);
-
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
 
     return {
-      id: null,
+      id: newTaskId,
       title: "",
       time_start: formattedTimeStart,
       time_end: formattedTimeEnd,

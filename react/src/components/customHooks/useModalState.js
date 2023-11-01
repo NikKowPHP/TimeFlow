@@ -180,7 +180,9 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const handleClickOutside = (event) => {
     // Check if the modal is visible and the click is not the opened modal
     if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
+
       hideModal();
+      resetDateState();
     }
   };
 

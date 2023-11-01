@@ -263,6 +263,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     endTime,
     selectedDate,
     newTask = false,
+    allTasks = []
   }) => {
     // Close opened modal
     if (openedModalId !== null) {
@@ -271,7 +272,9 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     event.stopPropagation();
     showModal(modalId);
     if (newTask) {
-      const newTask = initiateNewTask(startTime, endTime, selectedDate);
+      
+      const newTaskId = allTasks[0].id + 1;
+      const newTask = initiateNewTask(startTime, endTime, selectedDate, newTaskId);
       const updatedTask = { ...task, ...newTask };
       setTask({ ...task, ...newTask });
       handleTaskUpdate(updatedTask);

@@ -49,7 +49,6 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
     openedModalId,
     isModalVisible,
     modalPosition,
-    showModal,
     hideModal,
     displaySuccessTaskCreation,
     onModalClose,
@@ -118,26 +117,10 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
       endTime: endTime,
       selectedDate: selectedDate,
       newTask: true,
+      allTasks: allTasks
     });
   };
 
-  /**
-   * Handles click on a task or date to show the modal
-   * @param {Object} options - Click event details
-   * @param {Event} options.event - Click event
-   * @param {string} options.modalId - ID of the modal
-   * @returns {void}
-   * TODO: move function
-   */
-  // const handleOnClick = ({ event, modalId }) => {
-  //   // Close opened modal
-  //   if (openedModalId !== null) {
-  //     hideModal();
-  //     resetDateState();
-  //   }
-  //   event.stopPropagation();
-  //   showModal(modalId);
-  // };
 
   /**
    * Sets new task title in state

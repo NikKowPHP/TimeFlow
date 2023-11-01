@@ -1,6 +1,7 @@
 const initialState = {
   selectedDate: null,
   clickedCellIndex: null,
+  allTasks: []
 };
 
 const calendarReducer = (state = initialState, action) => {
@@ -11,6 +12,8 @@ const calendarReducer = (state = initialState, action) => {
       return { ...state, clickedCellIndex: action.payload };
     case "RESET_SELECTED_DATE":
       return { ...state, selectedDate: null, clickedCellIndex: null };
+    case "SET_ALL_TASKS":
+      return { ...state, allTasks: action.payload };
     default:
       return state;
   }

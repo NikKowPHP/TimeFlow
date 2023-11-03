@@ -3,11 +3,11 @@ import axiosClient from "../../axios-client";
 export const fetchTasksRequest = () => ({
   type: "FETCH_TASKS_REQUEST",
 });
-export const fetchTasksSuccess = () => ({
+export const fetchTasksSuccess = (data) => ({
   type: "FETCH_TASKS_SUCCESS",
   payload: data,
 });
-export const fetchTasksFailure = () => ({
+export const fetchTasksFailure = (error) => ({
   type: "FETCH_TASKS_FAILURE",
   payload: error,
 });

@@ -5,6 +5,7 @@ import {
   CLICK_CELL,
   RESET_SELECTED_DATE,
   SET_YEAR,
+  SET_LAYOUT,
   SET_MONTH,
 } from "./actionTypes";
 
@@ -26,6 +27,10 @@ export const setYear = (year) => ({
 export const setMonth = (month) => ({
   type: SET_MONTH,
   payload: month,
+});
+export const setLayout = (layout) => ({
+  type: SET_LAYOUT,
+  payload: layout,
 });
 export const setMonthDates = (year, month) => (dispatch) => {
   const dates = calendarUtils().generateMonthDates(year, month);

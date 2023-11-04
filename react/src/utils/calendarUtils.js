@@ -1,5 +1,6 @@
 import { dateUtils } from "./dateUtils";
 import store from "../redux/store";
+import { RESET_SELECTED_DATE } from "../redux/actions/actionTypes";
 
 /**
  *
@@ -13,7 +14,7 @@ export function calendarUtils() {
   const { convertDateSql } = dateUtils();
 
   function resetDateState() {
-    store.dispatch({ type: "RESET_SELECTED_DATE" });
+    store.dispatch({ type: RESET_SELECTED_DATE });
   }
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
@@ -39,22 +40,22 @@ export function calendarUtils() {
   }
 
   // Function to calculate the next month
-  const goToNextMonth = (year, month, setYear, setMonth) => {
+  const goToNextMonth = (year, month, setYear, setMonth, dispatch) => {
     if (month === 11) {
-      setYear(year + 1);
-      setMonth(0);
+      dispatch(setYear(year + 1));
+      dispatch(setMonth(0));
     } else {
-      setMonth(month + 1);
+      dispatch(setMonth(month + 1));
     }
   };
 
   // Function to calculate the previous month
-  const goToPrevMonth = (year, month, setYear, setMonth) => {
+  const goToPrevMonth = (year, month, setYear, setMonth, dispatch) => {
     if (month === 0) {
-      setYear(year - 1);
-      setMonth(11);
+      dispatch(setYear(year - 1));
+      dispatch(setMonth(11));
     } else {
-      setMonth(month - 1);
+      dispatch(setMonth(month - 1));
     }
   };
 
@@ -285,8 +286,12 @@ export function calendarUtils() {
    * @param {Date} timeEnd - represents ending time.
    * @param {Date} clickedDate - represents the clicked date.
    */
-  const initiateNewTask = (timeStartObj, timeEndObj, clickedDate, newTaskId) => {
-
+  const initiateNewTask = (
+    timeStartObj,
+    timeEndObj,
+    clickedDate,
+    newTaskId
+  ) => {
     const formattedTimeStart = convertDateToTime(timeStartObj);
     const formattedTimeEnd = convertDateToTime(timeEndObj);
     const formattedDate = convertDateSql(clickedDate.toLocaleDateString());

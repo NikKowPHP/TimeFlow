@@ -38,6 +38,26 @@ export function calendarUtils() {
     return inputString.replace(/_/g, " ");
   }
 
+  // Function to calculate the next month
+  const goToNextMonth = (year, month, setYear, setMonth) => {
+    if (month === 11) {
+      setYear(year + 1);
+      setMonth(0);
+    } else {
+      setMonth(month + 1);
+    }
+  };
+
+  // Function to calculate the previous month
+  const goToPrevMonth = (year, month, setYear, setMonth) => {
+    if (month === 0) {
+      setYear(year - 1);
+      setMonth(11);
+    } else {
+      setMonth(month - 1);
+    }
+  };
+
   // Generates an array of month indices (0 to 11) representing the months of the year.
   function generateMonths() {
     const months = [];
@@ -373,5 +393,7 @@ export function calendarUtils() {
     replaceUnderscoresWithSpaces,
     formatDateToDDMonDay,
     resetDateState,
+    goToNextMonth,
+    goToPrevMonth,
   };
 }

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
 import { useStateContext } from "../../contexts/ContextProvider";
-import { useCalendarState } from "../customHooks/useCalendarState";
 
-export default function newTaskHandler({onDataReceived}) {
+export default function newTaskHandler({
+  onDataReceived,
+  updateTasks,
+  dispatch,
+}) {
   const { user } = useStateContext();
-  const { refreshTasks, updateTasks, setSelectedDate, setClickedCellIndex } =
-    useCalendarState();
 
   const [task, setTask] = useState({
     id: null,
@@ -23,13 +24,11 @@ export default function newTaskHandler({onDataReceived}) {
     setTask({ ...task, user_id: user?.id });
   }, [user]);
 
-
-
   const handleTaskCreation = (ev) => {
     ev.preventDefault();
 
     axiosClient.post(`/calendar/calendar`, task).then(({ data }) => {
-      updateTasks(task);
+      dispatch(updateTasks(task));
       // refreshTasks();
       onDataReceived(data);
     });

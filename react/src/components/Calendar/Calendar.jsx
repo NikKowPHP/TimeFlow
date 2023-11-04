@@ -1,12 +1,16 @@
-import "../../styles/calendar.css";
-import { useCalendarState } from "../customHooks/useCalendarState";
 import CalendarMonthly from "./CalendarMonthly/CalendarMonthly";
 import CalendarWeekly from "./CalendarWeekly";
 import CalendarAgenda from "./CalendarAgenda";
-import { CalendarApiProvider } from "./CalendarApiContext";
-import { Provider, connect  } from "react-redux";
-import { selectDate, clickCell } from "../../redux/actions/calendarActions";
-import store from "../../redux/store";
+import {
+  clickCell,
+  selectDate,
+  setMonth,
+  setYear,
+  setMonthDates,
+} from "../../redux/actions/calendarActions";
+import { fetchTasks } from "../../redux/actions/taskActions";
+import { connect, useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 /**
  * Calendar component is responsible for displaying the calendar layout based on the selected "layout" value.
@@ -14,23 +18,39 @@ import store from "../../redux/store";
  *
  * @returns {JSX.Element} The JSX representation of the Calendar component.
  */
+const mapStateToProps = (state) => ({
+  layout: state.calendar.layout,
+  dates: state.calendar.dates,
+  year: state.calendar.year,
+  month: state.calendar.month,
+  currentDate: state.calendar.currentDate,
+  selectedDate: state.calendar.selectedDate,
+  clickedCellIndex: state.calendar.clickedCellIndex,
+  allTasks: state.tasks.allTasks,
+  loading: state.tasks.loading,
+  error: state.tasks.error,
+});
 
-export function Calendar({
-  // layout = "month",
-  // dates,
-  selectedDate,
+const mapDispatchToProps = {
   selectDate,
-  clickedCellIndex,
   clickCell,
-}) {
-  // Destructure state and functions from the useCalendarState hook
-  const {
-    layout = "month",
-    dates,
-    //   selectedDate,
-    getAllTasks,
-    currentDate,
-  } = useCalendarState();
+  setMonth,
+  setYear,
+  fetchTasks,
+  setMonthDates,
+};
+
+function Calendar({ year, month, layout, dates, allTasks, selectedDate, currentDate, clickedCellIndex, loading, }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setMonthDates(year, month));
+    dispatch(fetchTasks());
+  }, [dispatch, year, month]);
+  useEffect(() => {
+    console.log(dates);
+    console.log(allTasks);
+  }, [dates]);
 
   // Determine the appropriate layout component based on the "layout" state
   let CalendarLayoutComponent;
@@ -42,34 +62,24 @@ export function Calendar({
     CalendarLayoutComponent = CalendarMonthly;
   }
 
+  // Wrap the selected layout component with the CalendarApiProvider for API context sharing
+
   return (
-    // Wrap the selected layout component with the CalendarApiProvider for API context sharing
-    <Provider store={store}>
-      <CalendarApiProvider>
-        <CalendarLayoutComponent
-          dates={dates}
-          getAllTasks={getAllTasks}
-          currentDate={currentDate}
-          selectedDate={selectedDate}
-          selectDate={selectDate}
-          clickCell={clickCell}
-          clickedCellIndex={clickedCellIndex}
-        />
-      </CalendarApiProvider>
-    </Provider>
+    <CalendarLayoutComponent
+      dates={dates}
+      allTasks={allTasks}
+      year={year}
+      layout={layout}
+      month={month}
+      currentDate={currentDate}
+      selectedDate={selectedDate}
+      selectDate={selectDate}
+      clickCell={clickCell}
+      clickedCellIndex={clickedCellIndex}
+      loading={loading}
+      setMonth={setMonth}
+      setYear={setYear}
+    />
   );
 }
-const mapStateToProps = (state) => ({
-  layout: state.calendar.layout,
-  dates: state.calendar.selectedDate,
-  currentDate: state.calendar.currentDate,
-  selectedDate: state.calendar.selectedDate,
-  clickedCellIndex: state.calendar.clickedCellIndex,
-});
-
-const mapDispatchToProps = {
-  selectDate,
-  clickCell,
-};
-
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

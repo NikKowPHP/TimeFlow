@@ -14,16 +14,42 @@ import { useModalState } from "./customHooks/useModalState";
 import NewTask from "./Task/NewTask";
 import newTaskHandler from "./Calendar/newTaskHandler";
 import { calendarUtils } from "../utils/calendarUtils";
+import { connect } from "react-redux";
+import { setLayout } from "../redux/actions/calendarActions";
 
-function DefaultLayout() {
+const mapStateToProps = (state) => ({
+  layout: state.calendar.layout,
+  dates: state.calendar.selectedDate,
+  year: state.calendar.year,
+  month: state.calendar.month,
+  currentDate: state.calendar.currentDate,
+  selectedDate: state.calendar.selectedDate,
+  clickedCellIndex: state.calendar.clickedCellIndex,
+  allTasks: state.tasks.allTasks,
+  loading: state.tasks.loading,
+  error: state.tasks.error,
+});
+
+const mapDispatchToProps = {
+  setLayout,
+};
+
+function DefaultLayout({ layout, setLayout, year }) {
+  // console.log('year in default layout', year)
   const modalRef = useRef(null);
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
-  const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
-  const { modalPosition, openedModalId, hideModal, showModal, isModalVisible, displaySuccessTaskCreation } =
-    useModalState({
-      modalRef: modalRef,
-    });
+  // const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
+  const {
+    modalPosition,
+    openedModalId,
+    hideModal,
+    showModal,
+    isModalVisible,
+    displaySuccessTaskCreation,
+  } = useModalState({
+    modalRef: modalRef,
+  });
   const { initiateNewTask, convertDateToTime, toggleTaskActiveClass } =
     calendarUtils();
 
@@ -35,7 +61,7 @@ function DefaultLayout() {
     handleTaskCreation,
     setTask,
     task,
-  } = newTaskHandler({ onDataReceived: displaySuccessTaskCreation});
+  } = newTaskHandler({ onDataReceived: displaySuccessTaskCreation });
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -202,12 +228,12 @@ function DefaultLayout() {
               </>
             )}
 
-          {isCalendar && (
+          {/* {isCalendar && (
             <CalendarAside
               currentDate={currentDate}
               selectedDate={selectedDate}
             />
-          )}
+          )} */}
         </aside>
       )}
 
@@ -251,4 +277,4 @@ function DefaultLayout() {
   );
 }
 
-export default DefaultLayout;
+export default connect(mapStateToProps, mapDispatchToProps)(DefaultLayout);

@@ -1,3 +1,4 @@
+import "../../styles/calendar.css";
 import CalendarMonthly from "./CalendarMonthly/CalendarMonthly";
 import CalendarWeekly from "./CalendarWeekly";
 import CalendarAgenda from "./CalendarAgenda";

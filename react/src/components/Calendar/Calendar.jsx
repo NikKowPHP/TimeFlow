@@ -40,7 +40,17 @@ const mapDispatchToProps = {
   setMonthDates,
 };
 
-function Calendar({ year, month, layout, dates, allTasks, selectedDate, currentDate, clickedCellIndex, loading, }) {
+function Calendar({
+  year,
+  month,
+  layout,
+  dates,
+  allTasks,
+  selectedDate,
+  currentDate,
+  clickedCellIndex,
+  loading,
+}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -66,6 +76,7 @@ function Calendar({ year, month, layout, dates, allTasks, selectedDate, currentD
 
   return (
     <CalendarLayoutComponent
+      dispatch={dispatch}
       dates={dates}
       allTasks={allTasks}
       year={year}

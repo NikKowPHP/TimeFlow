@@ -13,7 +13,13 @@ import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
 import ElipsisTaskList from "../EllipsisTaskList";
 import { connect, useDispatch } from "react-redux";
-import { selectDate, clickCell, setYear, setMonth } from "../../../redux/actions/calendarActions";
+// import {
+//   selectDate,
+//   clickCell,
+//   setYear,
+//   setMonth,
+// } from "../../../redux/actions/calendarActions";
+import { updateTasks } from "../../../redux/actions/taskActions";
 
 function CalendarMonthly({
   dates,
@@ -34,20 +40,13 @@ function CalendarMonthly({
   const dispatch = useDispatch();
   console.log("selectedDate ", selectedDate, "clicked", clickedCellIndex);
 
-  // // Import states and functions
-  // const {
-  //   dates,
-  //   month,
-  //   currentDate,
-  //   refreshTasks,
-  //   allTasks,
-  //   loading,
-  //   goToPrevMonth,
-  //   goToNextMonth,
-  // } = useCalendarState();
-
-  const { getMonthName, getDateActiveClass, toggleTaskActiveClass, goToNextMonth, goToPrevMonth } =
-    calendarUtils();
+  const {
+    getMonthName,
+    getDateActiveClass,
+    toggleTaskActiveClass,
+    goToNextMonth,
+    goToPrevMonth,
+  } = calendarUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
   });
@@ -69,6 +68,8 @@ function CalendarMonthly({
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
+    dispatch: dispatch,
+    updateTasks: updateTasks,
   });
   function handleTaskUpdate(updatedTask) {
     setTask(updatedTask);
@@ -381,12 +382,13 @@ function CalendarMonthly({
   return renderMainComponent();
 }
 
-const mapStateToProps = (state) => ({
-  selectedDate: state.calendar.selectedDate,
-  clickedCellIndex: state.calendar.clickedCellIndex,
-});
-const mapDispatchToProps = {
-  selectDate,
-  clickCell,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarMonthly);
+// const mapStateToProps = (state) => ({
+//   selectedDate: state.calendar.selectedDate,
+//   clickedCellIndex: state.calendar.clickedCellIndex,
+// });
+// const mapDispatchToProps = {
+//   selectDate,
+//   clickCell,
+// };
+// export default connect(mapStateToProps, mapDispatchToProps)(CalendarMonthly);
+export default CalendarMonthly;

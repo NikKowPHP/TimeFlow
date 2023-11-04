@@ -1,10 +1,8 @@
 import { toast } from "react-toastify";
 import newTaskHandler from "../components/Calendar/newTaskHandler";
-import { useCalendarState } from "../components/customHooks/useCalendarState";
 import { useModalState } from "../components/customHooks/useModalState";
 
 export function modalUtils() {
-  const { setSelectedDate, selectedDate } = useCalendarState();
   // Modal import
   const { openedModalId, showModal, hideModal } = useModalState();
   // Task import
@@ -12,10 +10,6 @@ export function modalUtils() {
     onDataReceived: displaySuccessTaskCreation,
   });
 
-  const resetDateState = () => {
-    setSelectedDate(null);
-    setClickedCellIndex(null);
-  };
 
   const handleOnClick = ({ event, modalId }) => {
     // Close opened modal
@@ -69,9 +63,6 @@ function displaySuccessTaskCreation(data) {
 
   return {
     handleTaskCreation,
-    setTask,
-    task,
-    resetDateState,
     handleOnClick,
     handleTimeSelection,
     handleDateSelection,

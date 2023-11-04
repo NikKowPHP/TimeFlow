@@ -2,8 +2,6 @@ import "../../../styles/calendar/calendar-monthly.css";
 import React, { useEffect, useRef, useState } from "react";
 import Modal from "../../modals/Modal";
 import { calendarUtils } from "../../../utils/calendarUtils";
-import { dateUtils } from "../../../utils/dateUtils";
-import { useCalendarState } from "../../customHooks/useCalendarState";
 import { useModalState } from "../../customHooks/useModalState";
 import newTaskHandler from "../newTaskHandler";
 import { toast } from "react-toastify";
@@ -15,31 +13,41 @@ import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
 import ElipsisTaskList from "../EllipsisTaskList";
 import { connect, useDispatch } from "react-redux";
-import { selectDate, clickCell } from "../../../redux/actions/calendarActions";
+import { selectDate, clickCell, setYear, setMonth } from "../../../redux/actions/calendarActions";
 
-
-function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell }) {
+function CalendarMonthly({
+  dates,
+  year,
+  setYear,
+  setMonth,
+  month,
+  allTasks,
+  currentDate,
+  clickedCellIndex,
+  selectDate,
+  selectedDate,
+  clickCell,
+  loading,
+}) {
+  console.log(year);
   const modalRef = useRef(null);
   const dispatch = useDispatch();
-  console.log('selectedDate ', selectedDate, 'clicked' , clickedCellIndex)
+  console.log("selectedDate ", selectedDate, "clicked", clickedCellIndex);
 
-  // Import states and functions
-  const {
-    dates,
-    month,
-    currentDate,
-    refreshTasks,
-    allTasks,
-    loading,
-    goToPrevMonth,
-    goToNextMonth,
-  } = useCalendarState();
+  // // Import states and functions
+  // const {
+  //   dates,
+  //   month,
+  //   currentDate,
+  //   refreshTasks,
+  //   allTasks,
+  //   loading,
+  //   goToPrevMonth,
+  //   goToNextMonth,
+  // } = useCalendarState();
 
-  const {
-    getMonthName,
-    getDateActiveClass,
-    toggleTaskActiveClass,
-  } = calendarUtils();
+  const { getMonthName, getDateActiveClass, toggleTaskActiveClass, goToNextMonth, goToPrevMonth } =
+    calendarUtils();
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
   });
@@ -70,7 +78,6 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
   // State for clicked time period
   const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
   const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
-
 
   // Handles the task state from task utils file.
   // TODO: move to task utils
@@ -117,10 +124,9 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
       endTime: endTime,
       selectedDate: selectedDate,
       newTask: true,
-      allTasks: allTasks
+      allTasks: allTasks,
     });
   };
-
 
   /**
    * Sets new task title in state
@@ -336,6 +342,12 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
       })}
     </ol>
   );
+  const handleNextMonthClick = () => {
+    goToNextMonth(year, month, setYear, setMonth, dispatch);
+  };
+  const handlePrevMonthClick = () => {
+    goToPrevMonth(year, month, setYear, setMonth, dispatch);
+  };
 
   const renderMainComponent = () =>
     loading ? (
@@ -344,7 +356,7 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
       <div className="calendar-monthly">
         <div className="dates-switcher-container">
           <span
-            onClick={goToPrevMonth}
+            onClick={handlePrevMonthClick}
             className="material-symbols-rounded dates-switcher__block"
           >
             chevron_left
@@ -353,7 +365,7 @@ function CalendarMonthly({ selectedDate, clickedCellIndex, selectDate, clickCell
             {getMonthName(month)}
           </span>
           <span
-            onClick={goToNextMonth}
+            onClick={handleNextMonthClick}
             className="material-symbols-rounded  dates-switcher__block"
           >
             chevron_right

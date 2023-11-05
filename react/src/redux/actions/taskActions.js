@@ -1,16 +1,21 @@
 import axiosClient from "../../axios-client";
+import { FETCH_TASKS_FAILURE, FETCH_TASKS_REQUEST, FETCH_TASKS_SUCCESS, UPDATE_TASKS } from "./actionTypes";
 
 export const fetchTasksRequest = () => ({
-  type: "FETCH_TASKS_REQUEST",
+  type: FETCH_TASKS_REQUEST,
 });
 export const fetchTasksSuccess = (data) => ({
-  type: "FETCH_TASKS_SUCCESS",
+  type: FETCH_TASKS_SUCCESS,
   payload: data,
 });
 export const fetchTasksFailure = (error) => ({
-  type: "FETCH_TASKS_FAILURE",
+  type: FETCH_TASKS_FAILURE,
   payload: error,
 });
+export const updateTasks = (newTask) => ({
+  type: UPDATE_TASKS,
+  payload: newTask,
+})
 
 export const fetchTasks = () => {
   return (dispatch) => {

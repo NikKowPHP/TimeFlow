@@ -101,7 +101,7 @@
 }
 
 /* Pseudo-element for date with active tasks */
-.calendar-aside__date-block.date-active::before {
+.calendar-aside__date-block.selected-date::before {
   opacity: 1;
   background-color: #9c59b66d;
   border: none;
@@ -130,4 +130,7 @@
 /* calendar-aside__month-block: Individual month block for selection */
 .calendar-aside__month-block:hover {
   border-color:rgba(0, 0, 0, 0.12);
+}
+.calendar-aside__date-list .selected-date {
+
 }

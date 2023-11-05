@@ -1,5 +1,4 @@
 import "../../styles/calendar/calendar-aside.css";
-import { useCalendarState } from "../customHooks/useCalendarState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import { useState } from "react";
 
@@ -12,20 +11,23 @@ import { useState } from "react";
  * @returns {JSX.Element} - The JSX element representing the CalendarAside component.
  */
 
-export default function CalendarAside() {
-
-  // Using the custom hook to access calendar state and functions
+export default function CalendarAside({
+  currentDate,
+  year,
+  selectedDate,
+  dispatch,
+  month,
+  setMonth,
+  dates,
+  selectDate,
+}) {
   const {
-    dates,
-    year,
-    month,
-    setMonth,
+    getMonthName,
+    getDateActiveClass,
+    generateMonthNumbers,
     goToNextMonth,
     goToPrevMonth,
-    currentDate,
-    selectedDate,
-    setSelectedDate,
-  } = useCalendarState();
+  } = calendarUtils();
 
   // State to manage month view selection
   const [showMonths, setShowMonths] = useState(false);
@@ -37,18 +39,18 @@ export default function CalendarAside() {
 
   // Switch month by selecting month
   const handleMonthClick = (month) => {
-    setMonth(month);
+    dispatch(setMonth(month));
     toggleMonthsView();
   };
 
   // Function to handle month selection
   const handleDateClick = (date) => {
-    setSelectedDate(date);
+    dispatch(selectDate(date));
   };
 
   // Function to render  month view selection
   const renderMonths = () => {
-    const months = calendarUtils().generateMonthNumbers();
+    const months = generateMonthNumbers();
     return (
       <div className="calendar-aside__body-wrapper">
         <ul className="calendar-aside__month-list animated fadeInDown">
@@ -58,7 +60,7 @@ export default function CalendarAside() {
               className="calendar-aside__month-block animated fadeInDown"
               key={index}
             >
-              {calendarUtils().getMonthName(month)}
+              {getMonthName(month)}
             </li>
           ))}
         </ul>
@@ -84,11 +86,7 @@ export default function CalendarAside() {
             <div
               onClick={() => handleDateClick(date)}
               className={`calendar-aside__date-block 
-      ${calendarUtils().getActiveDateClass(
-        date,
-        currentDate,
-        selectedDate
-      )}`}
+      ${getDateActiveClass(date, currentDate, selectedDate)}`}
               key={index}
             >
               {date !== "" && date.getDate()}
@@ -98,31 +96,36 @@ export default function CalendarAside() {
       </>
     );
   };
+  const renderHeader = () => (
+    <div className="calendar-aside__header">
+      <button className="current-date btn-transparent">{year}</button>
+      <button
+        onClick={toggleMonthsView}
+        className="current-month btn-transparent"
+      >
+        {getMonthName(month)}
+      </button>
 
-  // Function to render the CalendarAside component
+      <div className="icons">
+        <span onClick={goToPrevMonth} className="material-symbols-rounded">
+          chevron_left
+        </span>
+        <span onClick={goToNextMonth} className="material-symbols-rounded">
+          chevron_right
+        </span>
+      </div>
+    </div>
+  );
+  const renderBody = () => (
+    <div className="calendar-aside__body-container">
+      {showMonths ? renderMonths() : renderDates()}
+    </div>
+  );
+
   return (
     <div className="calendar-aside__container">
-      <div className="calendar-aside__header">
-        <button className="current-date btn-transparent">{year}</button>
-        <button
-          onClick={toggleMonthsView}
-          className="current-month btn-transparent"
-        >
-          {calendarUtils().getMonthName(month)}
-        </button>
-
-        <div className="icons">
-          <span onClick={goToPrevMonth} className="material-symbols-rounded">
-            chevron_left
-          </span>
-          <span onClick={goToNextMonth} className="material-symbols-rounded">
-            chevron_right
-          </span>
-        </div>
-      </div>
-      <div className="calendar-aside__body-container">
-        {showMonths ? renderMonths() : renderDates()}
-      </div>
+      {renderHeader()}
+      {renderBody()}
     </div>
   );
 }

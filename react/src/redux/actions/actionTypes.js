@@ -13,3 +13,5 @@ export const FETCH_TASKS_REQUEST = "FETCH_TASKS_REQUEST";
 
 export const SET_ALL_TASKS = "SET_ALL_TASKS";
 export const UPDATE_TASKS = "UPDATE_TASKS";
+
+export const DELETE_TASK = "DELETE_TASK";

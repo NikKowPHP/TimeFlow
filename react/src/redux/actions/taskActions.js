@@ -1,5 +1,11 @@
 import axiosClient from "../../axios-client";
-import { FETCH_TASKS_FAILURE, FETCH_TASKS_REQUEST, FETCH_TASKS_SUCCESS, UPDATE_TASKS } from "./actionTypes";
+import {
+  DELETE_TASK,
+  FETCH_TASKS_FAILURE,
+  FETCH_TASKS_REQUEST,
+  FETCH_TASKS_SUCCESS,
+  UPDATE_TASKS,
+} from "./actionTypes";
 
 export const fetchTasksRequest = () => ({
   type: FETCH_TASKS_REQUEST,
@@ -15,7 +21,12 @@ export const fetchTasksFailure = (error) => ({
 export const updateTasks = (newTask) => ({
   type: UPDATE_TASKS,
   payload: newTask,
-})
+});
+
+export const deleteTask = (taskId) => ({
+  type: DELETE_TASK,
+  payload: taskId,
+});
 
 export const fetchTasks = () => {
   return (dispatch) => {

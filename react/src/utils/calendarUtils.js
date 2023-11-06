@@ -19,10 +19,14 @@ export function calendarUtils() {
 
   // Checks if a given date is the current date or the selected date and returns the appropriate class
   function getActiveDateClass(date, presentDate, selectedDate) {
-
-    const modifiedDate = date instanceof Date ? date.toLocaleDateString() : new Date(date).toLocaleDateString();
+    const modifiedDate =
+      date instanceof Date
+        ? date.toLocaleDateString()
+        : new Date(date).toLocaleDateString();
     const presentDateModified =
-      presentDate instanceof Date ? presentDate.toLocaleDateString() : new Date(presentDate).toLocaleDateString();
+      presentDate instanceof Date
+        ? presentDate.toLocaleDateString()
+        : new Date(presentDate).toLocaleDateString();
 
     let selectedDateModified = selectedDate;
     if (selectedDate) {
@@ -133,6 +137,7 @@ export function calendarUtils() {
 
   // Function to get the current week dates array based on the current date
   const getCurrentWeekDates = (dates, currentDate) => {
+    const modifiedCurrentDate = new Date(currentDate);
     const weeks = 5; // Is always 5 weeks based on the type of the calendar
     let currentWeekIndex = -1; // Initialize with an invalid value
     let currentWeekDates = [];
@@ -144,7 +149,7 @@ export function calendarUtils() {
       console.log(dates);
       if (
         weekDates.some(
-          (date) => date.toDateString() === currentDate.toDateString()
+          (date) => date.toDateString() === modifiedCurrentDate.toDateString()
         )
       ) {
         currentWeekIndex = weekIndex;
@@ -166,8 +171,7 @@ export function calendarUtils() {
     }
     return months;
   }
-
-  // Returns the name of the month based on the month index
+// Returns the name of the month based on the month index
   function getMonthName(month) {
     const months = [
       "January",
@@ -374,6 +378,17 @@ export function calendarUtils() {
     return { startTime: startTime, endTime: endTime };
   };
 
+  const getCurrentPath = (currentLocation) => {
+    const pathnameSegments = currentLocation.split("/");
+    return pathnameSegments[pathnameSegments.length - 1];
+  };
+
+  const setActualLayout = (currentUrlPath, currentLayout, dispatch) => {
+    if (currentUrlPath !== currentLayout) {
+      dispatch(setLayout(currentUrlPath));
+    }
+  };
+
   return {
     getActiveDateClass,
     generateMonths,
@@ -401,5 +416,7 @@ export function calendarUtils() {
     resetDateState,
     goToNextMonth,
     goToPrevMonth,
+    getCurrentPath,
+    setActualLayout,
   };
 }

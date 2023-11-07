@@ -60,7 +60,7 @@
 .calendar-weekly__date-block__date.current-date::before {
   opacity: 1;
 }
-.calendar-weekly__date-block__date.date-active::before {
+.calendar-weekly__date-block__date.selected-date::before {
   opacity: 1;
   background-color: #9c59b66d;
   border: none;

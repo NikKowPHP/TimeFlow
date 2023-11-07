@@ -6,7 +6,7 @@ import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import UserForm from "./views/UserForm";
-import { Calendar } from "./components/Calendar/Calendar.jsx";
+import Calendar from "./components/Calendar/Calendar.jsx";
 import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
@@ -36,39 +36,39 @@ const router = createBrowserRouter([
       },
       {
         path: "/roles",
-        element: <Roles />
-      }, 
+        element: <Roles />,
+      },
       {
         path: "/roles/all",
-        element: <RoleNames />
-      }, 
+        element: <RoleNames />,
+      },
       {
         path: "/tasks",
         element: <Tasks />,
       },
       {
         path: "/tasks/:id",
-        element : <TaskForm/>
+        element: <TaskForm />,
       },
       {
         path: "/calendar",
-        element: <Calendar layout={'month'}/>,
+        element: <Calendar />,
         children: [
           {
             path: "/calendar/month",
-            element: <Calendar layout={'month'} />,
+            element: <Calendar />,
           },
           {
             path: "/calendar/week",
-            element: <Calendar layout={'week'}/>,
+            element: <Calendar />,
           },
           {
             path: "/calendar/agenda",
-            element: <Calendar layout={'agenda'} />,
+            element: <Calendar />,
           },
           {
             path: "/calendar/:date",
-            element: <Calendar layout={'month'} />,
+            element: <Calendar layout={"month"} />,
           },
         ],
       },

@@ -10,11 +10,17 @@ import {
   setMonthDates,
   setLayout,
 } from "../../redux/actions/calendarActions";
-import { fetchTasks } from "../../redux/actions/taskActions";
+
+import {
+  fetchTasks,
+  setNewTask,
+  updateTasks,
+} from "../../redux/actions/taskActions";
 import { connect, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useLocationState } from "../customHooks/useLocationState";
 import { calendarUtils } from "../../utils/calendarUtils";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 /**
  * Calendar component is responsible for displaying the calendar layout based on the selected "layout" value.
@@ -33,12 +39,17 @@ function Calendar({
   currentDate,
   clickedCellIndex,
   loading,
+  setNewTask,
+  newTask,
 }) {
   const dispatch = useDispatch();
+  const { user } = useStateContext();
   const { currentLocation } = useLocationState();
-  const {getCurrentPath, setActualLayout} = calendarUtils();
+  const { getCurrentPath, setActualLayout } = calendarUtils();
 
-
+  useEffect(() => {
+    dispatch(setNewTask({ user_id: user?.id }));
+  }, [user]);
   useEffect(() => {
     const currentUrlPath = getCurrentPath(currentLocation);
     setActualLayout(currentUrlPath, layout, dispatch, setLayout);
@@ -77,6 +88,9 @@ function Calendar({
       loading={loading}
       setMonth={setMonth}
       setYear={setYear}
+      setNewTask={setNewTask}
+      newTask={newTask}
+      updateTasks={updateTasks}
     />
   );
 }
@@ -92,6 +106,7 @@ const mapStateToProps = (state) => ({
   allTasks: state.tasks.allTasks,
   loading: state.tasks.loading,
   error: state.tasks.error,
+  newTask: state.tasks.newTask,
 });
 
 const mapDispatchToProps = {
@@ -102,5 +117,7 @@ const mapDispatchToProps = {
   fetchTasks,
   setMonthDates,
   setLayout,
+  setNewTask,
+  updateTasks,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

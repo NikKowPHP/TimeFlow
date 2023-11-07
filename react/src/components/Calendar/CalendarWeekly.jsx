@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "../../styles/calendar/calendar-weekly.css";
-import { useCalendarState } from "../customHooks/useCalendarState";
 import { useModalState } from "../customHooks/useModalState";
 import { calendarUtils } from "../../utils/calendarUtils";
 import newTaskHandler from "./newTaskHandler";
@@ -20,23 +19,24 @@ import { useNotificationState } from "../customHooks/useNotificationState";
  * CalendarWeekly component for displaying a weekly calendar view.
  * @component
  */
-export default function CalendarWeekly() {
-  const {
-    dates,
-    currentDate,
-    setMonth,
-    allTasks,
-    selectedDate,
-    setSelectedDate,
-    refreshTasks,
-    loading,
-  } = useCalendarState();
+export default function CalendarWeekly({
+  dates,
+  currentDate,
+  setMonth,
+  allTasks,
+  selectedDate,
+  refreshTasks,
+  loading,
+  dispatch,
+  selectDate,
+  clickedCellIndex,
+  clickCell,
+}) {
   const { requestNotificationPermission, displayNotification } =
     useNotificationState();
 
   const { navigate } = useLocationState();
   const [currentWeekDates, setCurrentWeekDates] = useState("");
-  const [clickedCellIndex, setClickedCellIndex] = useState(null);
   const [clickedHalf, setClickedHalf] = useState(null);
   const [clickedPeriod, setClickedPeriod] = useState(null);
   const [clickedPeriodStart, setClickedPeriodStart] = useState(null);
@@ -46,8 +46,14 @@ export default function CalendarWeekly() {
   const modalRef = useRef(null);
 
   // Get modal's state from custom hook
-  const { openedModalId, isModalVisible, modalPosition, showModal, hideModal } =
-    useModalState({ modalRef: modalRef });
+  const {
+    openedModalId,
+    isModalVisible,
+    modalPosition,
+    showModal,
+    hideModal,
+    handleOnTriggerClick,
+  } = useModalState({ modalRef: modalRef });
 
   // Destructure functions from calendarUtils
   const {
@@ -59,7 +65,6 @@ export default function CalendarWeekly() {
     convertTimePeriod,
     convertTime,
     getCellHalfClassName,
-    initiateNewTask,
     toggleTaskActiveClass,
     calculateTaskHeight,
     filterTasksForDateAndHour,
@@ -73,7 +78,8 @@ export default function CalendarWeekly() {
 
   const { handleDataFromChild } = useDataHandlingLogic({
     hideModal,
-    setClickedCellIndex,
+    clickCell,
+    dispatch,
   });
 
   const { task, setTask, handleTaskCreation } = newTaskHandler({
@@ -152,7 +158,7 @@ export default function CalendarWeekly() {
    * @param {Date} date - The clicked date.
    */
   const handleDateClick = (date) => {
-    setSelectedDate(date);
+    dispatch(selectDate(new Date(date).getTime()));
   };
   const handleExistingTaskClick = (event, taskId) => {
     closeDateTimeSelectedCell();
@@ -171,26 +177,60 @@ export default function CalendarWeekly() {
    */
   const handleDateHourClick = (params) => {
     const { date, hour, e, dateIndex, hourIndex } = params;
-    const clickedCellIndex = `${hourIndex}${dateIndex}`;
-    const clickedHalf = defineClickedHalf(e);
+    handleDateClick(date);
 
+    const clickedCellIndex = `${hourIndex}${dateIndex}`;
+
+    dispatch(clickCell(clickedCellIndex));
+
+    const clickedHalf = defineClickedHalf(e);
     const { startTime, endTime } = modifyStartEndTime({
       hour: hour,
       date: date,
       clickedHalf: clickedHalf,
     });
 
-    setClickedCellIndex(clickedCellIndex);
     setClickedHalf(clickedHalf);
-    setSelectedDate(date);
 
     setClickedPeriod(convertTimePeriod(startTime, endTime));
     setClickedPeriodStart(convertTime(startTime));
     setClickedPeriodEnd(convertTime(endTime));
 
-    handleOnClick(e, clickedCellIndex);
-    const newTask = initiateNewTask(startTime, endTime, date);
-    setTask({ ...task, ...newTask });
+    handleOnTriggerClick({
+      event: e,
+      modalId: clickedCellIndex,
+      startTime: startTime,
+      endTime: endTime,
+      selectedDate: date,
+      newTask: true,
+      allTasks: allTasks,
+    });
+  };
+
+  /**
+   * Handles click on a date to initiate new task and show modal
+   * @param {Object} options - Click event details
+   * @param {Event} options.event - Click event
+   * @param {string} options.modalId - ID of the modal
+   * @param {Date} options.selectedDate - Selected date
+   * @returns {void}
+   */
+  const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
+    dispatch(clickCell(cellId));
+    dispatch(selectDate(selectedDate.getTime()));
+    const startTime = new Date();
+    startTime.setHours(7);
+    const endTime = new Date();
+    endTime.setHours(8);
+    handleOnTriggerClick({
+      event: event,
+      modalId: modalId,
+      startTime: startTime,
+      endTime: endTime,
+      selectedDate: selectedDate,
+      newTask: true,
+      allTasks: allTasks,
+    });
   };
 
   /**
@@ -207,8 +247,8 @@ export default function CalendarWeekly() {
         break;
       }
     }
-    setClickedCellIndex(cellId);
-    setSelectedDate(formattedSelectedDate);
+    dispatch(clickCell(cellId));
+    dispatch(selectDate(formattedSelectedDate));
     setTask({ ...task, date: newSelectedDate });
   };
 
@@ -252,7 +292,7 @@ export default function CalendarWeekly() {
   };
 
   const closeDateTimeSelectedCell = () => {
-    setClickedCellIndex(null);
+    dispatch(clickCell(null));
   };
 
   const onModalClose = () => {
@@ -397,23 +437,25 @@ export default function CalendarWeekly() {
     </Modal>
   );
 
-  const renderNewTaskModalForm = (cellId) => (
-    <NewTask
-      formId={cellId}
-      openedModalId={openedModalId}
-      selectedDate={selectedDate}
-      onDateSelection={handleDateSelection}
-      onTimeSelection={handleTimeSelection}
-      handleTaskCreation={handleTaskCreation}
-      clickedPeriodStart={clickedPeriodStart}
-      clickedPeriodEnd={clickedPeriodEnd}
-      onModalClose={onModalClose}
-      onTitleSet={onTitleChangeNewTask}
-      handleNotificationClick={handleNotificationClick}
-      displayNotification={handleDisplayNotification}
-      onNotificationSelection={handleNotificationSelection}
-    />
-  );
+  const renderNewTaskModalForm = (cellId, date) => {
+    return (
+      <NewTask
+        formId={cellId}
+        openedModalId={openedModalId}
+        selectedDate={date}
+        onDateSelection={handleDateSelection}
+        onTimeSelection={handleTimeSelection}
+        handleTaskCreation={handleTaskCreation}
+        clickedPeriodStart={clickedPeriodStart}
+        clickedPeriodEnd={clickedPeriodEnd}
+        onModalClose={onModalClose}
+        onTitleSet={onTitleChangeNewTask}
+        handleNotificationClick={handleNotificationClick}
+        displayNotification={handleDisplayNotification}
+        onNotificationSelection={handleNotificationSelection}
+      />
+    );
+  };
 
   /**
    * Renders the time grid containing cells for each hour and date within the week.
@@ -440,7 +482,7 @@ export default function CalendarWeekly() {
 
                   return renderNewTaskModalWrapper(
                     cellId,
-                    renderNewTaskModalForm(cellId),
+                    renderNewTaskModalForm(cellId, date),
                     cellContent
                   );
                 })}

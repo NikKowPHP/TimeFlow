@@ -31,6 +31,9 @@ export default function CalendarWeekly({
   selectDate,
   clickedCellIndex,
   clickCell,
+  setNewTask,
+  newTask,
+  updateTasks
 }) {
   const { requestNotificationPermission, displayNotification } =
     useNotificationState();
@@ -53,7 +56,9 @@ export default function CalendarWeekly({
     showModal,
     hideModal,
     handleOnTriggerClick,
-  } = useModalState({ modalRef: modalRef });
+  } = useModalState({
+    modalRef: modalRef,
+  });
 
   // Destructure functions from calendarUtils
   const {
@@ -82,8 +87,11 @@ export default function CalendarWeekly({
     dispatch,
   });
 
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
+  const { handleTaskCreation } = newTaskHandler({
+    dispatch: dispatch,
+    newTask: newTask,
     onDataReceived: handleDataFromChild,
+    updateTasks: updateTasks
   });
 
   useEffect(() => {
@@ -204,34 +212,11 @@ export default function CalendarWeekly({
       selectedDate: date,
       newTask: true,
       allTasks: allTasks,
+      dispatch: dispatch,
+      setNewTask: setNewTask,
     });
   };
 
-  /**
-   * Handles click on a date to initiate new task and show modal
-   * @param {Object} options - Click event details
-   * @param {Event} options.event - Click event
-   * @param {string} options.modalId - ID of the modal
-   * @param {Date} options.selectedDate - Selected date
-   * @returns {void}
-   */
-  const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
-    dispatch(clickCell(cellId));
-    dispatch(selectDate(selectedDate.getTime()));
-    const startTime = new Date();
-    startTime.setHours(7);
-    const endTime = new Date();
-    endTime.setHours(8);
-    handleOnTriggerClick({
-      event: event,
-      modalId: modalId,
-      startTime: startTime,
-      endTime: endTime,
-      selectedDate: selectedDate,
-      newTask: true,
-      allTasks: allTasks,
-    });
-  };
 
   /**
    * Handles date selection and sets states
@@ -249,7 +234,7 @@ export default function CalendarWeekly({
     }
     dispatch(clickCell(cellId));
     dispatch(selectDate(formattedSelectedDate));
-    setTask({ ...task, date: newSelectedDate });
+    dispatch(setNewTask({ date: newSelectedDate }));
   };
 
   /**
@@ -260,14 +245,14 @@ export default function CalendarWeekly({
   const handleTimeSelection = (selectedTime, isStart) => {
     if (isStart) {
       setClickedPeriodStart(selectedTime);
-      setTask({ ...task, time_start: selectedTime });
+      setNewTask({ time_start: selectedTime });
     } else {
       setClickedPeriodEnd(selectedTime);
-      setTask({ ...task, time_end: selectedTime });
+      setNewTask({ time_end: selectedTime });
     }
   };
   const handleNotificationSelection = (event) => {
-    setTask({ ...task, notification_preference: event.target.value });
+    setNewTask({ notification_preference: event.target.value });
   };
 
   /**
@@ -305,7 +290,7 @@ export default function CalendarWeekly({
   };
 
   const onTitleChangeNewTask = (event) => {
-    setTask({ ...task, title: event.target.value });
+    setNewTask({ title: event.target.value });
   };
 
   /**
@@ -359,8 +344,8 @@ export default function CalendarWeekly({
   const renderNewTaskBox = () => (
     <div className="clicked-new-task-modal">
       <h4>
-        {task.title ? (
-          <TruncatedText text={task.title} maxCharacters={10} />
+        {newTask.title ? (
+          <TruncatedText text={newTask.title} maxCharacters={10} />
         ) : (
           "(Untitled)"
         )}

@@ -15,3 +15,4 @@ export const SET_ALL_TASKS = "SET_ALL_TASKS";
 export const UPDATE_TASKS = "UPDATE_TASKS";
 
 export const DELETE_TASK = "DELETE_TASK";
+export const SET_NEW_TASK = "SET_NEW_TASK";

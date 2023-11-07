@@ -4,12 +4,23 @@ import {
   FETCH_TASKS_FAILURE,
   UPDATE_TASKS,
   DELETE_TASK,
+  SET_NEW_TASK,
 } from "../actions/actionTypes";
 
 const initialState = {
   allTasks: [],
   loading: false,
   error: null,
+  newTask: {
+    id: null,
+    user_id: "",
+    title: "",
+    time_start: "",
+    time_end: "",
+    date: "",
+    notified: false,
+    notification_preference: "",
+  },
 };
 
 const taskReducer = (state = initialState, action) => {
@@ -27,6 +38,8 @@ const taskReducer = (state = initialState, action) => {
       const taskId = action.payload;
       const updatedTasks = state.allTasks.filter((task) => task.id !== taskId);
       return { ...state, allTasks: updatedTasks };
+    case SET_NEW_TASK:
+      return { ...state, newTask: { ...state.newTask, ...action.payload } };
     default:
       return state;
   }

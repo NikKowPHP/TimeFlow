@@ -41,7 +41,7 @@ function Calendar({
 
   useEffect(() => {
     const currentUrlPath = getCurrentPath(currentLocation);
-    setActualLayout(currentUrlPath, layout, dispatch);
+    setActualLayout(currentUrlPath, layout, dispatch, setLayout);
   }, [currentLocation]);
 
   useEffect(() => {

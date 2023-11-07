@@ -6,7 +6,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import CalendarAside from "./Calendar/CalendarAside.jsx";
-import { useCalendarState } from "./customHooks/useCalendarState";
 import NotificationListener from "./NotificationListener";
 import { useNotificationState } from "./customHooks/useNotificationState";
 import Modal from "./modals/Modal";
@@ -14,12 +13,12 @@ import { useModalState } from "./customHooks/useModalState";
 import NewTask from "./Task/NewTask";
 import newTaskHandler from "./Calendar/newTaskHandler";
 import { calendarUtils } from "../utils/calendarUtils";
-import { connect } from "react-redux";
-import { setLayout } from "../redux/actions/calendarActions";
+import { connect, useDispatch } from "react-redux";
+import { selectDate, setLayout, setMonth } from "../redux/actions/calendarActions";
 
 const mapStateToProps = (state) => ({
   layout: state.calendar.layout,
-  dates: state.calendar.selectedDate,
+  dates: state.calendar.dates,
   year: state.calendar.year,
   month: state.calendar.month,
   currentDate: state.calendar.currentDate,
@@ -32,9 +31,21 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setLayout,
+  selectDate,
+  setMonth,
 };
 
-function DefaultLayout({ layout, setLayout, year }) {
+function DefaultLayout({
+  layout,
+  setLayout,
+  year,
+  month,
+  currentDate,
+  selectedDate,
+  allTasks,
+  dates,
+}) {
+  const dispatch = useDispatch();
   // console.log('year in default layout', year)
   const modalRef = useRef(null);
   const { user, token, notification, errors, setUser, setToken } =
@@ -228,12 +239,18 @@ function DefaultLayout({ layout, setLayout, year }) {
               </>
             )}
 
-          {/* {isCalendar && (
+          {isCalendar && (
             <CalendarAside
+            dispatch={dispatch}
+            selectDate={selectDate}
+              year={year}
               currentDate={currentDate}
               selectedDate={selectedDate}
+              month={month}
+              dates={dates}
+              setMonth={setMonth}
             />
-          )} */}
+          )}
         </aside>
       )}
 

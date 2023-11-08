@@ -146,7 +146,6 @@ export function calendarUtils() {
       const startIndex = weekIndex * 7;
       const endIndex = startIndex + 7;
       const weekDates = dates.slice(startIndex, endIndex);
-      console.log(dates);
       if (
         weekDates.some(
           (date) => date.toDateString() === modifiedCurrentDate.toDateString()
@@ -383,7 +382,7 @@ export function calendarUtils() {
     return pathnameSegments[pathnameSegments.length - 1];
   };
 
-  const setActualLayout = (currentUrlPath, currentLayout, dispatch) => {
+  const setActualLayout = (currentUrlPath, currentLayout, dispatch, setLayout) => {
     if (currentUrlPath !== currentLayout) {
       dispatch(setLayout(currentUrlPath));
     }

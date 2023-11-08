@@ -30,7 +30,7 @@ const TaskList = ({
   );
   const filteredTasks = useMemo(
     () => filterTasksForDateAndHour(convertedDate, convertedHourIndex, allTasks),
-    [convertedDate, convertedHourIndex]
+    [convertedDate, convertedHourIndex, allTasks]
   );
   const maxTasksToShow = useMemo(
     () => Math.min(filteredTasks.length, 4),

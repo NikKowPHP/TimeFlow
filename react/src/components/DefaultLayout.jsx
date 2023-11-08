@@ -14,7 +14,8 @@ import NewTask from "./Task/NewTask";
 import newTaskHandler from "./Calendar/newTaskHandler";
 import { calendarUtils } from "../utils/calendarUtils";
 import { connect, useDispatch } from "react-redux";
-import { selectDate, setLayout, setMonth } from "../redux/actions/calendarActions";
+import { clickCell, selectDate, setLayout, setMonth, } from "../redux/actions/calendarActions";
+import { setNewTask, updateTasks } from "../redux/actions/taskActions";
 
 const mapStateToProps = (state) => ({
   layout: state.calendar.layout,
@@ -27,12 +28,16 @@ const mapStateToProps = (state) => ({
   allTasks: state.tasks.allTasks,
   loading: state.tasks.loading,
   error: state.tasks.error,
+  newTask: state.tasks.newTask,
 });
 
 const mapDispatchToProps = {
   setLayout,
   selectDate,
   setMonth,
+  setNewTask,
+  updateTasks,
+  clickCell
 };
 
 function DefaultLayout({
@@ -44,9 +49,13 @@ function DefaultLayout({
   selectedDate,
   allTasks,
   dates,
+  newTask,
+  setNewTask,
+  updateTasks,
+  clickedCellIndex,
+  clickCell
 }) {
   const dispatch = useDispatch();
-  // console.log('year in default layout', year)
   const modalRef = useRef(null);
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
@@ -58,6 +67,7 @@ function DefaultLayout({
     showModal,
     isModalVisible,
     displaySuccessTaskCreation,
+    handleOnTriggerClick
   } = useModalState({
     modalRef: modalRef,
   });
@@ -66,13 +76,17 @@ function DefaultLayout({
 
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
-  const {
-    handleDateSelection,
-    handleTimeSelection,
-    handleTaskCreation,
-    setTask,
-    task,
-  } = newTaskHandler({ onDataReceived: displaySuccessTaskCreation });
+
+  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
+    newTaskHandler({
+      onDataReceived: displaySuccessTaskCreation,
+      dispatch: dispatch,
+      updateTasks: updateTasks,
+      newTask: newTask,
+      setNewTask: setNewTask,
+      clickedCellIndex,
+      clickCell,
+    });
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -179,8 +193,7 @@ function DefaultLayout({
             onDateSelection={handleDateSelection}
             onTimeSelection={handleTimeSelection}
             handleTaskCreation={handleTaskCreation}
-            clickedPeriodStart={timePeriodStartString}
-            clickedPeriodEnd={timePeriodEndString}
+            newTaskObj={newTask}
             onModalClose={hideModal}
             onTitleSet={(event) =>
               setTask({ ...task, title: event.target.value })
@@ -190,14 +203,18 @@ function DefaultLayout({
       >
         <div
           onClick={(event) =>
-            handleOnClick({
-              event: event,
-              modalId: id,
-              newTask: true,
-              startTime: timePeriodStartObj,
-              endTime: timePeriodEndObj,
-              selectedDate: currentDate,
-            })
+    handleOnTriggerClick({
+      event: event,
+      modalId: id,
+      startTime: timePeriodStartString,
+      endTime: timePeriodEndString,
+      selectedDate: selectedDate,
+      newTask: true,
+      allTasks: allTasks,
+      setNewTask,
+      dispatch,
+    })
+
           }
           className={`btn__add-task-wrapper ${activeClass}`}
         >

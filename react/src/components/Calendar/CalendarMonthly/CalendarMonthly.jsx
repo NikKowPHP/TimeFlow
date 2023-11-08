@@ -12,14 +12,6 @@ import { useLocationState } from "../../customHooks/useLocationState";
 import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
 import ElipsisTaskList from "../EllipsisTaskList";
-import { connect, useDispatch } from "react-redux";
-// import {
-//   selectDate,
-//   clickCell,
-//   setYear,
-//   setMonth,
-// } from "../../../redux/actions/calendarActions";
-import { updateTasks } from "../../../redux/actions/taskActions";
 
 function CalendarMonthly({
   dates,
@@ -34,11 +26,12 @@ function CalendarMonthly({
   selectedDate,
   clickCell,
   loading,
+  setNewTask,
+  newTask,
+  updateTasks,
+  dispatch
 }) {
-  console.log(year);
   const modalRef = useRef(null);
-  const dispatch = useDispatch();
-  console.log("selectedDate ", selectedDate, "clicked", clickedCellIndex);
 
   const {
     getMonthName,
@@ -63,22 +56,26 @@ function CalendarMonthly({
   } = useModalState({
     modalRef: modalRef,
     dispatch: dispatch,
+    setNewTask: setNewTask,
     handleTaskUpdate: handleTaskUpdate,
   });
 
-  const { task, setTask, handleTaskCreation } = newTaskHandler({
-    onDataReceived: displaySuccessTaskCreation,
-    dispatch: dispatch,
-    updateTasks: updateTasks,
-  });
+  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
+    newTaskHandler({
+      onDataReceived: displaySuccessTaskCreation,
+      dispatch: dispatch,
+      updateTasks: updateTasks,
+      newTask: newTask,
+      setNewTask: setNewTask,
+      clickedCellIndex,
+      clickCell,
+    });
   function handleTaskUpdate(updatedTask) {
-    setTask(updatedTask);
+    setNewTask(updatedTask);
   }
 
   const { navigate } = useLocationState();
   // State for clicked time period
-  const [clickedPeriodStart, setClickedPeriodStart] = useState("07:00");
-  const [clickedPeriodEnd, setClickedPeriodEnd] = useState("08:00");
 
   // Handles the task state from task utils file.
   // TODO: move to task utils
@@ -126,6 +123,8 @@ function CalendarMonthly({
       selectedDate: selectedDate,
       newTask: true,
       allTasks: allTasks,
+      setNewTask,
+      dispatch,
     });
   };
 
@@ -135,37 +134,7 @@ function CalendarMonthly({
    * @returns {void}
    */
   const setNewTaskTitle = (event) => {
-    setTask({ ...task, title: event.target.value });
-  };
-
-  /**
-   * Handles date selection and sets states
-   * @param {Date} newSelectedDate - The selected date
-   * @returns {void}
-   * TODO: move handlers to a custom hook
-   */
-  // TODO: DISPATCH STATE TO REDUX STORE
-  const handleDateSelection = (newSelectedDate) => {
-    const formattedSelectedDate = new Date(newSelectedDate);
-    formattedSelectedDate.setHours(clickedPeriodStart);
-    dispatch(selectDate(formattedSelectedDate));
-    setTask({ ...task, date: newSelectedDate });
-  };
-
-  /**
-   * Handles time selection and sets state
-   * @param {Date} selectedTime - The selected time
-   * @param {boolean} isStart - Whether is start of the time period or the end
-   * @returns {void}
-   */
-  const handleTimeSelection = (selectedTime, isStart) => {
-    if (isStart) {
-      setClickedPeriodStart(selectedTime);
-      setTask({ ...task, time_start: selectedTime });
-    } else {
-      setClickedPeriodEnd(selectedTime);
-      setTask({ ...task, time_end: selectedTime });
-    }
+    setNewTask({ title: event.target.value });
   };
 
   const renderTaskItem = (task) => (
@@ -199,8 +168,8 @@ function CalendarMonthly({
 
   const renderNewTaskBox = () => (
     <li className="calendar-monthly__clicked-new-task-modal">
-      {task.title ? (
-        <TruncatedText text={task.title} maxCharacters={10} />
+      {newTask.title ? (
+        <TruncatedText text={newTask.title} maxCharacters={10} />
       ) : (
         "(Untitled)"
       )}
@@ -330,10 +299,9 @@ function CalendarMonthly({
                 onDateSelection={handleDateSelection}
                 onTimeSelection={handleTimeSelection}
                 handleTaskCreation={handleTaskCreation}
-                clickedPeriodStart={"07:00"}
-                clickedPeriodEnd={"08:00"}
                 onModalClose={onModalClose}
                 onTitleSet={setNewTaskTitle}
+                newTaskObj={newTask}
               />
             }
           >
@@ -382,13 +350,4 @@ function CalendarMonthly({
   return renderMainComponent();
 }
 
-// const mapStateToProps = (state) => ({
-//   selectedDate: state.calendar.selectedDate,
-//   clickedCellIndex: state.calendar.clickedCellIndex,
-// });
-// const mapDispatchToProps = {
-//   selectDate,
-//   clickCell,
-// };
-// export default connect(mapStateToProps, mapDispatchToProps)(CalendarMonthly);
 export default CalendarMonthly;

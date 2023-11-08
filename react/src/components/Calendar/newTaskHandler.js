@@ -7,7 +7,7 @@ export default function newTaskHandler({
   dispatch,
   newTask,
   setNewTask,
-  clickCell
+  clickCell,
 }) {
   const handleTaskCreation = (ev) => {
     ev.preventDefault();
@@ -27,17 +27,14 @@ export default function newTaskHandler({
    */
   const handleTimeSelection = (selectedTime, isStart) => {
     if (isStart) {
-      debugger
-      setClickedPeriodStart(selectedTime);
-      setNewTask({ time_start: selectedTime });
+      dispatch(setNewTask({ time_start: selectedTime }));
     } else {
-      setClickedPeriodEnd(selectedTime);
-      setNewTask({ time_end: selectedTime });
+      dispatch(setNewTask({ time_end: selectedTime }));
     }
   };
+  console.log(newTask)
 
   const handleDateSelection = (newSelectedDate) => {
-    debugger
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate;
     dispatch(selectDate(formattedSelectedDate));

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useCalendarState } from "../customHooks/useCalendarState";
 import Loading from "../Loading";
 import "../../styles/calendar/calendar-agenda.css";
 import { calendarUtils } from "../../utils/calendarUtils";
@@ -10,11 +9,26 @@ import NewTask from "../Task/NewTask";
 import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
 
-export default function CalendarAgenda() {
+export default function CalendarAgenda({
+  dates,
+  year,
+  setYear,
+  setMonth,
+  month,
+  allTasks,
+  currentDate,
+  clickedCellIndex,
+  selectDate,
+  selectedDate,
+  clickCell,
+  loading,
+  setNewTask,
+  newTask,
+  dispatch,
+  updateTasks,
+}) {
   const modalRef = useRef(null);
-  // TODO: when task created update the state of AllTask then trigger rerender by effect
 
-  const { loading, allTasks } = useCalendarState();
   const { toggleTaskActiveClass, formatDateToDDMonDay, convertDateToTime } =
     calendarUtils();
 
@@ -37,16 +51,18 @@ export default function CalendarAgenda() {
   function handleTaskUpdate(updatedTask) {
     setTask(updatedTask);
   }
-  // Task import
-  const {
-    task,
-    setTask,
-    handleTaskCreation,
-    handleDateSelection,
-    handleTimeSelection,
-  } = newTaskHandler({
-    onDataReceived: displaySuccessTaskCreation,
-  });
+  // Handling task creation
+  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
+    newTaskHandler({
+      onDataReceived: displaySuccessTaskCreation,
+      dispatch: dispatch,
+      updateTasks: updateTasks,
+      newTask: newTask,
+      setNewTask: setNewTask,
+      clickedCellIndex,
+      clickCell,
+    });
+
 
   const [groupedTasks, setGroupedTasks] = useState({});
 
@@ -71,8 +87,6 @@ export default function CalendarAgenda() {
   const renderNewTaskContent = ({
     id,
     selectedDate,
-    timePeriodEndString,
-    timePeriodStartString,
   }) => (
     <NewTask
       formId={id}
@@ -81,8 +95,7 @@ export default function CalendarAgenda() {
       onDateSelection={handleDateSelection}
       onTimeSelection={handleTimeSelection}
       handleTaskCreation={handleTaskCreation}
-      clickedPeriodStart={timePeriodStartString}
-      clickedPeriodEnd={timePeriodEndString}
+      newTaskObj={newTask}
       onModalClose={hideModal}
       onTitleSet={(event) => setTask({ ...task, title: event.target.value })}
     />
@@ -97,13 +110,9 @@ export default function CalendarAgenda() {
     const timePeriodStartObj = currentDate;
     const timePeriodEndObj = new Date();
     timePeriodEndObj.setHours(currentHours + 1);
-    const timePeriodStartString = convertDateToTime(timePeriodStartObj);
-    const timePeriodEndString = convertDateToTime(timePeriodEndObj);
     const newTaskProps = {
       id: id,
       selectedDate: dateObj,
-      timePeriodStartString: timePeriodStartString,
-      timePeriodEndString: timePeriodEndString,
     };
     const onClickProps = {
       modalId: id,

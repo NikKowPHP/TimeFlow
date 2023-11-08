@@ -1,34 +1,19 @@
-import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
-import { useStateContext } from "../../contexts/ContextProvider";
+import { selectDate } from "../../redux/actions/calendarActions";
 
 export default function newTaskHandler({
   onDataReceived,
   updateTasks,
   dispatch,
+  newTask,
+  setNewTask,
+  clickCell
 }) {
-  const { user } = useStateContext();
-
-  const [task, setTask] = useState({
-    id: null,
-    user_id: user?.id || "",
-    title: "",
-    time_start: "",
-    time_end: "",
-    date: "",
-    notified: false,
-    notification_preference: "",
-    // description: ''
-  });
-  useEffect(() => {
-    setTask({ ...task, user_id: user?.id });
-  }, [user]);
-
   const handleTaskCreation = (ev) => {
     ev.preventDefault();
 
-    axiosClient.post(`/calendar/calendar`, task).then(({ data }) => {
-      dispatch(updateTasks(task));
+    axiosClient.post(`/calendar/calendar`, newTask).then(({ data }) => {
+      dispatch(updateTasks(newTask));
       // refreshTasks();
       onDataReceived(data);
     });
@@ -42,24 +27,25 @@ export default function newTaskHandler({
    */
   const handleTimeSelection = (selectedTime, isStart) => {
     if (isStart) {
+      debugger
       setClickedPeriodStart(selectedTime);
-      setTask({ ...task, time_start: selectedTime });
+      setNewTask({ time_start: selectedTime });
     } else {
       setClickedPeriodEnd(selectedTime);
-      setTask({ ...task, time_end: selectedTime });
+      setNewTask({ time_end: selectedTime });
     }
   };
 
   const handleDateSelection = (newSelectedDate) => {
+    debugger
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate;
-    setSelectedDate(formattedSelectedDate);
-    setTask({ ...task, date: newSelectedDate });
+    dispatch(selectDate(formattedSelectedDate));
+    dispatch(setNewTask({ date: newSelectedDate }));
+    // dispatch(clickCell('02'))
   };
 
   return {
-    task,
-    setTask,
     handleTaskCreation,
     handleDateSelection,
     handleTimeSelection,

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { modalUtils } from "../../utils/modalUtils";
-import { useCalendarState } from "./useCalendarState";
 import { toast } from "react-toastify";
 import { calendarUtils } from "../../utils/calendarUtils";
 import newTaskHandler from "../Calendar/newTaskHandler";
@@ -20,13 +19,6 @@ import newTaskHandler from "../Calendar/newTaskHandler";
  */
 
 export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
-  const {
-    selectedDate,
-    setSelectedDate,
-    setClickedCellIndex,
-    clickedCellIndex,
-    allTasks,
-  } = useCalendarState();
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
@@ -263,7 +255,9 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     endTime,
     selectedDate,
     newTask = false,
-    allTasks = []
+    allTasks = [],
+    setNewTask,
+    dispatch
   }) => {
     // Close opened modal
     if (openedModalId !== null) {
@@ -276,7 +270,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
       const newTaskId = allTasks[0].id + 1;
       const newTask = initiateNewTask(startTime, endTime, selectedDate, newTaskId);
       const updatedTask = { ...task, ...newTask };
-      setTask({ ...task, ...newTask });
+      dispatch(setNewTask({ ...newTask }));
       handleTaskUpdate(updatedTask);
     }
   };

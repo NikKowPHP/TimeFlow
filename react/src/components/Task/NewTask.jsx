@@ -9,13 +9,12 @@ export default function NewTask({
   onDateSelection,
   onTimeSelection,
   handleTaskCreation,
-  clickedPeriodStart,
-  clickedPeriodEnd,
   onModalClose,
   onTitleSet,
   handleNotificationClick,
   onNotificationSelection,
   displayNotification,
+  newTaskObj
 }) {
   const { isNotificationGranted } = useNotificationState();
 
@@ -94,14 +93,14 @@ export default function NewTask({
             {renderDateSelection()}
 
             <div className="modal-task-time_time-selection-container">
-              {renderTimeSelection(clickedPeriodStart, true)}-
-              {renderTimeSelection(clickedPeriodEnd, false)}
+              {renderTimeSelection(newTaskObj.time_start, true)}-
+              {renderTimeSelection(newTaskObj.time_end, false)}
             </div>
             <div className="modal-task-description-container"></div>
           </div>
           <div className="modal-task__time-period">
             <span>
-              {clickedPeriodStart}-{clickedPeriodEnd}
+              {newTaskObj.time_start}-{newTaskObj.time_end}
             </span>
           </div>
         </div>

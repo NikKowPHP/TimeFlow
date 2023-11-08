@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-export function useDataHandlingLogic({hideModal, setClickedCellIndex}) {
+export function useDataHandlingLogic({hideModal, clickCell, dispatch}) {
 	// const {hideModal} = useModalState();
 
 	  /**
@@ -10,7 +10,7 @@ export function useDataHandlingLogic({hideModal, setClickedCellIndex}) {
 		function handleDataFromChild(data) {
 			if (data) {
 				hideModal();
-				setClickedCellIndex(null);
+				dispatch(clickCell(null));
 				toast.success(`The task '${data.title}' was successfully created`);
 			}
 		}

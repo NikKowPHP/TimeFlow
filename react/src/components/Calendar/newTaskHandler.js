@@ -32,19 +32,22 @@ export default function newTaskHandler({
       dispatch(setNewTask({ time_end: selectedTime }));
     }
   };
-  console.log(newTask)
 
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
     formattedSelectedDate;
     dispatch(selectDate(formattedSelectedDate));
     dispatch(setNewTask({ date: newSelectedDate }));
-    // dispatch(clickCell('02'))
+  };
+
+  const handleNotificationSelection = (event) => {
+    setNewTask({ notification_preference: event.target.value });
   };
 
   return {
     handleTaskCreation,
     handleDateSelection,
     handleTimeSelection,
+    handleNotificationSelection,
   };
 }

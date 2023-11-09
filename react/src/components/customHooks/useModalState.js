@@ -3,6 +3,7 @@ import { modalUtils } from "../../utils/modalUtils";
 import { toast } from "react-toastify";
 import { calendarUtils } from "../../utils/calendarUtils";
 import newTaskHandler from "../Calendar/newTaskHandler";
+import { taskUtils } from "../../utils/taskUtils";
 
 /**
  * useModalState Hook
@@ -29,11 +30,12 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const [modalPosition, setModalPosition] = useState(null);
   const [initialPosition, setInitialPosition] = useState({});
 
-  const { task, setTask } = newTaskHandler({
+  newTaskHandler({
     onDataReceived: displaySuccessTaskCreation,
   });
 
   const { initiateNewTask, resetDateState } = calendarUtils();
+  const { getNewTaskId } = taskUtils();
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
@@ -172,7 +174,6 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
   const handleClickOutside = (event) => {
     // Check if the modal is visible and the click is not the opened modal
     if (isModalVisible && event.target.dataset.modalId !== openedModalId) {
-
       hideModal();
       resetDateState();
     }
@@ -257,7 +258,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     newTask = false,
     allTasks = [],
     setNewTask,
-    dispatch
+    dispatch,
   }) => {
     // Close opened modal
     if (openedModalId !== null) {
@@ -266,9 +267,13 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     event.stopPropagation();
     showModal(modalId);
     if (newTask) {
-      
-      const newTaskId = allTasks[0].id + 1;
-      const newTask = initiateNewTask(startTime, endTime, selectedDate, newTaskId);
+      const newTaskId = getNewTaskId(allTasks);
+      const newTask = initiateNewTask(
+        startTime,
+        endTime,
+        selectedDate,
+        newTaskId
+      );
       const updatedTask = { ...task, ...newTask };
       dispatch(setNewTask({ ...newTask }));
       handleTaskUpdate(updatedTask);

@@ -14,31 +14,15 @@ import NewTask from "./Task/NewTask";
 import newTaskHandler from "./Calendar/newTaskHandler";
 import { calendarUtils } from "../utils/calendarUtils";
 import { connect, useDispatch } from "react-redux";
-import { clickCell, selectDate, setLayout, setMonth, } from "../redux/actions/calendarActions";
-import { setNewTask, updateTasks } from "../redux/actions/taskActions";
-
-const mapStateToProps = (state) => ({
-  layout: state.calendar.layout,
-  dates: state.calendar.dates,
-  year: state.calendar.year,
-  month: state.calendar.month,
-  currentDate: state.calendar.currentDate,
-  selectedDate: state.calendar.selectedDate,
-  clickedCellIndex: state.calendar.clickedCellIndex,
-  allTasks: state.tasks.allTasks,
-  loading: state.tasks.loading,
-  error: state.tasks.error,
-  newTask: state.tasks.newTask,
-});
-
-const mapDispatchToProps = {
-  setLayout,
+import {
+  clickCell,
   selectDate,
+  setLayout,
   setMonth,
-  setNewTask,
-  updateTasks,
-  clickCell
-};
+} from "../redux/actions/calendarActions";
+import { setNewTask, updateTasks } from "../redux/actions/taskActions";
+import svgPaths from "./svgPaths";
+
 
 function DefaultLayout({
   layout,
@@ -53,26 +37,25 @@ function DefaultLayout({
   setNewTask,
   updateTasks,
   clickedCellIndex,
-  clickCell
+  clickCell,
 }) {
   const dispatch = useDispatch();
   const modalRef = useRef(null);
+
   const { user, token, notification, errors, setUser, setToken } =
     useStateContext();
-  // const { currentDate, selectedDate, layout, setLayout } = useCalendarState();
+
   const {
     modalPosition,
     openedModalId,
     hideModal,
-    showModal,
     isModalVisible,
     displaySuccessTaskCreation,
-    handleOnTriggerClick
+    handleOnTriggerClick,
   } = useModalState({
     modalRef: modalRef,
   });
-  const { initiateNewTask, convertDateToTime, toggleTaskActiveClass } =
-    calendarUtils();
+  const { toggleTaskActiveClass } = calendarUtils();
 
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
@@ -106,26 +89,6 @@ function DefaultLayout({
     });
     if (!isNotificationGranted) requestNotificationPermission();
   }, []);
-
-  const handleOnClick = ({
-    event,
-    modalId,
-    startTime,
-    endTime,
-    selectedDate,
-    newTask = false,
-  }) => {
-    // Close opened modal
-    if (openedModalId !== null) {
-      hideModal();
-    }
-    event.stopPropagation();
-    showModal(modalId);
-    if (newTask) {
-      const newTask = initiateNewTask(startTime, endTime, selectedDate);
-      setTask({ ...task, ...newTask });
-    }
-  };
 
   // hide/show aside
   const handleToggleAside = () => {
@@ -175,8 +138,6 @@ function DefaultLayout({
     const timePeriodStartObj = currentDate;
     const timePeriodEndObj = new Date();
     timePeriodEndObj.setHours(currentHours + 1);
-    const timePeriodStartString = convertDateToTime(timePeriodStartObj);
-    const timePeriodEndString = convertDateToTime(timePeriodEndObj);
 
     return (
       <Modal
@@ -195,26 +156,23 @@ function DefaultLayout({
             handleTaskCreation={handleTaskCreation}
             newTaskObj={newTask}
             onModalClose={hideModal}
-            onTitleSet={(event) =>
-              setTask({ ...task, title: event.target.value })
-            }
+            onTitleSet={(event) => setNewTask({ title: event.target.value })}
           />
         }
       >
         <div
           onClick={(event) =>
-    handleOnTriggerClick({
-      event: event,
-      modalId: id,
-      startTime: timePeriodStartString,
-      endTime: timePeriodEndString,
-      selectedDate: selectedDate,
-      newTask: true,
-      allTasks: allTasks,
-      setNewTask,
-      dispatch,
-    })
-
+            handleOnTriggerClick({
+              event: event,
+              modalId: id,
+              startTime: timePeriodStartObj,
+              endTime: timePeriodEndObj,
+              selectedDate: currentDate,
+              isNewTask: true,
+              allTasks: allTasks,
+              setNewTask,
+              dispatch,
+            })
           }
           className={`btn__add-task-wrapper ${activeClass}`}
         >
@@ -224,11 +182,7 @@ function DefaultLayout({
             height="36"
             viewBox="0 0 36 36"
           >
-            <path fill="#d442bc" d="M16 16v14h4V20z"></path>
-            <path fill="#7d42d4" d="M30 16H20l-4 4h14z"></path>
-            <path fill="#42d3d4" d="M6 16v4h10l4-4z"></path>
-            <path fill="#EA4335" d="M20 16V6h-4v14z"></path>
-            <path fill="none" d="M0 0h36v36H0z"></path>
+            {svgPaths.addTask}
           </svg>
         </div>
       </Modal>
@@ -258,8 +212,8 @@ function DefaultLayout({
 
           {isCalendar && (
             <CalendarAside
-            dispatch={dispatch}
-            selectDate={selectDate}
+              dispatch={dispatch}
+              selectDate={selectDate}
               year={year}
               currentDate={currentDate}
               selectedDate={selectedDate}
@@ -310,5 +264,28 @@ function DefaultLayout({
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  layout: state.calendar.layout,
+  dates: state.calendar.dates,
+  year: state.calendar.year,
+  month: state.calendar.month,
+  currentDate: state.calendar.currentDate,
+  selectedDate: state.calendar.selectedDate,
+  clickedCellIndex: state.calendar.clickedCellIndex,
+  allTasks: state.tasks.allTasks,
+  loading: state.tasks.loading,
+  error: state.tasks.error,
+  newTask: state.tasks.newTask,
+});
+
+const mapDispatchToProps = {
+  setLayout,
+  selectDate,
+  setMonth,
+  setNewTask,
+  updateTasks,
+  clickCell,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DefaultLayout);

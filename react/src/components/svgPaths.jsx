@@ -18,5 +18,14 @@ const svgPaths = {
   envelope: (
     <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-.8 2L12 10.8 4.8 6h14.4zM4 18V7.87l8 5.33 8-5.33V18H4z"></path>
   ),
+  addTask: (
+    <>
+      <path fill="#d442bc" d="M16 16v14h4V20z"></path>
+      <path fill="#7d42d4" d="M30 16H20l-4 4h14z"></path>
+      <path fill="#42d3d4" d="M6 16v4h10l4-4z"></path>
+      <path fill="#EA4335" d="M20 16V6h-4v14z"></path>
+      <path fill="none" d="M0 0h36v36H0z"></path>
+    </>
+  ),
 };
 export default svgPaths;

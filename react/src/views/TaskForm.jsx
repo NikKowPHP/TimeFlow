@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
 import { useLocationState } from "../components/customHooks/useLocationState";
+import { useDispatch } from "react-redux";
+import { updateTask } from "../redux/actions/taskActions";
 
 export default function TaskForm() {
+  const dispatch = useDispatch();
   const { goBack } = useLocationState();
   const { id } = useParams();
   const [task, setTask] = useState({
@@ -37,12 +40,11 @@ export default function TaskForm() {
     }, [id]);
   }
 
-  const handleNotificationSelection = (event) => {};
-
   const onSubmitForm = (event) => {
     event.preventDefault();
     if (task.id) {
       axiosClient.put(`/tasks/${task.id}`, task).then(() => {
+        dispatch(updateTask(task));
         toast.success("The task was updated");
         setTimeout(() => {
           goBack();

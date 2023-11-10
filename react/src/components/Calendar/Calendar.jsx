@@ -15,6 +15,7 @@ import {
   fetchTasks,
   setNewTask,
   updateTasks,
+  deleteTask,
 } from "../../redux/actions/taskActions";
 import { connect, useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -41,6 +42,7 @@ function Calendar({
   loading,
   setNewTask,
   newTask,
+  deleteTask
 }) {
   const dispatch = useDispatch();
   const { user } = useStateContext();
@@ -91,6 +93,7 @@ function Calendar({
       setNewTask={setNewTask}
       newTask={newTask}
       updateTasks={updateTasks}
+      deleteTask={deleteTask}
     />
   );
 }
@@ -119,5 +122,6 @@ const mapDispatchToProps = {
   setLayout,
   setNewTask,
   updateTasks,
+  deleteTask
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Calendar);

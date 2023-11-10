@@ -3,6 +3,10 @@
   width: 100%;
 	display: inline-block;
 }
+.modal.visible {
+  opacity: 1;
+}
+
 header .modal-container {
   width: inherit;
 }
@@ -20,6 +24,8 @@ header .modal-container {
   opacity: 1;
   z-index: 4;
   cursor:move;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
 .modal-task-dates {
   margin-left: 23px;

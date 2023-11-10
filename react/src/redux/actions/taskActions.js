@@ -6,6 +6,7 @@ import {
   FETCH_TASKS_SUCCESS,
   SET_NEW_TASK,
   UPDATE_TASKS,
+  UPDATE_TASK,
 } from "./actionTypes";
 
 export const fetchTasksRequest = () => ({
@@ -31,6 +32,10 @@ export const deleteTask = (taskId) => ({
 export const setNewTask = (data) => ({
   type: SET_NEW_TASK,
   payload: data,
+});
+export const updateTask = (task) => ({
+  type: UPDATE_TASK,
+  payload: task,
 });
 
 export const fetchTasks = () => {

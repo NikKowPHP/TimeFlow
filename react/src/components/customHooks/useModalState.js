@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { modalUtils } from "../../utils/modalUtils";
 import { toast } from "react-toastify";
 import { calendarUtils } from "../../utils/calendarUtils";
 import newTaskHandler from "../Calendar/newTaskHandler";
@@ -19,10 +18,11 @@ import { taskUtils } from "../../utils/taskUtils";
  * @property {function} hideModal - Function to hide the modal.
  */
 
-export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
+export function useModalState({ modalRef }) {
   // State of the modal
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [openedModalId, setOpenedModalId] = useState(null);
+  const [modalOpacity, setModalOpacity] = useState(0);
 
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -34,14 +34,13 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     onDataReceived: displaySuccessTaskCreation,
   });
 
-  const { initiateNewTask, resetDateState } = calendarUtils();
-  const { getNewTaskId } = taskUtils();
+  const { resetDateState } = calendarUtils();
+  const { getNewTaskId, initiateNewTask } = taskUtils({});
 
   // Function to explicitly set the visibility of the modal
   const setModalVisibility = (isVisible) => {
     setIsModalVisible(isVisible);
   };
-
   const disableSelection = (isDisabled) => {
     const rootElement = document.getElementById("root");
     isDisabled
@@ -146,6 +145,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
 
   useEffect(() => {
     if (openedModalId) {
+      toggleModalOpacity(0);
       adjustModalPosition();
     }
   }, [openedModalId]);
@@ -230,6 +230,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
       left: positionLeft,
       top: positionTop,
     });
+    setModalOpacity(1);
   };
 
   // Get the mouse click coordinates
@@ -240,7 +241,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
 
   // Show the modal with the specified modalId
   const showModal = (modalId) => {
-    setIsModalVisible(true);
+    // setIsModalVisible(true);
     setOpenedModalId(modalId);
   };
   // Hide the modal
@@ -255,7 +256,7 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     startTime,
     endTime,
     selectedDate,
-    newTask = false,
+    isNewTask = false,
     allTasks = [],
     setNewTask,
     dispatch,
@@ -263,24 +264,24 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     // Close opened modal
     if (openedModalId !== null) {
       hideModal();
+      setModalOpacity(0);
     }
     event.stopPropagation();
     showModal(modalId);
-    if (newTask) {
+    if (isNewTask) {
       const newTaskId = getNewTaskId(allTasks);
-      const newTask = initiateNewTask(
+      const initiatedTask = initiateNewTask(
         startTime,
         endTime,
         selectedDate,
         newTaskId
       );
-      const updatedTask = { ...task, ...newTask };
-      dispatch(setNewTask({ ...newTask }));
-      handleTaskUpdate(updatedTask);
+      dispatch(setNewTask({ ...initiatedTask }));
     }
   };
+  const toggleModalOpacity = (opacityValue) =>
+    setModalOpacity(`opacity: ${opacityValue}`);
 
-  // Return the state and functions to be used by the component
   return {
     openedModalId,
     setOpenedModalId,
@@ -293,5 +294,6 @@ export function useModalState({ modalRef, handleTaskUpdate = () => {} }) {
     onModalClose,
     displaySuccessTaskCreation,
     handleOnTriggerClick,
+    modalOpacity,
   };
 }

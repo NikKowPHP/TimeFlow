@@ -24,6 +24,7 @@ export default function Modal({
   modalId,
   modalRef,
   modalPosition,
+  modalOpacity,
 }) {
 
   /**
@@ -36,6 +37,10 @@ export default function Modal({
     event.stopPropagation();
   };
 
+  const concatStyles = () => {
+    return {...modalPosition, opacity: modalOpacity}
+  }
+
 
   return (
     <div className="modal-container">
@@ -47,7 +52,7 @@ export default function Modal({
           data-modal-id={modalId}
           className={`modal ${classes}`}
           onClick={handleContentClick}
-          style={modalPosition}
+          style={concatStyles()}
         >
           {content}
         </div>

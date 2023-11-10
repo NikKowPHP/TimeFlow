@@ -3,6 +3,7 @@ import {
   FETCH_TASKS_SUCCESS,
   FETCH_TASKS_FAILURE,
   UPDATE_TASKS,
+  UPDATE_TASK,
   DELETE_TASK,
   SET_NEW_TASK,
 } from "../actions/actionTypes";
@@ -34,6 +35,12 @@ const taskReducer = (state = initialState, action) => {
     case UPDATE_TASKS:
       const newTask = action.payload;
       return { ...state, allTasks: [...state.allTasks, newTask] };
+    case UPDATE_TASK:
+      const updatedTask = action.payload;
+      const updatedTasksArray = state.allTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
+      );
+      return { ...state, allTasks: updatedTasksArray };
     case DELETE_TASK:
       const taskId = action.payload;
       const updatedTasks = state.allTasks.filter((task) => task.id !== taskId);

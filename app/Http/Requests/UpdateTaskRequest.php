@@ -22,10 +22,11 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' =>'required|string',
+            'title' => 'required|string',
             'date' => 'required|string',
-            'time_start' =>'required|string',
-            'time_end' =>'required|string',
+            'time_start' => 'required|string',
+            'time_end' => 'required|string',
+            'notification_preference' => 'nullable|string'
         ];
     }
 }

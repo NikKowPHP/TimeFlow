@@ -284,31 +284,6 @@ export function calendarUtils() {
     }
   };
 
-  /**
-   * Initiates a default new task state based on selected time and date and sets state.
-   * @param {Date} timeStart - represents starting time.
-   * @param {Date} timeEnd - represents ending time.
-   * @param {Date} clickedDate - represents the clicked date.
-   */
-  const initiateNewTask = (
-    timeStartObj,
-    timeEndObj,
-    clickedDate,
-    newTaskId
-  ) => {
-    const formattedTimeStart = convertDateToTime(timeStartObj);
-    const formattedTimeEnd = convertDateToTime(timeEndObj);
-    const formattedDate = convertDateSql(clickedDate.toLocaleDateString());
-
-    return {
-      id: newTaskId,
-      title: "",
-      time_start: formattedTimeStart,
-      time_end: formattedTimeEnd,
-      date: formattedDate,
-      notification_preference: null,
-    };
-  };
 
   /**
    * Calculates the height of a task in pixels based on its start and end times.
@@ -405,7 +380,6 @@ export function calendarUtils() {
     getDateActiveClass,
     toggleTaskActiveClass,
     getCellHalfClassName,
-    initiateNewTask,
     calculateTaskHeight,
     filterTasksForDateAndHour,
     defineClickedHalf,

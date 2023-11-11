@@ -14,9 +14,10 @@ const TaskList = ({
   onModalClose,
   onTaskEdit,
   renderExistingTaskItem,
-	filterTasksForDateAndHour,
+  filterTasksForDateAndHour,
   modalPosition,
-  modalRef
+  modalRef,
+  modalOpacity,
 }) => {
   const { convertDateSql } = dateUtils();
 
@@ -29,7 +30,8 @@ const TaskList = ({
     [date]
   );
   const filteredTasks = useMemo(
-    () => filterTasksForDateAndHour(convertedDate, convertedHourIndex, allTasks),
+    () =>
+      filterTasksForDateAndHour(convertedDate, convertedHourIndex, allTasks),
     [convertedDate, convertedHourIndex, allTasks]
   );
   const maxTasksToShow = useMemo(
@@ -43,6 +45,7 @@ const TaskList = ({
         const isModalVisible = () => openedModalId === task.id;
         return (
           <Modal
+            modalOpacity={modalOpacity}
             modalRef={modalRef}
             modalPosition={modalPosition}
             classes={classes}

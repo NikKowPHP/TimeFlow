@@ -10,16 +10,8 @@ import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
 
 export default function CalendarAgenda({
-  dates,
-  year,
-  setYear,
-  setMonth,
-  month,
   allTasks,
-  currentDate,
   clickedCellIndex,
-  selectDate,
-  selectedDate,
   clickCell,
   loading,
   setNewTask,
@@ -46,6 +38,7 @@ export default function CalendarAgenda({
     onModalClose,
     displaySuccessTaskCreation,
     handleOnTriggerClick,
+    modalOpacity,
   } = useModalState({ modalRef: modalRef, handleTaskUpdate: handleTaskUpdate });
 
   function handleTaskUpdate(updatedTask) {
@@ -62,7 +55,6 @@ export default function CalendarAgenda({
       clickedCellIndex,
       clickCell,
     });
-
 
   const [groupedTasks, setGroupedTasks] = useState({});
 
@@ -84,10 +76,7 @@ export default function CalendarAgenda({
     }, {});
   // TODO: FIX when creating a new task group task by date is not working
 
-  const renderNewTaskContent = ({
-    id,
-    selectedDate,
-  }) => (
+  const renderNewTaskContent = ({ id, selectedDate }) => (
     <NewTask
       formId={id}
       openedModalId={openedModalId}
@@ -124,6 +113,7 @@ export default function CalendarAgenda({
     return (
       <div className="calendar-agenda__group-date">
         <Modal
+          modalOpacity={modalOpacity}
           modalPosition={modalPosition}
           modalRef={modalRef}
           isModalVisible={openedModalId === id}
@@ -184,6 +174,7 @@ export default function CalendarAgenda({
           {tasks.map((task) => {
             return (
               <Modal
+                modalOpacity={modalOpacity}
                 modalRef={modalRef}
                 classes={"modal-task-description"}
                 modalPosition={modalPosition}

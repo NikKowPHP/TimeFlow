@@ -204,7 +204,7 @@ export default function CalendarWeekly({
       startTime: startTime,
       endTime: endTime,
       selectedDate: date,
-      newTask: true,
+      isNewTask: true,
       allTasks: allTasks,
       dispatch: dispatch,
       setNewTask: setNewTask,

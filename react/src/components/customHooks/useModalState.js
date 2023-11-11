@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { calendarUtils } from "../../utils/calendarUtils";
 import newTaskHandler from "../Calendar/newTaskHandler";
 import { taskUtils } from "../../utils/taskUtils";
+import { clickCell, selectDate } from "../../redux/actions/calendarActions";
+import { useDispatch } from "react-redux";
 
 /**
  * useModalState Hook
@@ -241,7 +243,7 @@ export function useModalState({ modalRef }) {
 
   // Show the modal with the specified modalId
   const showModal = (modalId) => {
-    // setIsModalVisible(true);
+    setIsModalVisible(true);
     setOpenedModalId(modalId);
   };
   // Hide the modal
@@ -265,9 +267,12 @@ export function useModalState({ modalRef }) {
     if (openedModalId !== null) {
       hideModal();
       setModalOpacity(0);
+      resetDateState();
     }
     event.stopPropagation();
     showModal(modalId);
+    dispatch(selectDate(selectedDate));
+    dispatch(clickCell(modalId));
     if (isNewTask) {
       const newTaskId = getNewTaskId(allTasks);
       const initiatedTask = initiateNewTask(

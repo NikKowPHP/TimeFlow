@@ -33,7 +33,8 @@ export default function CalendarWeekly({
   clickCell,
   setNewTask,
   newTask,
-  updateTasks
+  updateTasks,
+  deleteTask,
 }) {
   const { requestNotificationPermission, displayNotification } =
     useNotificationState();
@@ -56,6 +57,7 @@ export default function CalendarWeekly({
     showModal,
     hideModal,
     handleOnTriggerClick,
+    modalOpacity,
   } = useModalState({
     modalRef: modalRef,
   });
@@ -78,7 +80,9 @@ export default function CalendarWeekly({
   } = calendarUtils();
 
   const { onTaskDelete } = taskUtils({
-    onStateReceived: handleTaskDeletion,
+    hideModal: hideModal,
+    dispatch: dispatch,
+    deleteTask: deleteTask,
   });
 
   const { handleDataFromChild } = useDataHandlingLogic({
@@ -91,7 +95,7 @@ export default function CalendarWeekly({
     dispatch: dispatch,
     newTask: newTask,
     onDataReceived: handleDataFromChild,
-    updateTasks: updateTasks
+    updateTasks: updateTasks,
   });
 
   useEffect(() => {
@@ -124,16 +128,6 @@ export default function CalendarWeekly({
     openedModalId === null && closeDateTimeSelectedCell();
   }, [openedModalId]);
 
-  // Event handlers
-
-  function handleTaskDeletion(state) {
-    // Handle task deletion.
-    if (state.status === 204) {
-      hideModal();
-      refreshTasks();
-      toast.success(`The task '${state.task.title}' was successfully deleted`);
-    }
-  }
   const checkMonthDiff = (previousStartDate, newStartDate) => {
     const monthDiff = previousStartDate.getMonth() - newStartDate.getMonth();
     if (monthDiff !== 0) {
@@ -170,7 +164,7 @@ export default function CalendarWeekly({
   };
   const handleExistingTaskClick = (event, taskId) => {
     closeDateTimeSelectedCell();
-    handleOnClick(event, taskId);
+    handleOnTriggerClick({ event: event, modalId: taskId });
   };
 
   /**
@@ -217,7 +211,6 @@ export default function CalendarWeekly({
     });
   };
 
-
   /**
    * Handles date selection and sets states
    * @param {Date} newSelectedDate - The selected date
@@ -260,14 +253,6 @@ export default function CalendarWeekly({
    * @param {Object} event - The event object
    * @param {number} id - The id of the modal
    */
-  const handleOnClick = (event, id) => {
-    // Close opened modal
-    if (openedModalId !== null) {
-      hideModal();
-    }
-    event.stopPropagation();
-    showModal(id);
-  };
 
   const handleNotificationClick = () => {
     requestNotificationPermission();
@@ -332,6 +317,7 @@ export default function CalendarWeekly({
     );
     return (
       <TaskItem
+        modalOpacity={modalOpacity}
         modalPosition={modalPosition}
         task={task}
         classes={taskClass}
@@ -382,6 +368,7 @@ export default function CalendarWeekly({
     return (
       <div key={dateIndex} className={cellClassName} onClick={handleCellClick}>
         <TaskList
+          modalOpacity={modalOpacity}
           modalRef={modalRef}
           modalPosition={modalPosition}
           date={date}
@@ -411,6 +398,7 @@ export default function CalendarWeekly({
    */
   const renderNewTaskModalWrapper = (cellId, modalContent, cellContent) => (
     <Modal
+      modalOpacity={modalOpacity}
       isModalVisible={openedModalId === cellId}
       modalRef={modalRef}
       modalPosition={modalPosition}
@@ -425,6 +413,7 @@ export default function CalendarWeekly({
   const renderNewTaskModalForm = (cellId, date) => {
     return (
       <NewTask
+        newTaskObj={newTask}
         formId={cellId}
         openedModalId={openedModalId}
         selectedDate={date}

@@ -29,7 +29,8 @@ function CalendarMonthly({
   setNewTask,
   newTask,
   updateTasks,
-  dispatch
+  dispatch,
+  deleteTask,
 }) {
   const modalRef = useRef(null);
 
@@ -40,9 +41,6 @@ function CalendarMonthly({
     goToNextMonth,
     goToPrevMonth,
   } = calendarUtils();
-  const { onTaskDelete, getTasksByDate } = taskUtils({
-    onStateReceived: handleTaskState,
-  });
 
   // Get modal's state from custom hook
   const {
@@ -53,26 +51,34 @@ function CalendarMonthly({
     displaySuccessTaskCreation,
     onModalClose,
     handleOnTriggerClick,
+    modalOpacity
   } = useModalState({
     modalRef: modalRef,
     dispatch: dispatch,
     setNewTask: setNewTask,
-    handleTaskUpdate: handleTaskUpdate,
   });
 
-  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
-    newTaskHandler({
-      onDataReceived: displaySuccessTaskCreation,
-      dispatch: dispatch,
-      updateTasks: updateTasks,
-      newTask: newTask,
-      setNewTask: setNewTask,
-      clickedCellIndex,
-      clickCell,
-    });
-  function handleTaskUpdate(updatedTask) {
-    setNewTask(updatedTask);
-  }
+  const { onTaskDelete, getTasksByDate } = taskUtils({
+    onStateReceived: handleTaskState,
+    hideModal: hideModal,
+    dispatch: dispatch,
+    deleteTask: deleteTask,
+  });
+
+  const {
+    handleTaskCreation,
+    handleDateSelection,
+    handleTimeSelection,
+    handleNotificationSelection,
+  } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+    dispatch: dispatch,
+    updateTasks: updateTasks,
+    newTask: newTask,
+    setNewTask: setNewTask,
+    clickedCellIndex,
+    clickCell,
+  });
 
   const { navigate } = useLocationState();
   // State for clicked time period
@@ -81,16 +87,13 @@ function CalendarMonthly({
   // TODO: move to task utils
   function handleTaskState(state) {
     // Handle task deletion.
-    if (state.status === 204) {
-      hideModal();
-      refreshTasks();
-      toast.success(`The task '${state.task.title}' was successfully deleted`);
-    }
   }
 
   function onTaskEdit(task) {
     navigate(`/tasks/${task.id}`, {
-      state: { previousLocation: location.pathname },
+      state: {
+        previousLocation: location.pathname,
+      },
     });
   }
 
@@ -103,12 +106,6 @@ function CalendarMonthly({
    * @returns {void}
    */
   const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
-    // setSelectedDate(selectedDate);
-    // handleOnClick({
-    //   event: event,
-    //   modalId: modalId,
-    //   selectedDate: selectedDate,
-    // });
     dispatch(clickCell(cellId));
     dispatch(selectDate(selectedDate.getTime()));
     const startTime = new Date();
@@ -121,10 +118,11 @@ function CalendarMonthly({
       startTime: startTime,
       endTime: endTime,
       selectedDate: selectedDate,
-      newTask: true,
+      isNewTask: true,
       allTasks: allTasks,
-      setNewTask,
-      dispatch,
+      setNewTask: setNewTask,
+      newTaskObj: newTask,
+      dispatch: dispatch,
     });
   };
 
@@ -205,6 +203,7 @@ function CalendarMonthly({
       <Modal
         classes={"modal-task-description"}
         modalRef={modalRef}
+        modalOpacity={modalOpacity}
         modalPosition={modalPosition}
         isModalVisible={openedModalId === ellipsisId}
         modalId={ellipsisId}
@@ -239,6 +238,7 @@ function CalendarMonthly({
           <Modal
             modalRef={modalRef}
             classes={"modal-task-description"}
+            modalOpacity={modalOpacity}
             modalPosition={modalPosition}
             key={task.id}
             isModalVisible={openedModalId === task.id}
@@ -286,6 +286,7 @@ function CalendarMonthly({
         // Render modal for each date
         return (
           <Modal
+            modalOpacity={modalOpacity}
             modalPosition={modalPosition}
             modalRef={modalRef}
             isModalVisible={openedModalId === id}
@@ -299,6 +300,7 @@ function CalendarMonthly({
                 onDateSelection={handleDateSelection}
                 onTimeSelection={handleTimeSelection}
                 handleTaskCreation={handleTaskCreation}
+                onNotificationSelection={handleNotificationSelection}
                 onModalClose={onModalClose}
                 onTitleSet={setNewTaskTitle}
                 newTaskObj={newTask}

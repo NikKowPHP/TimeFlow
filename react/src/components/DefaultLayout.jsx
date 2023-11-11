@@ -52,6 +52,7 @@ function DefaultLayout({
     isModalVisible,
     displaySuccessTaskCreation,
     handleOnTriggerClick,
+    modalOpacity,
   } = useModalState({
     modalRef: modalRef,
   });
@@ -141,6 +142,7 @@ function DefaultLayout({
 
     return (
       <Modal
+      modalOpacity={modalOpacity}
         modalPosition={modalPosition}
         modalRef={modalRef}
         isModalVisible={openedModalId === id}

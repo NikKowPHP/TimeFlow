@@ -49,6 +49,7 @@ export default function CalendarWeekly({
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
   const modalRef = useRef(null);
 
+  console.log(currentDate)
   // Get modal's state from custom hook
   const {
     openedModalId,
@@ -140,8 +141,8 @@ export default function CalendarWeekly({
    */
   const handlePreviousWeek = () => {
     const newWeekStartDate = new Date(currentWeekStartDate);
-    newWeekStartDate.setDate(currentWeekStartDate.getDate() - 7);
-    checkMonthDiff(currentWeekStartDate, newWeekStartDate);
+    newWeekStartDate.setDate(new Date(currentWeekStartDate).getDate() - 7);
+    checkMonthDiff(new Date(currentWeekStartDate), newWeekStartDate);
     setCurrentWeekStartDate(newWeekStartDate);
   };
 
@@ -150,8 +151,8 @@ export default function CalendarWeekly({
    */
   const handleNextWeek = () => {
     const newWeekStartDate = new Date(currentWeekStartDate);
-    newWeekStartDate.setDate(currentWeekStartDate.getDate() + 7);
-    checkMonthDiff(currentWeekStartDate, newWeekStartDate);
+    newWeekStartDate.setDate(new Date(currentWeekStartDate).getDate() + 7);
+    checkMonthDiff(new Date(currentWeekStartDate), newWeekStartDate);
     setCurrentWeekStartDate(newWeekStartDate);
   };
 

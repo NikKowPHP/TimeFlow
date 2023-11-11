@@ -1,5 +1,5 @@
 import axiosClient from "../../axios-client";
-import { selectDate } from "../../redux/actions/calendarActions";
+import { resetSelectedDate, selectDate } from "../../redux/actions/calendarActions";
 
 export default function newTaskHandler({
   onDataReceived,
@@ -14,7 +14,7 @@ export default function newTaskHandler({
 
     axiosClient.post(`/calendar/calendar`, newTask).then(({ data }) => {
       dispatch(updateTasks(newTask));
-      // refreshTasks();
+      dispatch(resetSelectedDate());
       onDataReceived(data);
     });
   };

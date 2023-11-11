@@ -18,6 +18,9 @@ export default function CalendarAgenda({
   newTask,
   dispatch,
   updateTasks,
+  currentDate,
+  year,
+  month,
 }) {
   const modalRef = useRef(null);
 
@@ -57,13 +60,21 @@ export default function CalendarAgenda({
     });
 
   const [groupedTasks, setGroupedTasks] = useState({});
+  const filterTasks = () => {
+    return allTasks.filter(task => {
+      const taskDate = new Date(task.date);
+      const [hours, minutes] = task.time_start.split(':').map(Number);
+       taskDate.setHours(hours,minutes)
+       return taskDate >= new Date(currentDate)
+    });
+  }
 
   useEffect(() => {
     setGroupedTasks(groupTasksByDate());
   }, [allTasks]);
 
   const sortDaysByOrder = () =>
-    allTasks.sort((a, b) => a.date - b.date).reverse();
+    filterTasks().sort((a, b) => a.date - b.date).reverse();
 
   const groupTasksByDate = () =>
     sortDaysByOrder().reduce((grouped, task) => {

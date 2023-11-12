@@ -22,40 +22,46 @@ export default function CalendarAgenda({
 }) {
   const modalRef = useRef(null);
 
-  const { toggleTaskActiveClass, formatDateToDDMonDay } =
-    calendarUtils();
+  const { toggleTaskActiveClass, formatDateToDDMonDay } = calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
     onStateReceived: handleTaskState,
   });
   function handleTaskState() {}
 
-  // Modal import
   const {
     openedModalId,
     isModalVisible,
     modalPosition,
     hideModal,
-    onModalClose,
     displaySuccessTaskCreation,
+    onModalClose,
     handleOnTriggerClick,
     modalOpacity,
-  } = useModalState({ modalRef: modalRef, handleTaskUpdate: handleTaskUpdate });
+  } = useModalState({
+    modalRef: modalRef,
+    dispatch: dispatch,
+    setNewTask: setNewTask,
+  });
 
   function handleTaskUpdate(updatedTask) {
-    setTask(updatedTask);
+    setNewTask(updatedTask);
   }
   // Handling task creation
-  const { handleTaskCreation, handleDateSelection, handleTimeSelection, handleNotificationSelection } =
-    newTaskHandler({
-      onDataReceived: displaySuccessTaskCreation,
-      dispatch: dispatch,
-      updateTasks: updateTasks,
-      newTask: newTask,
-      setNewTask: setNewTask,
-      clickedCellIndex,
-      clickCell,
-    });
+  const {
+    handleTaskCreation,
+    handleDateSelection,
+    handleTimeSelection,
+    handleNotificationSelection,
+  } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+    dispatch: dispatch,
+    updateTasks: updateTasks,
+    newTask: newTask,
+    setNewTask: setNewTask,
+    clickedCellIndex,
+    clickCell,
+  });
 
   const [groupedTasks, setGroupedTasks] = useState({});
 
@@ -78,9 +84,6 @@ export default function CalendarAgenda({
   };
 
   useEffect(() => {
-    console.log("before grouping", allTasks);
-    const grouped = groupTasksByDate();
-    console.log("after grouping ", grouped);
     setGroupedTasks(groupTasksByDate());
   }, [allTasks, currentDate]);
 
@@ -109,7 +112,7 @@ export default function CalendarAgenda({
       onNotificationSelection={handleNotificationSelection}
       newTaskObj={newTask}
       onModalClose={hideModal}
-      onTitleSet={(event) => setTask({ ...task, title: event.target.value })}
+      onTitleSet={(event) => setNewTask({ title: event.target.value })}
     />
   );
 
@@ -131,7 +134,11 @@ export default function CalendarAgenda({
       startTime: timePeriodStartObj,
       endTime: timePeriodEndObj,
       selectedDate: dateObj,
-      newTask: true,
+      dispatch: dispatch,
+      setNewTask: setNewTask,
+      newTask: newTask,
+      isNewTask: true,
+      allTasks: allTasks,
     };
     return (
       <div className="calendar-agenda__group-date">

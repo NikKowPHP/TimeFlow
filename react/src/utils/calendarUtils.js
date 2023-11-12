@@ -32,10 +32,10 @@ export function calendarUtils() {
     if (selectedDate) {
       selectedDateModified = new Date(selectedDate).toLocaleDateString();
     }
-    if (presentDateModified === modifiedDate) {
-      return "current-date";
-    } else if (selectedDateModified === modifiedDate) {
+    if (selectedDateModified === modifiedDate) {
       return "selected-date";
+    } else if ( presentDateModified === modifiedDate ) {
+      return "current-date";
     }
     return "";
   }

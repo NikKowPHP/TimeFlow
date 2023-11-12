@@ -19,10 +19,11 @@ export default function CalendarAgenda({
   dispatch,
   updateTasks,
   currentDate,
+  selectedDate,
 }) {
   const modalRef = useRef(null);
 
-  const { toggleTaskActiveClass, formatDateToDDMonDay } = calendarUtils();
+  const { toggleTaskActiveClass,getActiveDateClass, formatDateToDDMonDay } = calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
     onStateReceived: handleTaskState,
@@ -120,11 +121,12 @@ export default function CalendarAgenda({
     const { month, dayOfMonth, dayOfWeek } = formatDateToDDMonDay(date);
     const dateObj = new Date(date);
     const id = date;
-    const currentDate = new Date();
-    const currentHours = currentDate.getHours();
-    const timePeriodStartObj = currentDate;
+    const currentDateObj = new Date();
+    const currentHours = currentDateObj.getHours();
+    const timePeriodStartObj = currentDateObj;
     const timePeriodEndObj = new Date();
     timePeriodEndObj.setHours(currentHours + 1);
+    const currentDateClass = getActiveDateClass(date,currentDate, selectedDate)
     const newTaskProps = {
       id: id,
       selectedDate: dateObj,
@@ -152,7 +154,7 @@ export default function CalendarAgenda({
           content={renderNewTaskContent(newTaskProps)}
         >
           <span
-            className="calendar-agenda__group-date__dayOfMonth"
+            className={`calendar-agenda__group-date__dayOfMonth ${currentDateClass}`}
             onClick={(event) =>
               handleOnTriggerClick({ ...onClickProps, event: event })
             }
@@ -228,11 +230,22 @@ export default function CalendarAgenda({
       </div>
     ));
   };
+
+  const renderCurrentDateGroup = () => (
+    <div
+      key={currentDate}
+      className="calendar-agenda__group-wrapper calendar-agenda__group-wrapper__currentDate"
+    >
+      {renderGroupTaskDate(currentDate)}
+      <div className="calendar-agenda__group-info"></div>
+    </div>
+  );
   const renderMainView = () =>
     loading ? (
       <Loading />
     ) : (
       <div className="calendar-agenda-wrapper">
+        {renderCurrentDateGroup()}
         <div>{renderTaskList()}</div>
       </div>
     );

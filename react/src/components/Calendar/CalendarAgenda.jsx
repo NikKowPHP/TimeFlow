@@ -19,12 +19,10 @@ export default function CalendarAgenda({
   dispatch,
   updateTasks,
   currentDate,
-  year,
-  month,
 }) {
   const modalRef = useRef(null);
 
-  const { toggleTaskActiveClass, formatDateToDDMonDay, convertDateToTime } =
+  const { toggleTaskActiveClass, formatDateToDDMonDay } =
     calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
@@ -60,22 +58,36 @@ export default function CalendarAgenda({
     });
 
   const [groupedTasks, setGroupedTasks] = useState({});
+
   const filterTasks = () => {
-    return allTasks.filter(task => {
+    const uniqueTaskIds = new Set();
+    return allTasks.filter((task) => {
+      const taskId = task.id;
       const taskDate = new Date(task.date);
-      const [hours, minutes] = task.time_start.split(':').map(Number);
-       taskDate.setHours(hours,minutes)
-       return taskDate >= new Date(currentDate)
+      const [hours, minutes] = task.time_start.split(":").map(Number);
+      taskDate.setHours(hours, minutes);
+      if (
+        taskDate.getTime() >= new Date(currentDate).getTime() &&
+        !uniqueTaskIds.has(taskId)
+      ) {
+        uniqueTaskIds.add(taskId);
+        return true;
+      }
+      return false;
     });
-  }
+  };
 
   useEffect(() => {
+    console.log("before grouping", allTasks);
+    const grouped = groupTasksByDate();
+    console.log("after grouping ", grouped);
     setGroupedTasks(groupTasksByDate());
-  }, [allTasks]);
+  }, [allTasks, currentDate]);
 
   const sortDaysByOrder = () =>
-    filterTasks().sort((a, b) => a.date - b.date).reverse();
-
+    filterTasks().sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
   const groupTasksByDate = () =>
     sortDaysByOrder().reduce((grouped, task) => {
       const date = task.date;
@@ -85,7 +97,6 @@ export default function CalendarAgenda({
       grouped[date].push(task);
       return grouped;
     }, {});
-  // TODO: FIX when creating a new task group task by date is not working
 
   const renderNewTaskContent = ({ id, selectedDate }) => (
     <NewTask

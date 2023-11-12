@@ -46,7 +46,7 @@ export default function CalendarAgenda({
     setTask(updatedTask);
   }
   // Handling task creation
-  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
+  const { handleTaskCreation, handleDateSelection, handleTimeSelection, handleNotificationSelection } =
     newTaskHandler({
       onDataReceived: displaySuccessTaskCreation,
       dispatch: dispatch,
@@ -106,6 +106,7 @@ export default function CalendarAgenda({
       onDateSelection={handleDateSelection}
       onTimeSelection={handleTimeSelection}
       handleTaskCreation={handleTaskCreation}
+      onNotificationSelection={handleNotificationSelection}
       newTaskObj={newTask}
       onModalClose={hideModal}
       onTitleSet={(event) => setTask({ ...task, title: event.target.value })}

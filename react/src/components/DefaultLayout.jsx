@@ -61,7 +61,7 @@ function DefaultLayout({
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
 
-  const { handleTaskCreation, handleDateSelection, handleTimeSelection } =
+  const { handleTaskCreation, handleDateSelection, handleTimeSelection, handleNotificationSelection } =
     newTaskHandler({
       onDataReceived: displaySuccessTaskCreation,
       dispatch: dispatch,
@@ -156,6 +156,7 @@ function DefaultLayout({
             onDateSelection={handleDateSelection}
             onTimeSelection={handleTimeSelection}
             handleTaskCreation={handleTaskCreation}
+            onNotificationSelection={handleNotificationSelection}
             newTaskObj={newTask}
             onModalClose={hideModal}
             onTitleSet={(event) => setNewTask({ title: event.target.value })}

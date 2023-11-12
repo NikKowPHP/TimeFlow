@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import svgPaths from "../svgPaths";
@@ -14,9 +14,15 @@ export default function NewTask({
   handleNotificationClick,
   onNotificationSelection,
   displayNotification,
-  newTaskObj
+  newTaskObj,
 }) {
   const { isNotificationGranted } = useNotificationState();
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   /**
    * Renders DateSelection component with specified props.
@@ -64,7 +70,10 @@ export default function NewTask({
   );
 
   const renderNotificationSelection = () => (
-    <select defaultValue={null} onChange={(event) => onNotificationSelection(event)}>
+    <select
+      defaultValue={null}
+      onChange={(event) => onNotificationSelection(event)}
+    >
       <option value={null}>Do not notify me</option>
       <option value="1_day_before">1 day before</option>
       <option value="1_hour_before">1 hour before</option>
@@ -85,6 +94,7 @@ export default function NewTask({
         <div className="modal-task-title">
           <h2>Create a new event </h2>
           <input
+            ref={inputRef}
             type="text"
             placeholder="Add title"
             onChange={(event) => onTitleSet(event)}

@@ -6,6 +6,7 @@ export const SET_DATES = "SET_DATES";
 export const SET_YEAR = "SET_YEAR";
 export const SET_MONTH = "SET_MONTH";
 export const SET_LAYOUT = "SET_LAYOUT";
+export const UPDATE_CURRENT_TIME = "UPDATE_CURRENT_TIME";
 
 export const FETCH_TASKS_FAILURE = "FETCH_TASKS_FAILURE";
 export const FETCH_TASKS_SUCCESS = "FETCH_TASKS_SUCCESS";

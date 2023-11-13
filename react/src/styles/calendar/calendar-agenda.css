@@ -96,3 +96,26 @@
   color: black;
   transition: border-radius 0.2s ease-in-out, color 0.2s ease-in-out;
 }
+.calendar-agenda__group-info__current-date-info {
+  position: relative;
+}
+.calendar-agenda__group-info .current-time-line {
+  position: absolute;
+  top: 0;
+  width: 94%; 
+  height: 2px; 
+  background-color: #ff0000; 
+  content: "";
+}
+.calendar-agenda__group-info .current-time-line::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 10px; 
+  height: 10px; 
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ff0000; 
+  content: "";
+}

@@ -8,6 +8,7 @@ import Modal from "../modals/Modal";
 import NewTask from "../Task/NewTask";
 import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
+import TimeLine from "./TimeLine";
 
 export default function CalendarAgenda({
   allTasks,
@@ -237,7 +238,9 @@ export default function CalendarAgenda({
       className="calendar-agenda__group-wrapper calendar-agenda__group-wrapper__currentDate"
     >
       {renderGroupTaskDate(currentDate)}
-      <div className="calendar-agenda__group-info"></div>
+      <div className="calendar-agenda__group-info calendar-agenda__group-info__current-date-info">
+        <TimeLine />
+      </div>
     </div>
   );
   const renderMainView = () =>

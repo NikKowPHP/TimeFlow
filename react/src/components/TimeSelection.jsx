@@ -29,7 +29,7 @@ export default function TimeSelection({onSelectTime, defaultTime}) {
 			type="time"
 			value={selectedTime}
 			onChange={handleTimeChange}
-			className='time-selection-input'
+			className='timeSelection-item'
 			/>
 	)
 }

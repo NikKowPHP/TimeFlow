@@ -14,14 +14,12 @@ export default function DateSelection({ onSelectDate, defaultDate }) {
     onSelectDate(newSelectedDate);
   };
   return (
-    <div className="date-selection-container">
       <input
         name="date"
         type="date"
         value={selectedDate}
         onChange={handleDateChange}
-        className="date-selection-input"
+        className="dateSelection-item"
       />
-    </div>
   );
 }

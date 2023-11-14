@@ -21,11 +21,11 @@ import { useNotificationState } from "../customHooks/useNotificationState";
  */
 export default function CalendarWeekly({
   dates,
+  user,
   currentDate,
   setMonth,
   allTasks,
   selectedDate,
-  refreshTasks,
   loading,
   dispatch,
   selectDate,
@@ -49,7 +49,7 @@ export default function CalendarWeekly({
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
   const modalRef = useRef(null);
 
-  console.log(currentDate)
+  console.log(currentDate);
   // Get modal's state from custom hook
   const {
     openedModalId,
@@ -414,6 +414,7 @@ export default function CalendarWeekly({
   const renderNewTaskModalForm = (cellId, date) => {
     return (
       <NewTask
+        user={user}
         newTaskObj={newTask}
         formId={cellId}
         openedModalId={openedModalId}

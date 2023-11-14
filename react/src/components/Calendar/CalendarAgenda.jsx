@@ -21,6 +21,7 @@ export default function CalendarAgenda({
   updateTasks,
   currentDate,
   selectedDate,
+  user,
 }) {
   const modalRef = useRef(null);
 
@@ -115,6 +116,7 @@ export default function CalendarAgenda({
       newTaskObj={newTask}
       onModalClose={hideModal}
       onTitleSet={(event) => setNewTask({ title: event.target.value })}
+      user={user}
     />
   );
 

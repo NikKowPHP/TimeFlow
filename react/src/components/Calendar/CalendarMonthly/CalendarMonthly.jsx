@@ -31,6 +31,7 @@ function CalendarMonthly({
   updateTasks,
   dispatch,
   deleteTask,
+  user,
 }) {
   const modalRef = useRef(null);
 
@@ -304,6 +305,7 @@ function CalendarMonthly({
                 onModalClose={onModalClose}
                 onTitleSet={setNewTaskTitle}
                 newTaskObj={newTask}
+                user={user}
               />
             }
           >

@@ -76,6 +76,7 @@ function Calendar({
 
   return (
     <CalendarLayoutComponent
+      user={user}
       dispatch={dispatch}
       dates={dates}
       allTasks={allTasks}

@@ -3,6 +3,7 @@ import DateSelection from "../DateSelection";
 import TimeSelection from "../TimeSelection";
 import svgPaths from "../svgPaths";
 import { useNotificationState } from "../customHooks/useNotificationState";
+import "../../styles/modals/newTaskModal.css";
 
 export default function NewTask({
   selectedDate,
@@ -15,6 +16,7 @@ export default function NewTask({
   onNotificationSelection,
   displayNotification,
   newTaskObj,
+  user,
 }) {
   const { isNotificationGranted } = useNotificationState();
   const inputRef = useRef(null);
@@ -42,7 +44,7 @@ export default function NewTask({
    * @returns {JSX.Element} JSX element representing the TimeSelection component.
    */
   const renderTimeSelection = (defaultTime, isStart) => (
-    <div className="time-selection-block">
+    <div className="timeSelection-block">
       <TimeSelection
         onSelectTime={(selectedTime) => onTimeSelection(selectedTime, isStart)}
         defaultTime={defaultTime}
@@ -87,52 +89,55 @@ export default function NewTask({
    * @returns {JSX.Element} - The JSX element representing the modal content for creating a new task.
    */
   const renderModalNewTaskForm = (modalContentHeader) => (
-    <div>
+    <>
       {/* render header of modal */}
       {modalContentHeader}
-      <form onSubmit={handleTaskCreation}>
-        <div className="modal-task-title">
-          <h2>Create a new event </h2>
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Add title"
-            onChange={(event) => onTitleSet(event)}
-          />
-          <div className="modal-task-time">
-            {renderDateSelection()}
-
-            <div className="modal-task-time_time-selection-container">
-              {renderTimeSelection(newTaskObj.time_start, true)}-
-              {renderTimeSelection(newTaskObj.time_end, false)}
+      <div className="modal-newTask__body">
+        <form onSubmit={handleTaskCreation}>
+          <div className="modal-newTask__body-main">
+            <h2 className="modal-newTask__body-header">Create a new event </h2>
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Add title"
+              onChange={(event) => onTitleSet(event)}
+            />
+            <div className="modal-newTask__dateTime-container">
+              <div className="modal-newTask__dateSelection-container">
+                {renderDateSelection()}
+              </div>
+              <div className="modal-newTask__timeSelection-container">
+                {renderTimeSelection(newTaskObj.time_start, true)}-
+                {renderTimeSelection(newTaskObj.time_end, false)}
+              </div>
             </div>
-            <div className="modal-task-description-container"></div>
+            <div className="modal-newTask__timePeriod-container">
+              <span>
+                From {newTaskObj.time_start} until {newTaskObj.time_end}
+              </span>
+            </div>
           </div>
-          <div className="modal-task__time-period">
-            <span>
-              {newTaskObj.time_start}-{newTaskObj.time_end}
-            </span>
+          <div className="modal-newTask__info">
+            <div
+              className="modal-newTask__notification-container"
+              onClick={handleNotificationClick}
+            >
+              <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
+                {svgPaths.notification}
+              </svg>
+              {renderNotificationSelection()}
+            </div>
+            <div className="modal-newTask__info-owner">
+              <i className="fa fa-calendar"></i>
+              {user.name}
+            </div>
           </div>
-        </div>
-        <div className="modal-task-additional">
-          <div
-            className="modal-task-notification"
-            onClick={handleNotificationClick}
-          >
-            <svg focusable="false" width="20" height="20" viewBox="0 0 24 24">
-              {svgPaths.notification}
-            </svg>
-            {renderNotificationSelection()}
-          </div>
-          <div className="modal-task-owner">
-            <i className="fa fa-calendar"></i>
-          </div>
-          <button className="btn btn-block" type="submit">
-            Create
-          </button>
-        </div>
-      </form>
-    </div>
+            <button className="btn btn-block" type="submit">
+              Create
+            </button>
+        </form>
+      </div>
+    </>
   );
 
   return renderModalNewTaskForm(renderModalContentHeader());

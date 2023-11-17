@@ -11,6 +11,7 @@ import Roles from "./views/Roles";
 import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
 import TaskForm from "./views/TaskForm";
+import GoogleCallback from "./components/GoogleCallback.jsx";
 
 
 const router = createBrowserRouter([
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/login/google",
+        element: <GoogleCallback />
       },
       {
         path: "/signup",

@@ -77,3 +77,8 @@ Route::post('/signup', [AuthController::class, 'signup']);
 
 // authenticate user
 Route::post('/login', [AuthController::class, 'login']);
+
+
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+

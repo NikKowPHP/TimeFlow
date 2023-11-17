@@ -69,6 +69,9 @@ input:focus {
 .btn-block {
   width: 100%;
 }
+.btn-google {
+  display: block;
+}
 
 .btn-add,
 .btn-edit,
@@ -269,6 +272,32 @@ table > tbody > tr > td {
 .login-signup-form .form .message a {
   color: #5b08a7;
   text-decoration: none;
+}
+.google-logo {
+  margin-right: 10px;
+  width: 14px;
+  height: 14px;
+  display: block;
+  fill: inherit;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+.btn-google {
+  margin-top: 10px;
+  padding: 5px;
+  text-decoration: none;
+
+  background: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+.btn-google:hover {
+  background-color: rgba(0, 0, 0, 0.11);
 }
 
 /* Login/Signup form */

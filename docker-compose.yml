@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  backend:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_DATABASE: lisboa
+      DB_USERNAME: mikita
+      DB_PASSWORD: gans2vlad
+    ports:
+     - 8000:80
+    volumes:
+     - ./:/app/backend
+    depends_on:
+      - db
+    networks:
+      - app
+
+  frontend:
+    build: 
+      context: ./react
+      dockerfile: Dockerfile
+    tty: true
+    ports: 
+     - 3000:3000
+    volumes:
+      - ./react:/app/frontend
+    depends_on:
+      - backend
+    networks:
+      - app
+
+  db:
+    image: mysql:5.7.22
+    environment:
+      MYSQL_DATABASE: lisboa
+      MYSQL_USER: mikita
+      MYSQL_PASSWORD: gans2vlad
+      MYSQL_ROOT_PASSWORD: gans2vlad
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge

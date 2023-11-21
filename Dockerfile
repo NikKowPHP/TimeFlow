@@ -1,9 +1,9 @@
 # FROM php:8.1-apache
 
-# WORKDIR /var/www/html
 
-# COPY . .
 FROM php:8.1-apache
+
+WORKDIR /app/backend
 
 # Install necessary tools for Composer installation
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,12 +17,16 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Enable necessary PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql && docker-php-ext-enable mysqli pdo pdo_mysql
 RUN a2enmod rewrite
+RUN a2enmod headers
 
-WORKDIR /app/backend
+COPY ./.docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
 COPY . .
 RUN composer install
 
 
-EXPOSE 8000
+# EXPOSE 8000
 
-CMD php artisan serve 
+# CMD php artisan serve 
+# CMD ["php", "artisan", "serve", "--host", "0.0.0.0"]
+CMD ["php", "artisan", "serve", "--host", "0.0.0.0"]

@@ -45,6 +45,7 @@ class AuthController extends Controller
             ]);
         }
         $user = Auth::user();
+        header('Access-Control-Allow-Origin: http://localhost:3000');
         $token = $user->createToken('main')->plainTextToken;
         return response(compact('user', 'token'));
     }
@@ -65,7 +66,7 @@ class AuthController extends Controller
     {
         try {
             $user = Socialite::driver('google')->stateless()->user();
-            
+
             $existingUser = User::where('email', $user->email)->first();
 
             if ($existingUser) {

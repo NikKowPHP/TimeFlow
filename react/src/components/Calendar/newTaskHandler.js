@@ -1,5 +1,9 @@
+import { toast } from "react-toastify";
 import axiosClient from "../../axios-client";
-import { resetSelectedDate, selectDate } from "../../redux/actions/calendarActions";
+import {
+  resetSelectedDate,
+  selectDate,
+} from "../../redux/actions/calendarActions";
 
 export default function newTaskHandler({
   onDataReceived,
@@ -9,14 +13,33 @@ export default function newTaskHandler({
   setNewTask,
   clickCell,
 }) {
+  const validateNewTaskForm = () => {
+    let error = "";
+    if (!newTask.title.trim()) {
+      error = "Title is required";
+    } else if (!newTask.date) {
+      error = "Date is required";
+    } else if (!newTask.time_start) {
+      error = "Starting time is required";
+    } else if (!newTask.date) {
+      error = "Endling time is required";
+    }
+    return error ? error : null;
+  };
   const handleTaskCreation = (ev) => {
     ev.preventDefault();
 
-    axiosClient.post(`/calendar/calendar`, newTask).then(({ data }) => {
-      dispatch(updateTasks(newTask));
-      dispatch(resetSelectedDate());
-      onDataReceived(data);
-    });
+    const validationError = validateNewTaskForm();
+
+    if (validationError) {
+      toast.error(`${validationError}`);
+    } else {
+      axiosClient.post(`/calendar/calendar`, newTask).then(({ data }) => {
+        dispatch(updateTasks(newTask));
+        dispatch(resetSelectedDate());
+        onDataReceived(data);
+      });
+    }
   };
 
   /**

@@ -37,6 +37,7 @@ export function taskUtils({ hideModal, dispatch, deleteTask }) {
     );
 
   const getNewTaskId = (allTasks) => {
+    if(allTasks.length === 0) return 1;
     const sortedTasks = allTasks.sort((a, b) => a.id - b.id);
     return sortedTasks[sortedTasks.length - 1].id + 1;
   };

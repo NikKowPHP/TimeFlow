@@ -144,7 +144,7 @@ function CalendarMonthly({
         isModalVisible
       )} `}
       onClick={(event) =>
-        handleOnTriggerClick({ event: event, modalId: task.id })
+        handleOnTriggerClick({ event: event, modalId: task.id, dispatch:dispatch })
       }
     >
       <TruncatedText text={task.title} maxCharacters={6} />

@@ -14,7 +14,6 @@ const TimeLine = ({ currentTime, updateCurrentTime }) => {
   }, [updateCurrentTime]);
   useEffect(() => {
     const linePosition = calculateLinePosition();
-		console.log(currentTime)
     setLinePositionStyle({ top: `${linePosition}px` });
   }, [currentTime]);
 

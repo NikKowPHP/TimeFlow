@@ -186,6 +186,7 @@ export default function CalendarAgenda({
           handleOnTriggerClick({
             event: event,
             modalId: task.id,
+            dispatch:dispatch,
             newTask: false,
           })
         }

@@ -49,7 +49,6 @@ export default function CalendarWeekly({
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
   const modalRef = useRef(null);
 
-  console.log(currentDate);
   // Get modal's state from custom hook
   const {
     openedModalId,
@@ -165,7 +164,7 @@ export default function CalendarWeekly({
   };
   const handleExistingTaskClick = (event, taskId) => {
     closeDateTimeSelectedCell();
-    handleOnTriggerClick({ event: event, modalId: taskId });
+    handleOnTriggerClick({ event: event, modalId: taskId, dispatch });
   };
 
   /**
@@ -322,7 +321,7 @@ export default function CalendarWeekly({
         modalPosition={modalPosition}
         task={task}
         classes={taskClass}
-        handleOnTaskClick={(event) => handleExistingTaskClick(event, task.id)}
+        handleOnTaskClick={(event) => handleExistingTaskClick(event, task.id, dispatch)}
         styles={taskHeightDimensions}
       />
     );

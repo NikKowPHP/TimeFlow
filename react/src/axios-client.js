@@ -26,7 +26,6 @@ axiosClient.interceptors.response.use(
         toast.error("Unathorized request");
       } else if (status === 422) {
         toast.error(data.message);
-        console.error("Validation errors:", data.errors);
       }else if (status === 500) {
         console.error('internal server errors', data);
       }

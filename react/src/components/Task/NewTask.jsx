@@ -28,8 +28,7 @@ export default function NewTask({
 
   /**
    * Renders DateSelection component with specified props.
-   * @returns {JSX.Element} JSX element representing the DateSelection component.
-   */
+   * @returns {JSX.Element} JSX element representing the DateSelection component.  */
   const renderDateSelection = () => (
     <DateSelection
       onSelectDate={(newSelectedDate) => onDateSelection(newSelectedDate)}

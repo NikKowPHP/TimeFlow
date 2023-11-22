@@ -5,6 +5,7 @@ import { baseURL } from "../config.mjs";
 const axiosClient = axios.create({
   baseURL: `${baseURL}/api`,
 });
+axiosClient.defaults.withCredentials = true;
 
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("ACCESS_TOKEN");

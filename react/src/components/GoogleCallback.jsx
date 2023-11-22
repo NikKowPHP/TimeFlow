@@ -14,7 +14,7 @@ function GoogleCallback() {
       .get(`/auth/google/callback${location.search}`, {
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
         },
       })
       .then((response) => {

@@ -160,6 +160,7 @@ function DefaultLayout({
             newTaskObj={newTask}
             onModalClose={hideModal}
             onTitleSet={(event) => setNewTask({ title: event.target.value })}
+            user={user}
           />
         }
       >

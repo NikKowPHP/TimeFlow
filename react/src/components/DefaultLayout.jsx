@@ -22,7 +22,7 @@ import {
 } from "../redux/actions/calendarActions";
 import { setNewTask, updateTasks } from "../redux/actions/taskActions";
 import svgPaths from "./svgPaths";
-
+import { windowResize } from "../redux/actions/appActions.js";
 
 function DefaultLayout({
   layout,
@@ -38,6 +38,7 @@ function DefaultLayout({
   updateTasks,
   clickedCellIndex,
   clickCell,
+  isMobileLayout,
 }) {
   const dispatch = useDispatch();
   const modalRef = useRef(null);
@@ -61,16 +62,20 @@ function DefaultLayout({
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
 
-  const { handleTaskCreation, handleDateSelection, handleTimeSelection, handleNotificationSelection } =
-    newTaskHandler({
-      onDataReceived: displaySuccessTaskCreation,
-      dispatch: dispatch,
-      updateTasks: updateTasks,
-      newTask: newTask,
-      setNewTask: setNewTask,
-      clickedCellIndex,
-      clickCell,
-    });
+  const {
+    handleTaskCreation,
+    handleDateSelection,
+    handleTimeSelection,
+    handleNotificationSelection,
+  } = newTaskHandler({
+    onDataReceived: displaySuccessTaskCreation,
+    dispatch: dispatch,
+    updateTasks: updateTasks,
+    newTask: newTask,
+    setNewTask: setNewTask,
+    clickedCellIndex,
+    clickCell,
+  });
   const navigate = useNavigate();
 
   // show calendar in aside section
@@ -97,11 +102,14 @@ function DefaultLayout({
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 970) {
+      const isWindowMobile = window.innerWidth < 768;
+      if (isWindowMobile !== isMobileLayout) {
         setAsideShown(false);
+        dispatch(windowResize(isWindowMobile));
       } else {
-        setAsideShown(true);
+       setAsideShown(true);
       }
+      isWindowMobile ? setAsideShown(false): setAsideShown(true);
     };
     handleResize();
 
@@ -109,7 +117,7 @@ function DefaultLayout({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [isMobileLayout, windowResize]);
 
   const onLogout = (ev) => {
     ev.preventDefault();
@@ -142,7 +150,7 @@ function DefaultLayout({
 
     return (
       <Modal
-      modalOpacity={modalOpacity}
+        modalOpacity={modalOpacity}
         modalPosition={modalPosition}
         modalRef={modalRef}
         isModalVisible={openedModalId === id}
@@ -281,6 +289,7 @@ const mapStateToProps = (state) => ({
   loading: state.tasks.loading,
   error: state.tasks.error,
   newTask: state.tasks.newTask,
+  isMobileLayout: state.app.isMobileLayout,
 });
 
 const mapDispatchToProps = {

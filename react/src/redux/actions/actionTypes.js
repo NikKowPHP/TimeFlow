@@ -18,3 +18,5 @@ export const UPDATE_TASK = "UPDATE_TASK";
 
 export const DELETE_TASK = "DELETE_TASK";
 export const SET_NEW_TASK = "SET_NEW_TASK";
+
+export const WINDOW_RESIZE = "WINDOW_RESIZE";

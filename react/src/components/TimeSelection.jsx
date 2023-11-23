@@ -5,9 +5,7 @@ export default function TimeSelection({onSelectTime, defaultTime}) {
 	const [selectedTime, setSelectedTime] = useState('');
 
 	useEffect(() => {
-
 		setSelectedTime(convertTime(defaultTime));
-
 	}, [defaultTime])
 
 	const convertTime = (time) => {
@@ -22,7 +20,6 @@ export default function TimeSelection({onSelectTime, defaultTime}) {
 		onSelectTime(selectedTimeValue);
 
 	}
-
 
 	return (
 			<input 

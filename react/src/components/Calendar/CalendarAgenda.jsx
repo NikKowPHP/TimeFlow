@@ -104,11 +104,11 @@ export default function CalendarAgenda({
       return grouped;
     }, {});
 
-  const renderNewTaskContent = ({ id, selectedDate }) => (
+  const renderNewTaskContent = ({ id, date}) => (
     <NewTask
       formId={id}
       openedModalId={openedModalId}
-      selectedDate={selectedDate}
+      selectedDate={date}
       onDateSelection={handleDateSelection}
       onTimeSelection={handleTimeSelection}
       handleTaskCreation={handleTaskCreation}
@@ -132,7 +132,7 @@ export default function CalendarAgenda({
     const currentDateClass = getActiveDateClass(date,currentDate, selectedDate)
     const newTaskProps = {
       id: id,
-      selectedDate: dateObj,
+      date: dateObj,
     };
     const onClickProps = {
       modalId: id,

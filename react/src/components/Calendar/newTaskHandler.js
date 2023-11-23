@@ -58,7 +58,6 @@ export default function newTaskHandler({
 
   const handleDateSelection = (newSelectedDate) => {
     const formattedSelectedDate = new Date(newSelectedDate);
-    formattedSelectedDate;
     dispatch(selectDate(formattedSelectedDate));
     dispatch(setNewTask({ date: newSelectedDate }));
   };

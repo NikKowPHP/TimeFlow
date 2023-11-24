@@ -107,9 +107,9 @@ function DefaultLayout({
         setAsideShown(false);
         dispatch(windowResize(isWindowMobile));
       } else {
-       setAsideShown(true);
+        setAsideShown(true);
       }
-      isWindowMobile ? setAsideShown(false): setAsideShown(true);
+      isWindowMobile ? setAsideShown(false) : setAsideShown(true);
     };
     handleResize();
 
@@ -202,13 +202,21 @@ function DefaultLayout({
   };
 
   return (
-    <div id="defaultLayout">
+    <div id="defaultLayout" className="default-layout-container">
       {/* Notification listener to show notifications from the backend */}
       <NotificationListener />
 
       <ToastContainer />
-      {asideShown && (
-        <aside className="default-aside">
+      <div className="wrapper">
+        {/* Dim overlay */}
+        <aside
+          className={`default-aside-overlay ${
+            asideShown ? "aside-active" : ""
+          }`}
+        >
+          <button className="btn-hamburger" onClick={() => handleToggleAside()}>
+            <i className="fa fa-bars"></i>
+          </button>
           <Link to={"/calendar"}>Calendar</Link>
           <Link to={"/tasks"}>Tasks</Link>
 
@@ -235,43 +243,51 @@ function DefaultLayout({
             />
           )}
         </aside>
-      )}
-
-      <div className="content">
-        <header>
-          <button className="btn-hamburger" onClick={() => handleToggleAside()}>
-            <i className="fa fa-bars"></i>
-          </button>
-          <div>{user && user.name}</div>
-
-          {/* show selection of calendar types */}
-          {isCalendar && (
-            <>
-              <select
-                value={layout}
-                onChange={(e) => handleOptionSelect(e.target.value)}
-              >
-                <option value="month">Month</option>
-                <option value="week">Week</option>
-                <option value="agenda">Agenda</option>
-              </select>
-              {renderAddNewTaskBtn()}
-            </>
-          )}
-
-          <a href="#" onClick={onLogout} className="btn btn-logout">
-            Logout
-          </a>
-        </header>
-        <main>
-          <Outlet />
-        </main>
-        {notification && <div className="notification">{notification}</div>}
-        {errors.message && (
-          <div className="notification notification-error">
-            {errors.message}
-          </div>
+        {asideShown && (
+          <div className="dim-overlay" onClick={() => setAsideShown(false)} />
         )}
+
+        <div className="content">
+          <header>
+            <button
+              className="btn-hamburger"
+              onClick={() => handleToggleAside()}
+            >
+              <i className="fa fa-bars"></i>
+            </button>
+            <div>{user && user.name}</div>
+
+            {/* show selection of calendar types */}
+            {isCalendar && (
+              <>
+                <select
+                  value={layout}
+                  onChange={(e) => handleOptionSelect(e.target.value)}
+                >
+                  <option value="month">Month</option>
+                  <option value="week">Week</option>
+                  <option value="agenda">Agenda</option>
+                </select>
+                {renderAddNewTaskBtn()}
+              </>
+            )}
+
+            <a href="#" onClick={onLogout} className="btn btn-logout">
+              Logout
+            </a>
+          </header>
+          <main>
+            <Outlet />
+          </main>
+
+          {notification && <div className="notification">{notification}</div>}
+          {errors.message && (
+            <div className="notification notification-error">
+              {errors.message}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );

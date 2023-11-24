@@ -301,9 +301,50 @@ table > tbody > tr > td {
 }
 
 /* Login/Signup form */
+.wrapper {
+  position:relative;
+}
 
 #defaultLayout {
   display: flex;
+}
+.default-layout-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  
+}
+.default-aside-overlay {
+  position:absolute;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  height: 100%;
+  background-color: rgba(164, 94, 192, 0.61);
+  z-index: 1000;
+
+  transition: left 0.3s ease-in-out;
+}
+.dim-overlay {
+  position:fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0);
+  z-index: 999;
+  display: none;
+  transition: background 0.3s ease-in-out;
+}
+.default-aside-overlay.aside-active {
+  left: 0;
+}
+.default-aside-overlay.aside-active + .dim-overlay {
+  display: block;
+  background-color: rgba(0,0,0,0.5);
+}
+.default-aside-overlay .btn-hamburger {
+  color: white;
 }
 
 #defaultLayout aside {
@@ -325,6 +366,8 @@ table > tbody > tr > td {
 .show-hamburger {
   display: block;
 }
+
+
 
 #defaultLayout aside > a {
   display: block;

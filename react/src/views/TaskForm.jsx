@@ -55,7 +55,7 @@ export default function TaskForm() {
 
   return (
     <>
-      {task.id && (
+      {task.id ? (
         <div>
           <h1>Edit '{task.title}'</h1>
           <div className="card animated fadeInDown">
@@ -121,6 +121,70 @@ export default function TaskForm() {
                 </form>
               </>
             )}
+          </div>
+        </div>
+      ): (
+          
+        <div>
+          <h1>Create A New Task{task.title}</h1>
+          <div className="card animated fadeInDown">
+              <>
+                <form action="" onSubmit={onSubmitForm}>
+                  <input
+                    type="text"
+                    onChange={(ev) =>
+                      setTask({ ...task, title: ev.target.value })
+                    }
+                    placeholder="Task title"
+                  />
+                  <input
+                    type="date"
+                    onChange={(ev) =>
+                      setTask({ ...task, date: ev.target.value })
+                    }
+                  />
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <input
+                      type="time"
+                      value={task.time_start}
+                      onChange={(ev) =>
+                        setTask({ ...task, time_start: ev.target.value })
+                      }
+                    />
+                    <span style={{ padding: "5px", fontWeight: "700" }}>-</span>
+                    <input
+                      type="time"
+                      value={task.time_end}
+                      onChange={(ev) =>
+                        setTask({ ...task, time_end: ev.target.value })
+                      }
+                    />
+                  </div>
+                  <select style={{ marginBottom: "10px"}}
+                    defaultValue={task.notification_preference}
+                    onChange={(event) =>
+                      setTask({
+                        ...task,
+                        notification_preference: event.target.value,
+                      })
+                    }
+                  >
+                    <option value={null}>Do not notify me</option>
+                    <option value="1_day_before">1 day before</option>
+                    <option value="1_hour_before">1 hour before</option>
+                    <option value="15_minutes_before">15 minutes before</option>
+                  </select>
+
+                  <div className="task-form__btn-group">
+                    <button type="submit" className="btn btn-add">
+                      Save
+                    </button>
+                    <button onClick={goBack} className="btn btn-delete">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </>
           </div>
         </div>
       )}

@@ -301,6 +301,14 @@ table > tbody > tr > td {
 }
 
 /* Login/Signup form */
+.aside-seperator {
+  width: 70%;
+  align-self: center;
+  height: 1px;
+  color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.555);
+  border: none;
+}
 .wrapper {
   position:relative;
 }
@@ -315,6 +323,8 @@ table > tbody > tr > td {
   
 }
 .default-aside-overlay {
+  display: flex;
+  flex-direction: column;
   position:absolute;
   top: 0;
   left: -100%;
@@ -345,6 +355,7 @@ table > tbody > tr > td {
 }
 .default-aside-overlay .btn-hamburger {
   color: white;
+  align-self: flex-end;
 }
 
 #defaultLayout aside {
@@ -376,6 +387,23 @@ table > tbody > tr > td {
   color: white;
   text-decoration: none;
   transition: all 0.2s;
+}
+.aside__calendar-links {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+}
+.aside__calendar-links > a:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.aside__calendar-links > a {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.2s;
+
 }
 
 #defaultLayout aside > a:hover {

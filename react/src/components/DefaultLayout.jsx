@@ -217,7 +217,16 @@ function DefaultLayout({
           <button className="btn-hamburger" onClick={() => handleToggleAside()}>
             <i className="fa fa-bars"></i>
           </button>
+
           <Link to={"/calendar"}>Calendar</Link>
+            {isCalendar && isMobileLayout &&(
+              <div className="aside__calendar-links" onClick={() => setAsideShown(false)}>
+                <Link to={"/calendar/month"}>Month</Link>
+                <Link to={"/calendar/week"}>Week</Link>
+                <Link  to={"/calendar/agenda"}>Schedule</Link>
+              </div>
+            )}
+            <hr className="aside-seperator"/>
           <Link to={"/tasks"}>Tasks</Link>
 
           {user &&
@@ -230,7 +239,7 @@ function DefaultLayout({
               </>
             )}
 
-          {isCalendar && (
+          {isCalendar && !isMobileLayout && (
             <CalendarAside
               dispatch={dispatch}
               selectDate={selectDate}

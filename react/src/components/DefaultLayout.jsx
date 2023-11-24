@@ -200,6 +200,20 @@ function DefaultLayout({
       </Modal>
     );
   };
+  const renderAddNewTaskLink = () => {
+    return (
+      <Link to="/tasks/new" className={`btn__add-task-wrapper btn__add-task__absolute`}>
+        <svg
+          className="btn__add-task"
+          width="36"
+          height="36"
+          viewBox="0 0 36 36"
+        >
+          {svgPaths.addTask}
+        </svg>
+      </Link>
+    );
+  };
 
   return (
     <div id="defaultLayout" className="default-layout-container">
@@ -219,14 +233,17 @@ function DefaultLayout({
           </button>
 
           <Link to={"/calendar"}>Calendar</Link>
-            {isCalendar && isMobileLayout &&(
-              <div className="aside__calendar-links" onClick={() => setAsideShown(false)}>
-                <Link to={"/calendar/month"}>Month</Link>
-                <Link to={"/calendar/week"}>Week</Link>
-                <Link  to={"/calendar/agenda"}>Schedule</Link>
-              </div>
-            )}
-            <hr className="aside-seperator"/>
+          {isCalendar && isMobileLayout && (
+            <div
+              className="aside__calendar-links"
+              onClick={() => setAsideShown(false)}
+            >
+              <Link to={"/calendar/month"}>Month</Link>
+              <Link to={"/calendar/week"}>Week</Link>
+              <Link to={"/calendar/agenda"}>Schedule</Link>
+            </div>
+          )}
+          <hr className="aside-seperator" />
           <Link to={"/tasks"}>Tasks</Link>
 
           {user &&
@@ -264,20 +281,24 @@ function DefaultLayout({
             >
               <i className="fa fa-bars"></i>
             </button>
-            <div>{user && user.name}</div>
-
-            {/* show selection of calendar types */}
-            {isCalendar && (
+            {!isMobileLayout && (
               <>
-                <select
-                  value={layout}
-                  onChange={(e) => handleOptionSelect(e.target.value)}
-                >
-                  <option value="month">Month</option>
-                  <option value="week">Week</option>
-                  <option value="agenda">Agenda</option>
-                </select>
-                {renderAddNewTaskBtn()}
+                <div>{user && user.name}</div>
+
+                {/* show selection of calendar types */}
+                {isCalendar && (
+                  <>
+                    <select
+                      value={layout}
+                      onChange={(e) => handleOptionSelect(e.target.value)}
+                    >
+                      <option value="month">Month</option>
+                      <option value="week">Week</option>
+                      <option value="agenda">Agenda</option>
+                    </select>
+                    {renderAddNewTaskBtn()}
+                  </>
+                )}
               </>
             )}
 
@@ -285,8 +306,9 @@ function DefaultLayout({
               Logout
             </a>
           </header>
-          <main>
+          <main className={isMobileLayout ? "main-mobile" : ""}>
             <Outlet />
+            {isMobileLayout && isCalendar && renderAddNewTaskLink()}
           </main>
 
           {notification && <div className="notification">{notification}</div>}
@@ -296,7 +318,6 @@ function DefaultLayout({
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

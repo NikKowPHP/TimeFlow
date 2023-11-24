@@ -89,8 +89,9 @@ input:focus {
 
 .btn-logout {
   text-decoration: none;
+
   padding: 0.75rem 1.5rem;
-  color: #212121;
+  color: #ffffff;
   transition: all 0.3s;
   border-radius: 6px;
 }
@@ -138,6 +139,12 @@ input:focus {
   width: 40px;
   height: 40px;
   border-radius: 10px;
+}
+.btn__add-task__absolute {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: white;
 }
 
 .font-bold {
@@ -314,7 +321,6 @@ table > tbody > tr > td {
 }
 
 #defaultLayout {
-  display: flex;
 }
 .default-layout-container {
   position: relative;
@@ -328,8 +334,6 @@ table > tbody > tr > td {
   position:absolute;
   top: 0;
   left: -100%;
-  width: 80%;
-  height: 100%;
   background-color: rgba(164, 94, 192, 0.61);
   z-index: 1000;
 
@@ -360,6 +364,7 @@ table > tbody > tr > td {
 
 #defaultLayout aside {
   width: 300px;
+  height: 100vh;
   background-color: #5b08a7;
   padding: 1rem;
   transform-origin: 0% 0%;
@@ -426,6 +431,10 @@ table > tbody > tr > td {
 
 #defaultLayout main {
   padding: 2rem;
+}
+#defaultLayout .main-mobile {
+  padding: 0;
+  position: relative;
 }
 
 .animated {

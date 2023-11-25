@@ -1,0 +1,37 @@
+.modal-profile__modal-tools {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 20px;
+}
+.modal-tools__email {
+	margin-right: 100px;
+}
+.modal-profile__body-main {
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+}
+.modal-profile__body-main h2 {
+	font-weight: 400;
+	margin-bottom: 10px;
+}
+.modal-profile__profile-link {
+	text-decoration: none;
+	font-weight: 500;
+	border: 1px solid rgba(1, 1, 1, 0.404);
+	padding: 10px;
+	border-radius: 20px;
+	background-color: rgba(1, 1, 1, 0.021);
+	transition: all 0.2s ease;
+	margin-bottom: 20px;
+}
+
+.modal-profile__profile-link:hover {
+	background-color: rgba(1, 1, 1, 0.048);
+}
+.modal-profile__btns {
+	display: flex;
+	justify-content: center;
+}
+

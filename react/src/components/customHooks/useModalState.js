@@ -271,8 +271,10 @@ export function useModalState({ modalRef }) {
     }
     event.stopPropagation();
     showModal(modalId);
-    dispatch(selectDate(selectedDate));
-    dispatch(clickCell(modalId));
+    if (selectedDate) {
+      dispatch(selectDate(selectedDate));
+      dispatch(clickCell(modalId));
+    }
     if (isNewTask) {
       const newTaskId = getNewTaskId(allTasks);
       const initiatedTask = initiateNewTask(

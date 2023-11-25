@@ -32,6 +32,7 @@ function CalendarMonthly({
   dispatch,
   deleteTask,
   user,
+  isMobileLayout,
 }) {
   const modalRef = useRef(null);
 
@@ -136,7 +137,12 @@ function CalendarMonthly({
     setNewTask({ title: event.target.value });
   };
 
-  const renderTaskItem = (task) => (
+  const renderTaskItem = (task) => {
+
+    return isMobileLayout ? 
+    <li className="calendar-monthly__date-task-list__item task-option">
+      <TruncatedText text={task.title} maxCharacters={5} />
+    </li> : 
     <li
       className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(
         task.id,
@@ -148,9 +154,9 @@ function CalendarMonthly({
       }
     >
       <TruncatedText text={task.title} maxCharacters={6} />
-      {` ${task.time_start}-${task.time_end}`}
+      {!isMobileLayout && ` ${task.time_start}-${task.time_end}`}
     </li>
-  );
+  }
 
   const renderEllipsis = (taskRestSum, ellipsisId) => {
     return (

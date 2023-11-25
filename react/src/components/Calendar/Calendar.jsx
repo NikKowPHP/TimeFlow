@@ -42,7 +42,8 @@ function Calendar({
   loading,
   setNewTask,
   newTask,
-  deleteTask
+  deleteTask,
+  isMobileLayout,
 }) {
   const dispatch = useDispatch();
   const { user } = useStateContext();
@@ -95,6 +96,7 @@ function Calendar({
       newTask={newTask}
       updateTasks={updateTasks}
       deleteTask={deleteTask}
+      isMobileLayout={isMobileLayout}
     />
   );
 }
@@ -111,6 +113,7 @@ const mapStateToProps = (state) => ({
   loading: state.tasks.loading,
   error: state.tasks.error,
   newTask: state.tasks.newTask,
+  isMobileLayout: state.app.isMobileLayout
 });
 
 const mapDispatchToProps = {

@@ -23,6 +23,7 @@ import {
 import { setNewTask, updateTasks } from "../redux/actions/taskActions";
 import svgPaths from "./svgPaths";
 import { windowResize } from "../redux/actions/appActions.js";
+import ProfileModal from "./modals/ProfileModal.jsx";
 
 function DefaultLayout({
   layout,
@@ -202,7 +203,10 @@ function DefaultLayout({
   };
   const renderAddNewTaskLink = () => {
     return (
-      <Link to="/tasks/new" className={`btn__add-task-wrapper btn__add-task__absolute`}>
+      <Link
+        to="/tasks/new"
+        className={`btn__add-task-wrapper btn__add-task__absolute`}
+      >
         <svg
           className="btn__add-task"
           width="36"
@@ -214,6 +218,40 @@ function DefaultLayout({
       </Link>
     );
   };
+  const renderProfileModal = () => {
+    const id = "profile";
+
+    return (
+      <Modal
+        modalOpacity={modalOpacity}
+        modalPosition={modalPosition}
+        modalRef={modalRef}
+        isModalVisible={openedModalId === id}
+        classes={`modal-task-description `}
+        key={id}
+        content={
+          <ProfileModal 
+            onModalClose={hideModal}
+            user={user}
+            onLogout={onLogout}
+          />
+        }
+      >
+            <button  className="btn-profile" onClick={(event) => handleOnTriggerClick({ event: event, modalId: id})}>
+              <svg
+                width="83px"
+                viewBox="0 0 18 18"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="#000000"
+              >
+                {svgPaths.profileLogo}
+              </svg>
+            </button>
+
+      </Modal>
+    );
+
+  }
 
   return (
     <div id="defaultLayout" className="default-layout-container">
@@ -301,10 +339,11 @@ function DefaultLayout({
                 )}
               </>
             )}
+            {renderProfileModal()}
 
-            <a href="#" onClick={onLogout} className="btn btn-logout">
+            {/* <a href="#" onClick={onLogout} className="btn btn-logout">
               Logout
-            </a>
+            </a> */}
           </header>
           <main className={isMobileLayout ? "main-mobile" : ""}>
             <Outlet />

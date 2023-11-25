@@ -14,12 +14,12 @@ CALENDAR BY MONTH
   padding: 3px;
   /* height: 70px; */
   display: block;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.349);
-  border-top: 1px solid rgba(0, 0, 0, 0.342);
-  border-right: 1px solid rgba(0, 0, 0, 0.349);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
 .calendar-monthly-wrapper {
-  border-left: 1px solid rgba(0, 0, 0, 0.342);
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #fff;
 }
 .calendar-monthly-dates {
@@ -35,9 +35,9 @@ CALENDAR BY MONTH
   padding: 3px;
   height: 100px;
   display: block;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.342);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   /* border-left:1px solid black; */
-  border-right: 1px solid rgba(0, 0, 0, 0.342);
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .calendar-monthly__date-task-list__list {
@@ -55,6 +55,20 @@ CALENDAR BY MONTH
   margin: 0;
   font-size: 13px;
 }
+
+.calendar-monthly__date-task-list__item.task-option {
+  margin-left: 0px;
+  padding-left: 3px;
+  margin-bottom: 5px;
+  list-style: none;
+  background-color: rgba(145, 214, 154, 0.399);
+  border-radius: 8px;
+}
+
+  .calendar-monthly-dates .date {
+    height: 160px;
+  }
+
 .calendar-monthly__date-task-list__item:hover {
   background-color: rgba(204, 195, 204, 0.39);
 }
@@ -65,7 +79,6 @@ CALENDAR BY MONTH
   cursor: pointer;
 }
 
-
 .dates-switcher__month-name {
   font-size: 15px;
   font-weight: 500;
@@ -74,54 +87,88 @@ CALENDAR BY MONTH
 }
 
 .date-tasks__ellipsis {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .date-tasks__ellipsis:hover {
   color: rgba(0, 0, 0, 0.568);
 }
 .calendar-monthly__clicked-new-task-modal {
-    text-align: center;
-    color: rgb(252, 252, 252);
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 10px;
-    background-color: rgb(173, 114, 196);
-    box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
-    border-radius: 10%;
-
+  text-align: center;
+  color: rgb(252, 252, 252);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 10px;
+  background-color: rgb(173, 114, 196);
+  box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
+  border-radius: 10%;
 }
 @media screen and (max-width: 970px) {
   .calendar-monthly-dates .date {
-    height: 180px;
+    height: 18vh;
   }
-.calendar-monthly__date-task-list__item.task-option {
-  margin-left: 0px;
-  padding-left: 3px;
-  margin-bottom: 5px;
-  list-style: none;
-  background-color: rgba(145, 214, 154, 0.399);
-  border-radius: 8px;
-}
-.calendar-monthly__date-task-list__list {
-  margin-left: 0;
-  margin-top: 0;
-}
-.calendar-dates li.current-date::before {
-  border: none;
-  background-color: rgba(206, 145, 214, 0.399);
-  top: 12px;
-  padding: 11px;
-}
+  .calendar-monthly__date-task-list__item.task-option {
+    margin-left: 0px;
+    padding-left: 3px;
+    margin-bottom: 5px;
+    list-style: none;
+    background-color: rgba(145, 214, 154, 0.399);
+    border-radius: 8px;
+  }
+  .calendar-monthly__date-task-list__list {
+    margin-left: 0;
+    margin-top: 0;
+  }
+  .calendar-dates li.current-date::before {
+    border: none;
+    background-color: rgba(206, 145, 214, 0.399);
+    top: 12px;
+    padding: 1px;
+  }
+  .calendar-monthly-dates {
+    border: none;
+  }
+  .calendar-monthly-days .day-name{
+    border-top: none;
+  }
+  .calendar-monthly-days .day-name:nth-child(7) {
+    border-right: none;
+  }
+  .calendar-monthly-days .day-name {
+    border-right: none;
+    position: relative;
+  }
+  .calendar-monthly-days .day-name::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 50%;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .calendar-monthly-days .day-name:nth-child(7):after {
+    border-right: none;
+  }
+
+  .calendar-monthly-dates div:nth-child(7n) .date {
+    border-right: none;
+  }
+  /* Remove border-bottom from the last 7 children */
+  .calendar-monthly-dates div:nth-last-child(-n+7) .date {
+    border-bottom: none;
+  }
+  .calendar-monthly-wrapper {
+    border: none;
+  }
+
 }
 @media screen and (max-width: 768px) {
-  .calendar-monthly-dates .date {
-    height: 100px;
-    
-  }
   .calendar-monthly__date-task-list__item {
     /* white-space: nowrap; */
     /* overflow: hidden; */
     text-overflow: ellipsis;
+  }
+  .calendar-dates .task-option {
+    font-size: 12px;
   }
 }

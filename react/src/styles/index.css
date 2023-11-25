@@ -258,7 +258,7 @@ table > tbody > tr > td {
 .dates-switcher-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 .dates-switcher__block {
@@ -452,7 +452,8 @@ table > tbody > tr > td {
 }
 
 #defaultLayout header {
-  height: 80px;
+  height: 10vh;
+  /* height: 80px; */
   padding: 2rem 3rem;
   background-color: white;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
@@ -462,7 +463,7 @@ table > tbody > tr > td {
 }
 
 #defaultLayout main {
-  padding: 2rem;
+  padding: 0.5rem 2rem;
 }
 #defaultLayout .main-mobile {
   padding: 0;
@@ -534,7 +535,8 @@ table > tbody > tr > td {
 }
 @media screen and (max-width: 970px) {
   #defaultLayout header {
-    height: 50px;
+    /* height: 50px; */
+    height: 5vh;
   }
   .btn-logout {
     padding: 10px;

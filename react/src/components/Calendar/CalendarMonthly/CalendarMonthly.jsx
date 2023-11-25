@@ -12,6 +12,7 @@ import { useLocationState } from "../../customHooks/useLocationState";
 import Loading from "../../Loading";
 import TruncatedText from "../../TruncatedText";
 import ElipsisTaskList from "../EllipsisTaskList";
+import MonthSwitcher from "../items/MonthSwitcher";
 
 function CalendarMonthly({
   dates,
@@ -53,7 +54,7 @@ function CalendarMonthly({
     displaySuccessTaskCreation,
     onModalClose,
     handleOnTriggerClick,
-    modalOpacity
+    modalOpacity,
   } = useModalState({
     modalRef: modalRef,
     dispatch: dispatch,
@@ -138,25 +139,30 @@ function CalendarMonthly({
   };
 
   const renderTaskItem = (task) => {
-
-    return isMobileLayout ? 
-    <li className="calendar-monthly__date-task-list__item task-option">
-      <TruncatedText text={task.title} maxCharacters={5} />
-    </li> : 
-    <li
-      className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(
-        task.id,
-        openedModalId,
-        isModalVisible
-      )} `}
-      onClick={(event) =>
-        handleOnTriggerClick({ event: event, modalId: task.id, dispatch:dispatch })
-      }
-    >
-      <TruncatedText text={task.title} maxCharacters={6} />
-      {!isMobileLayout && ` ${task.time_start}-${task.time_end}`}
-    </li>
-  }
+    return isMobileLayout ? (
+      <li className="calendar-monthly__date-task-list__item task-option">
+        <TruncatedText text={task.title} maxCharacters={5} />
+      </li>
+    ) : (
+      <li
+        className={`calendar-monthly__date-task-list__item task-option  ${toggleTaskActiveClass(
+          task.id,
+          openedModalId,
+          isModalVisible
+        )} `}
+        onClick={(event) =>
+          handleOnTriggerClick({
+            event: event,
+            modalId: task.id,
+            dispatch: dispatch,
+          })
+        }
+      >
+        <TruncatedText text={task.title} maxCharacters={6} />
+        {!isMobileLayout && ` ${task.time_start}-${task.time_end}`}
+      </li>
+    );
+  };
 
   const renderEllipsis = (taskRestSum, ellipsisId) => {
     return (
@@ -333,23 +339,13 @@ function CalendarMonthly({
       <Loading />
     ) : (
       <div className="calendar-monthly">
-        <div className="dates-switcher-container">
-          <span
-            onClick={handlePrevMonthClick}
-            className="material-symbols-rounded dates-switcher__block"
-          >
-            chevron_left
-          </span>
-          <span className="dates-switcher__month-name">
-            {getMonthName(month)}
-          </span>
-          <span
-            onClick={handleNextMonthClick}
-            className="material-symbols-rounded  dates-switcher__block"
-          >
-            chevron_right
-          </span>
-        </div>
+        {!isMobileLayout && (
+          <MonthSwitcher
+            handleNextMonthClick={handleNextMonthClick}
+            handlePrevMonthClick={handlePrevMonthClick}
+            monthName={getMonthName(month)}
+          />
+        )}
         <div className="calendar-monthly-wrapper">
           {renderDays()}
           {renderDatesGrid()}

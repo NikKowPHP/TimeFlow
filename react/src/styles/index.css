@@ -72,6 +72,42 @@ input:focus {
 .btn-google {
   display: block;
 }
+.btn-profile {
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.2s ease;
+}
+.btn-profile svg {
+  width: 25px;
+}
+.btn-profile:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.btn-signOut {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border:none;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgb(1,1,1);
+  background: rgba(0, 0, 0, 0.103);
+  padding: 10px;
+  border-radius: 20px;
+  transition: background 0.2s ease;
+}
+.btn-signOut:hover {
+ background-color: rgba(0, 0, 0, 0.048);
+}
+.btn-signOut svg{
+  width: 30px;
+}
 
 .btn-add,
 .btn-edit,
@@ -317,7 +353,7 @@ table > tbody > tr > td {
   border: none;
 }
 .wrapper {
-  position:relative;
+  position: relative;
 }
 
 #defaultLayout {
@@ -326,12 +362,11 @@ table > tbody > tr > td {
   position: relative;
   width: 100%;
   height: 100%;
-  
 }
 .default-aside-overlay {
   display: flex;
   flex-direction: column;
-  position:absolute;
+  position: absolute;
   top: 0;
   left: -100%;
   background-color: rgba(164, 94, 192, 0.61);
@@ -340,12 +375,12 @@ table > tbody > tr > td {
   transition: left 0.3s ease-in-out;
 }
 .dim-overlay {
-  position:fixed;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
   z-index: 999;
   display: none;
   transition: background 0.3s ease-in-out;
@@ -355,7 +390,7 @@ table > tbody > tr > td {
 }
 .default-aside-overlay.aside-active + .dim-overlay {
   display: block;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .default-aside-overlay .btn-hamburger {
   color: white;
@@ -383,8 +418,6 @@ table > tbody > tr > td {
   display: block;
 }
 
-
-
 #defaultLayout aside > a {
   display: block;
   padding: 0.75rem 1rem;
@@ -408,7 +441,6 @@ table > tbody > tr > td {
   color: white;
   text-decoration: none;
   transition: all 0.2s;
-
 }
 
 #defaultLayout aside > a:hover {
@@ -498,5 +530,13 @@ table > tbody > tr > td {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@media screen and (max-width: 970px) {
+  #defaultLayout header {
+    height: 50px;
+  }
+  .btn-logout {
+    padding: 10px;
   }
 }

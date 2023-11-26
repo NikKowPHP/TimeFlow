@@ -62,7 +62,6 @@ function CalendarMonthly({
     dispatch: dispatch,
     setNewTask: setNewTask,
   });
-
   const { onTaskDelete, getTasksByDate } = taskUtils({
     onStateReceived: handleTaskState,
     hideModal: hideModal,
@@ -113,22 +112,40 @@ function CalendarMonthly({
   const handleOnDateClick = ({ event, modalId, selectedDate, cellId }) => {
     dispatch(clickCell(cellId));
     dispatch(selectDate(selectedDate.getTime()));
+    const currentDateObj = new Date(currentDate);
+    const minutes = currentDateObj.getMinutes();
+
+    const roundedMinutes = minutes < 30 ? 30 : 0;
+
     const startTime = new Date();
-    startTime.setHours(7);
-    const endTime = new Date();
-    endTime.setHours(8);
-    handleOnTriggerClick({
-      event: event,
-      modalId: modalId,
-      startTime: startTime,
-      endTime: endTime,
-      selectedDate: selectedDate,
-      isNewTask: true,
-      allTasks: allTasks,
-      setNewTask: setNewTask,
-      newTaskObj: newTask,
-      dispatch: dispatch,
-    });
+    startTime.setMinutes(roundedMinutes);
+
+    const endTime = new Date(startTime);
+    endTime.setHours(startTime.getHours() + 1);
+    dispatch(
+      setNewTask({
+        time_start: startTime,
+        time_end: endTime,
+        date: selectedDate,
+      })
+    );
+
+    if (!isMobileLayout) {
+      handleOnTriggerClick({
+        event: event,
+        modalId: modalId,
+        startTime: startTime,
+        endTime: endTime,
+        selectedDate: selectedDate,
+        isNewTask: true,
+        allTasks: allTasks,
+        setNewTask: setNewTask,
+        newTaskObj: newTask,
+        dispatch: dispatch,
+      });
+    } else {
+      navigate("/tasks/new");
+    }
   };
 
   /**
@@ -292,6 +309,22 @@ function CalendarMonthly({
       {renderDateTasks(date, id)}
     </li>
   );
+  const renderDateItemsMobile = (id, date) => (
+    <li
+      onClick={(event) =>
+        handleOnDateClick({
+          event: event,
+          modalId: id,
+          selectedDate: date,
+          cellId: id,
+        })
+      }
+      key={id}
+    >
+      {date.getDate()}
+      {renderDateTasks(date, id)}
+    </li>
+  );
 
   const renderDatesGrid = () => (
     <ol className="calendar-dates calendar-monthly-dates">
@@ -347,7 +380,7 @@ function CalendarMonthly({
     if (touchEnd.current >= 15) {
       const difference = touchEnd.current - touchStart.current;
       if (Math.abs(difference) >= sensitivityThreshold) {
-          touchEnd.current = 0;
+        touchEnd.current = 0;
         if (difference > 0) {
           handlePrevMonthClick();
         } else {

@@ -335,7 +335,6 @@ function CalendarMonthly({
   const handlePrevMonthClick = () => {
     goToPrevMonth(year, month, setYear, setMonth, dispatch);
   };
-  // TODO: MAKE IT LESS SENSITIVE
 
   const handleTouchStart = (e) => {
     touchStart.current = e.touches[0].clientX;
@@ -345,12 +344,15 @@ function CalendarMonthly({
   };
   const handleTouchEnd = () => {
     const sensitivityThreshold = 80;
-    const difference = touchEnd.current - touchStart.current;
-    if (Math.abs(difference) >= sensitivityThreshold) {
-      if (difference > 0) {
-        handlePrevMonthClick();
-      } else {
-        handleNextMonthClick();
+    if (touchEnd.current >= 15) {
+      const difference = touchEnd.current - touchStart.current;
+      if (Math.abs(difference) >= sensitivityThreshold) {
+          touchEnd.current = 0;
+        if (difference > 0) {
+          handlePrevMonthClick();
+        } else {
+          handleNextMonthClick();
+        }
       }
     }
   };

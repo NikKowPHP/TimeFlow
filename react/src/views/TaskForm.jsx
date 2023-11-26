@@ -3,22 +3,47 @@ import { useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
 import { toast } from "react-toastify";
 import { useLocationState } from "../components/customHooks/useLocationState";
-import { useDispatch } from "react-redux";
-import { updateTask } from "../redux/actions/taskActions";
+import { connect, useDispatch } from "react-redux";
+import { updateTask, updateTasks } from "../redux/actions/taskActions";
+import { taskUtils } from "../utils/taskUtils";
 
-export default function TaskForm() {
+function TaskForm({ newTask, updateTasks }) {
   const dispatch = useDispatch();
   const { goBack } = useLocationState();
   const { id } = useParams();
+
   const [task, setTask] = useState({
+    user_id: null,
     title: "",
-    date: null,
+    date: "",
     time_start: null,
     time_end: null,
     notification_preference: null,
   });
-  const [loading, setLoading] = useState(false);
+  console.log(newTask);
+
+  const { initiateNewTask } = taskUtils({});
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
+
+  useEffect(() => {
+    setLoading(true);
+    setTask({
+      ...initiateNewTask(
+        newTask.time_start,
+        newTask.time_end,
+        newTask.date,
+        null
+      ),
+      user_id: newTask.user_id,
+    });
+
+    setLoading(false);
+  }, []);
+  useEffect(() => {
+    console.log(task);
+  }, [task]);
+
   if (id) {
     useEffect(() => {
       const getTask = () => {
@@ -46,6 +71,14 @@ export default function TaskForm() {
       axiosClient.put(`/tasks/${task.id}`, task).then(() => {
         dispatch(updateTask(task));
         toast.success("The task was updated");
+        setTimeout(() => {
+          goBack();
+        }, 2000);
+      });
+    } else {
+      axiosClient.post("/tasks", task).then((data) => {
+        dispatch(updateTasks(data.data));
+        toast.success(`${task.title} has been successfully created`);
         setTimeout(() => {
           goBack();
         }, 2000);
@@ -95,7 +128,8 @@ export default function TaskForm() {
                       }
                     />
                   </div>
-                  <select style={{ marginBottom: "10px"}}
+                  <select
+                    style={{ marginBottom: "10px" }}
                     defaultValue={task.notification_preference}
                     onChange={(event) =>
                       setTask({
@@ -123,11 +157,11 @@ export default function TaskForm() {
             )}
           </div>
         </div>
-      ): (
-          
-        <div>
-          <h1>Create A New Task{task.title}</h1>
-          <div className="card animated fadeInDown">
+      ) : (
+        !loading && (
+          <div>
+            <h1>Create A New Task{task.title}</h1>
+            <div className="card animated fadeInDown">
               <>
                 <form action="" onSubmit={onSubmitForm}>
                   <input
@@ -139,6 +173,7 @@ export default function TaskForm() {
                   />
                   <input
                     type="date"
+                    value={task.date}
                     onChange={(ev) =>
                       setTask({ ...task, date: ev.target.value })
                     }
@@ -160,7 +195,8 @@ export default function TaskForm() {
                       }
                     />
                   </div>
-                  <select style={{ marginBottom: "10px"}}
+                  <select
+                    style={{ marginBottom: "10px" }}
                     defaultValue={task.notification_preference}
                     onChange={(event) =>
                       setTask({
@@ -185,9 +221,21 @@ export default function TaskForm() {
                   </div>
                 </form>
               </>
+            </div>
           </div>
-        </div>
+        )
       )}
     </>
   );
 }
+
+const mapStateToProps = (state) => ({
+  selectedDate: state.calendar.selectedDate,
+  newTask: state.tasks.newTask,
+});
+const mapDispatchToProps = {
+  updateTask,
+  updateTasks,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskForm);

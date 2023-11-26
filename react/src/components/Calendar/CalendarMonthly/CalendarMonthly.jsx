@@ -36,6 +36,8 @@ function CalendarMonthly({
   isMobileLayout,
 }) {
   const modalRef = useRef(null);
+  const touchStart = useRef(0);
+  const touchEnd = useRef(0);
 
   const {
     getMonthName,
@@ -333,7 +335,42 @@ function CalendarMonthly({
   const handlePrevMonthClick = () => {
     goToPrevMonth(year, month, setYear, setMonth, dispatch);
   };
+  // TODO: MAKE IT LESS SENSITIVE
 
+  const handleTouchStart = (e) => {
+    touchStart.current = e.touches[0].clientX;
+  };
+  const handleTouchMove = (e) => {
+    touchEnd.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = () => {
+    const sensitivityThreshold = 80;
+    const difference = touchEnd.current - touchStart.current;
+    if (Math.abs(difference) >= sensitivityThreshold) {
+      if (difference > 0) {
+        handlePrevMonthClick();
+      } else {
+        handleNextMonthClick();
+      }
+    }
+  };
+
+  const mobileContent = (
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {renderDays()}
+      {renderDatesGrid()}
+    </div>
+  );
+  const desktopContent = (
+    <>
+      {renderDays()}
+      {renderDatesGrid()}
+    </>
+  );
   const renderMainComponent = () =>
     loading ? (
       <Loading />
@@ -347,8 +384,7 @@ function CalendarMonthly({
           />
         )}
         <div className="calendar-monthly-wrapper">
-          {renderDays()}
-          {renderDatesGrid()}
+          {isMobileLayout ? mobileContent : desktopContent}
         </div>
       </div>
     );

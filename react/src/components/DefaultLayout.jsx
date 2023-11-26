@@ -19,17 +19,21 @@ import {
   selectDate,
   setLayout,
   setMonth,
+  setYear,
 } from "../redux/actions/calendarActions";
 import { setNewTask, updateTasks } from "../redux/actions/taskActions";
 import svgPaths from "./svgPaths";
 import { windowResize } from "../redux/actions/appActions.js";
 import ProfileModal from "./modals/ProfileModal.jsx";
+import MonthSwitcher from "./Calendar/items/MonthSwitcher.jsx";
 
 function DefaultLayout({
   layout,
   setLayout,
   year,
+  setYear,
   month,
+  setMonth,
   currentDate,
   selectedDate,
   allTasks,
@@ -58,7 +62,8 @@ function DefaultLayout({
   } = useModalState({
     modalRef: modalRef,
   });
-  const { toggleTaskActiveClass } = calendarUtils();
+  const { toggleTaskActiveClass, getMonthName, goToNextMonth, goToPrevMonth } =
+    calendarUtils();
 
   const { requestNotificationPermission, isNotificationGranted } =
     useNotificationState();
@@ -82,6 +87,7 @@ function DefaultLayout({
   // show calendar in aside section
   const location = useLocation().pathname;
   const isCalendar = location.includes("calendar");
+  const isCalendarMonthly = location.includes("month");
   // show/hide aside
   const [asideShown, setAsideShown] = useState(true);
 
@@ -230,28 +236,31 @@ function DefaultLayout({
         classes={`modal-task-description `}
         key={id}
         content={
-          <ProfileModal 
+          <ProfileModal
             onModalClose={hideModal}
             user={user}
             onLogout={onLogout}
           />
         }
       >
-            <button  className="btn-profile" onClick={(event) => handleOnTriggerClick({ event: event, modalId: id})}>
-              <svg
-                width="83px"
-                viewBox="0 0 18 18"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#000000"
-              >
-                {svgPaths.profileLogo}
-              </svg>
-            </button>
-
+        <button
+          className="btn-profile"
+          onClick={(event) =>
+            handleOnTriggerClick({ event: event, modalId: id })
+          }
+        >
+          <svg
+            width="83px"
+            viewBox="0 0 18 18"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+          >
+            {svgPaths.profileLogo}
+          </svg>
+        </button>
       </Modal>
     );
-
-  }
+  };
 
   return (
     <div id="defaultLayout" className="default-layout-container">
@@ -339,6 +348,13 @@ function DefaultLayout({
                 )}
               </>
             )}
+            {isMobileLayout && isCalendarMonthly && (
+              <MonthSwitcher
+                monthName={getMonthName(month)}
+                handleNextMonthClick={() => goToNextMonth(year, month, setYear, setMonth, dispatch)}
+                handlePrevMonthClick={() => goToPrevMonth(year, month, setYear, setMonth, dispatch)}
+              />
+            )}
             {renderProfileModal()}
 
             {/* <a href="#" onClick={onLogout} className="btn btn-logout">
@@ -381,6 +397,7 @@ const mapDispatchToProps = {
   setLayout,
   selectDate,
   setMonth,
+  setYear,
   setNewTask,
   updateTasks,
   clickCell,

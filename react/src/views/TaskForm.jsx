@@ -1,3 +1,4 @@
+import "../styles/taskForms/newTaskForm.css";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient from "../axios-client";
@@ -6,6 +7,7 @@ import { useLocationState } from "../components/customHooks/useLocationState";
 import { connect, useDispatch } from "react-redux";
 import { updateTask, updateTasks } from "../redux/actions/taskActions";
 import { taskUtils } from "../utils/taskUtils";
+import svgPaths from "../components/svgPaths";
 
 function TaskForm({ newTask, updateTasks }) {
   const dispatch = useDispatch();
@@ -20,7 +22,6 @@ function TaskForm({ newTask, updateTasks }) {
     time_end: null,
     notification_preference: null,
   });
-  console.log(newTask);
 
   const { initiateNewTask } = taskUtils({});
   const [loading, setLoading] = useState(true);
@@ -159,69 +160,68 @@ function TaskForm({ newTask, updateTasks }) {
         </div>
       ) : (
         !loading && (
-          <div>
-            <h1>Create A New Task{task.title}</h1>
-            <div className="card animated fadeInDown">
-              <>
-                <form action="" onSubmit={onSubmitForm}>
-                  <input
-                    type="text"
-                    onChange={(ev) =>
-                      setTask({ ...task, title: ev.target.value })
-                    }
-                    placeholder="Task title"
-                  />
-                  <input
-                    type="date"
-                    value={task.date}
-                    onChange={(ev) =>
-                      setTask({ ...task, date: ev.target.value })
-                    }
-                  />
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <input
-                      type="time"
-                      value={task.time_start}
-                      onChange={(ev) =>
-                        setTask({ ...task, time_start: ev.target.value })
-                      }
-                    />
-                    <span style={{ padding: "5px", fontWeight: "700" }}>-</span>
-                    <input
-                      type="time"
-                      value={task.time_end}
-                      onChange={(ev) =>
-                        setTask({ ...task, time_end: ev.target.value })
-                      }
-                    />
-                  </div>
-                  <select
-                    style={{ marginBottom: "10px" }}
-                    defaultValue={task.notification_preference}
-                    onChange={(event) =>
-                      setTask({
-                        ...task,
-                        notification_preference: event.target.value,
-                      })
-                    }
+          <div className="taskForm-wrapper animated fadeInDown">
+            <form action="" onSubmit={onSubmitForm}>
+              <div className="taskForm__btn-group">
+                <button className="btn-close" onClick={goBack}>
+                  <svg
+                    className="svg-control"
+                    focusable="false"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
                   >
-                    <option value={null}>Do not notify me</option>
-                    <option value="1_day_before">1 day before</option>
-                    <option value="1_hour_before">1 hour before</option>
-                    <option value="15_minutes_before">15 minutes before</option>
-                  </select>
-
-                  <div className="task-form__btn-group">
-                    <button type="submit" className="btn btn-add">
-                      Save
-                    </button>
-                    <button onClick={goBack} className="btn btn-delete">
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </>
-            </div>
+                    {svgPaths.close}
+                  </svg>
+                </button>
+                <button type="submit" className="btn btn-add">
+                  Save
+                </button>
+              </div>
+              <input
+                type="text"
+                onChange={(ev) => setTask({ ...task, title: ev.target.value })}
+                placeholder="Task title"
+              />
+              <input
+                type="date"
+                value={task.date}
+                onChange={(ev) => setTask({ ...task, date: ev.target.value })}
+              />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="time"
+                  value={task.time_start}
+                  onChange={(ev) =>
+                    setTask({ ...task, time_start: ev.target.value })
+                  }
+                />
+                <span style={{ padding: "5px", fontWeight: "700" }}>-</span>
+                <input
+                  type="time"
+                  value={task.time_end}
+                  onChange={(ev) =>
+                    setTask({ ...task, time_end: ev.target.value })
+                  }
+                />
+              </div>
+              <select
+                style={{ marginBottom: "10px" }}
+                className="select select-round"
+                defaultValue={task.notification_preference}
+                onChange={(event) =>
+                  setTask({
+                    ...task,
+                    notification_preference: event.target.value,
+                  })
+                }
+              >
+                <option value={null}>Do not notify me</option>
+                <option value="1_day_before">1 day before</option>
+                <option value="1_hour_before">1 hour before</option>
+                <option value="15_minutes_before">15 minutes before</option>
+              </select>
+            </form>
           </div>
         )
       )}

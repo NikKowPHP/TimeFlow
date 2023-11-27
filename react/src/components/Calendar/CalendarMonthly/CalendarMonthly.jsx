@@ -157,9 +157,15 @@ function CalendarMonthly({
     setNewTask({ title: event.target.value });
   };
 
+  const handleOnTaskClickMobile = (event, task) => {
+    event.stopPropagation();
+    dispatch(selectDate(new Date(task.date).getTime()));
+    navigate(`/tasks/${task.date}`);
+  }
+
   const renderTaskItem = (task) => {
     return isMobileLayout ? (
-      <li className="calendar-monthly__date-task-list__item task-option">
+      <li className="calendar-monthly__date-task-list__item task-option" onClick={(ev) => handleOnTaskClickMobile(ev, task)}>
         <TruncatedText text={task.title} maxCharacters={5} />
       </li>
     ) : (

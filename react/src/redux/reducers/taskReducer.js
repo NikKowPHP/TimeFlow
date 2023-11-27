@@ -2,6 +2,7 @@ import {
   FETCH_TASKS_REQUEST,
   FETCH_TASKS_SUCCESS,
   FETCH_TASKS_FAILURE,
+  FETCH_DATE_TASKS_SUCCESS,
   UPDATE_TASKS,
   UPDATE_TASK,
   DELETE_TASK,
@@ -10,6 +11,7 @@ import {
 
 const initialState = {
   allTasks: [],
+  dateTasks: [],
   loading: false,
   error: null,
   newTask: {
@@ -32,6 +34,8 @@ const taskReducer = (state = initialState, action) => {
       return { ...state, loading: false, allTasks: action.payload };
     case FETCH_TASKS_FAILURE:
       return { ...state, loading: false, error: action.payload };
+    case FETCH_DATE_TASKS_SUCCESS:
+      return { ...state, loading: false, dateTasks: action.payload };
     case UPDATE_TASKS:
       const newTask = action.payload;
       return { ...state, allTasks: [...state.allTasks, newTask] };

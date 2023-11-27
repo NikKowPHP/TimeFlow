@@ -48,11 +48,16 @@ const router = createBrowserRouter([
         element: <Tasks />,
       },
       {
-        path: "/tasks/new",
-        element: <TaskForm />,
+        path: "/tasks/:date",
+        element: <Tasks />,
+
       },
       {
         path: "/tasks/:id",
+        element: <TaskForm />,
+      },
+      {
+        path: "/tasks/new",
         element: <TaskForm />,
       },
       {

@@ -29,6 +29,9 @@ function TaskForm({ newTask, updateTasks }) {
 
   useEffect(() => {
     setLoading(true);
+    if(!newTask.date) {
+      goBack();
+    }
     setTask({
       ...initiateNewTask(
         newTask.time_start,
@@ -41,9 +44,6 @@ function TaskForm({ newTask, updateTasks }) {
 
     setLoading(false);
   }, []);
-  useEffect(() => {
-    console.log(task);
-  }, [task]);
 
   if (id) {
     useEffect(() => {

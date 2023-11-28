@@ -26,6 +26,7 @@ import svgPaths from "./svgPaths";
 import { windowResize } from "../redux/actions/appActions.js";
 import ProfileModal from "./modals/ProfileModal.jsx";
 import MonthSwitcher from "./Calendar/items/MonthSwitcher.jsx";
+import AddNewTaskBtn from "./Calendar/items/AddNewTaskBtn.jsx";
 
 function DefaultLayout({
   layout,
@@ -149,6 +150,7 @@ function DefaultLayout({
       openedModalId,
       isModalVisible
     );
+
     const currentDate = new Date();
     const currentHours = currentDate.getHours();
     const timePeriodStartObj = currentDate;
@@ -343,7 +345,7 @@ function DefaultLayout({
                       <option value="week">Week</option>
                       <option value="agenda">Agenda</option>
                     </select>
-                    {renderAddNewTaskBtn()}
+                    <AddNewTaskBtn date={new Date(currentDate)} />
                   </>
                 )}
               </>
@@ -351,8 +353,12 @@ function DefaultLayout({
             {isMobileLayout && isCalendarMonthly && (
               <MonthSwitcher
                 monthName={getMonthName(month)}
-                handleNextMonthClick={() => goToNextMonth(year, month, setYear, setMonth, dispatch)}
-                handlePrevMonthClick={() => goToPrevMonth(year, month, setYear, setMonth, dispatch)}
+                handleNextMonthClick={() =>
+                  goToNextMonth(year, month, setYear, setMonth, dispatch)
+                }
+                handlePrevMonthClick={() =>
+                  goToPrevMonth(year, month, setYear, setMonth, dispatch)
+                }
               />
             )}
             {renderProfileModal()}
@@ -363,7 +369,9 @@ function DefaultLayout({
           </header>
           <main className={isMobileLayout ? "main-mobile" : ""}>
             <Outlet />
-            {isMobileLayout && isCalendar && renderAddNewTaskLink()}
+            {isMobileLayout && isCalendar && (
+              <AddNewTaskBtn date={new Date(currentDate)} />
+            )}
           </main>
 
           {notification && <div className="notification">{notification}</div>}

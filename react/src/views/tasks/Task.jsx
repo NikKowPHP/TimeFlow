@@ -1,9 +1,14 @@
+import "../../styles/tasks/existingTaskInfo.css";
 import React, { useEffect } from "react";
 import svgPaths from "../../components/svgPaths";
 import { useParams } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
-import { fetchDateTasks, fetchSelectedTask } from "../../redux/actions/taskActions";
+import {
+  fetchDateTasks,
+  fetchSelectedTask,
+} from "../../redux/actions/taskActions";
 import { useLocationState } from "../../components/customHooks/useLocationState";
+import Loading from "../../components/Loading";
 
 function Task({ selectedTask }) {
   const dispatch = useDispatch();
@@ -13,45 +18,43 @@ function Task({ selectedTask }) {
     dispatch(fetchSelectedTask(parseInt(id)));
   }, [id]);
 
-  return (
-    <div className="task-wrapper">
-      <div className="task-header">
+  return selectedTask ? (
+    <div className="task__info-wrapper">
+      <div className="task__info-header">
         <svg
-          className="svg-control cursor--pointer "
-          onClick={() => onTaskEdit(selectedTask)}
-          focusable="false"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          {svgPaths.edit}
-        </svg>
-        <svg
-          className="svg-control"
-          onClick={() => onDelete(selectedTask)}
-          focusable="false"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          {svgPaths.delete}
-        </svg>
-        <svg
-          className="svg-control"
+          className="task__info-header-btn--action"
           onClick={() => goBack()}
           focusable="false"
-          width="20"
-          height="20"
           viewBox="0 0 24 24"
         >
           {svgPaths.close}
         </svg>
+        <div className="task__info-header__actions-wrapper">
+          <svg
+            className="task__info-header-btn--action"
+            onClick={() => onTaskEdit(selectedTask)}
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            {svgPaths.edit}
+          </svg>
+          <svg
+            className="task__info-header-btn--action"
+            onClick={() => onDelete(selectedTask)}
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            {svgPaths.delete}
+          </svg>
+        </div>
       </div>
       <div className="task-body">
-				<h1>{selectedTask.title}</h1>
-				<h1>{selectedTask.date}</h1>
-			</div>
+        <h1>{selectedTask.title}</h1>
+        <h1>{selectedTask.date}</h1>
+      </div>
     </div>
+  ) : (
+    <Loading />
   );
 }
 

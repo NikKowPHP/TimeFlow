@@ -1,29 +1,29 @@
 import { toast } from "react-toastify";
 import axiosClient from "../axios-client";
 import { dateUtils } from "./dateUtils";
-import { useNavigate } from "react-router-dom";
 import { calendarUtils } from "./calendarUtils";
+import { deleteTask } from "../redux/actions/taskActions";
+import { useDispatch } from "react-redux";
+import { useLocationState } from "../components/customHooks/useLocationState";
 
-export function taskUtils({ hideModal, dispatch, deleteTask }) {
+export function taskUtils({ hideModal }) {
+  const dispatch = useDispatch();
   const { convertDateToTime } = calendarUtils();
+  const { navigate, goBack } = useLocationState();
   const { convertDateSql } = dateUtils();
-  const navigate = useNavigate();
 
   function onTaskEdit(task) {
-    navigate(`/tasks/${task.id}`, {
-      state: { previousLocation: location.pathname },
-    });
+    navigate(`/task/edit/${task.id}`);
   }
   const handleTaskState = (state) => {
     if (state.status === 204) {
-      hideModal();
       dispatch(deleteTask(state.task.id));
+      goBack();
       toast.success(`The task '${state.task.title}' was successfully deleted`);
     }
   };
   // Function to delete the task.
   const onTaskDelete = (task) => {
-    console.log(task);
     axiosClient.delete(`/tasks/${task.id}`).then((state) => {
       handleTaskState({ ...state, task: task });
     });

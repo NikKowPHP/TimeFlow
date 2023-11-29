@@ -9,16 +9,19 @@ import {
 } from "../../redux/actions/taskActions";
 import { useLocationState } from "../../components/customHooks/useLocationState";
 import Loading from "../../components/Loading";
+import { taskUtils } from "../../utils/taskUtils";
 
 function Task({ selectedTask }) {
+
+  const { onTaskDelete, onTaskEdit } = taskUtils({});
   const dispatch = useDispatch();
-  const { goBack, navigate } = useLocationState();
+  const { goBack } = useLocationState();
   const { id } = useParams();
+
   useEffect(() => {
     dispatch(fetchSelectedTask(parseInt(id)));
   }, [id]);
 
-  console.log(selectedTask);
   return selectedTask ? (
     <div className="task__info-wrapper">
       <div className="task__info-header">
@@ -33,7 +36,7 @@ function Task({ selectedTask }) {
         <div className="task__info-header__actions-wrapper">
           <svg
             className="task__info-header-btn--action"
-            onClick={() => onTaskEdit(selectedTask)}
+            onClick={onTaskEdit}
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -41,7 +44,7 @@ function Task({ selectedTask }) {
           </svg>
           <svg
             className="task__info-header-btn--action"
-            onClick={() => onDelete(selectedTask)}
+            onClick={() => onTaskDelete(selectedTask)}
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -66,10 +69,8 @@ function Task({ selectedTask }) {
             : "Notification is not set"}
         </p>
         <p className="task__info-footer__user-email-wrapper">
-          <svg>
-          {svgPaths.envelope}
-          </svg>
-          {selectedTask.user.email}
+          <svg>{svgPaths.envelope}</svg>
+          {selectedTask.user?.email}
         </p>
       </div>
     </div>

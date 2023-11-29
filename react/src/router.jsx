@@ -62,6 +62,11 @@ const router = createBrowserRouter([
         element: <TaskForm />,
       },
       {
+        path: "/task/edit/:id",
+        element: <TaskForm />,
+      },
+
+      {
         path: "/calendar",
         element: <Calendar />,
         children: [

@@ -8,10 +8,11 @@ import { dateUtils } from "../utils/dateUtils";
 import { calendarUtils } from "../utils/calendarUtils";
 import AddNewTaskBtn from "../components/Calendar/items/AddNewTaskBtn";
 import { useLocationState } from "../components/customHooks/useLocationState";
+import { Link } from "react-router-dom";
 
 function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
   const { loading, setNotification } = useStateContext();
-  const { goBack } = useLocationState();
+  const { goBack, navigate } = useLocationState();
   const dispatch = useDispatch();
   const { convertDateSql } = dateUtils();
   const { weekDays } = calendarUtils();
@@ -37,7 +38,9 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
     });
   };
 
-  const handleOnTaskClick = () => {};
+  const handleOnTaskClick = (taskId) => {
+    return navigate(`/task/${taskId}`);
+  };
   const renderDesktopContent = () => {};
 
   const renderMobileContent = () => {
@@ -53,7 +56,7 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
         </div>
         <div className="tasks-date__tasks-container">
           {dateTasks.map((task) => (
-            <div className="tasks-item-container" onClick={handleOnTaskClick}>
+            <div className="tasks-item-container" key={task.id} onClick={()=>handleOnTaskClick(task.id)}>
               <h4 className="tasks-item__title">{task.title}</h4>
               <span className="tasks-item__time">
                 {task.time_start} - {task.time_end}
@@ -71,81 +74,6 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
     </div>
   );
 
-  // return (
-  //   <div>
-  //     <div
-  //       style={{
-  //         display: "flex",
-  //         justifyContent: "space-between",
-  //         alignItems: "center",
-  //       }}
-  //     >
-  //       <h1>Tasks</h1>
-  //       <Link className="btn-add" to={"/users/new"}>
-  //         Add new
-  //       </Link>
-  //     </div>
-  //     <div className="card animated fadeInDown">
-  //       <table>
-  //         <thead>
-  //           <tr>
-  //             <th>ID</th>
-  //             <th>Title</th>
-  //             <th>Time start</th>
-  //             <th>Time end</th>
-  //             <th>Actions</th>
-  //           </tr>
-  //         </thead>
-
-  //         {loading && (
-  //           <tbody>
-  //             <tr>
-  //               <td colSpan={5} className="text-center">
-  //                 Loading...
-  //               </td>
-  //             </tr>
-  //           </tbody>
-  //         )}
-
-  //         {!loading && (
-  //           <tbody>
-  //             {allTasks?.length > 0 ? (
-  //               allTasks.map((task) => (
-  //                 <tr key={task.id}>
-  //                   <td>{task.id}</td>
-  //                   <td>{task.title}</td>
-  //                   <td>{task.time_start}</td>
-  //                   <td>{task.time_end}</td>
-  //                   <td>
-  //                     <Link
-  //                       className="btn-edit"
-  //                       style={{ marginRight: "5px" }}
-  //                       to={"/tasks/" + task.id}
-  //                     >
-  //                       Edit
-  //                     </Link>
-  //                     <button
-  //                       onClick={(ev) => onDelete(task)}
-  //                       className="btn-delete"
-  //                     >
-  //                       Delete
-  //                     </button>
-  //                   </td>
-  //                 </tr>
-  //               ))
-  //             ) : (
-  //               <tr>
-  //                 <td>
-  //                   <h3>There is no tasks</h3>
-  //                 </td>
-  //               </tr>
-  //             )}
-  //           </tbody>
-  //         )}
-  //       </table>
-  //     </div>
-  //   </div>
-  // );
 }
 
 const mapStateToProps = (state) => ({

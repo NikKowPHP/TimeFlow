@@ -1,0 +1,17 @@
+.task__info-wrapper {
+	height: 100vh;
+	background-color: white;
+	padding: 1rem;
+}
+.task__info-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.task__info-header__actions-wrapper .task__info-header-btn--action:nth-last-child(n) {
+	margin-right: 1rem;
+
+}
+.task__info-header-btn--action {
+	width: 1.7rem;
+}

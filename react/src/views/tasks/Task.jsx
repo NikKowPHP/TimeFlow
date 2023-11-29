@@ -18,6 +18,7 @@ function Task({ selectedTask }) {
     dispatch(fetchSelectedTask(parseInt(id)));
   }, [id]);
 
+  console.log(selectedTask);
   return selectedTask ? (
     <div className="task__info-wrapper">
       <div className="task__info-header">
@@ -48,9 +49,28 @@ function Task({ selectedTask }) {
           </svg>
         </div>
       </div>
-      <div className="task-body">
-        <h1>{selectedTask.title}</h1>
-        <h1>{selectedTask.date}</h1>
+      <div className="task__info-body">
+        <h1 className="task__info-body__title">{selectedTask.title}</h1>
+        <p className="task__info-body__date">{selectedTask.date} </p>
+        <p className="task__info-body__time">
+          {selectedTask.time_start} - {selectedTask.time_end}
+        </p>
+      </div>
+      <div className="task__info-footer">
+        <p className="task__info-footer__notification-wrapper">
+          <svg className="task__info-footer__notification--icon">
+            {svgPaths.notification}
+          </svg>
+          {selectedTask.notification_preference
+            ? selectedTask.notification_preference
+            : "Notification is not set"}
+        </p>
+        <p className="task__info-footer__user-email-wrapper">
+          <svg>
+          {svgPaths.envelope}
+          </svg>
+          {selectedTask.user.email}
+        </p>
       </div>
     </div>
   ) : (

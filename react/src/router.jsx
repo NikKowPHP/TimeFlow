@@ -12,6 +12,7 @@ import RoleNames from "./views/RoleNames";
 import Tasks from "./views/Tasks";
 import TaskForm from "./views/TaskForm";
 import GoogleCallback from "./components/GoogleCallback.jsx";
+import Task from "./views/tasks/Task.jsx";
 
 
 const router = createBrowserRouter([
@@ -53,8 +54,8 @@ const router = createBrowserRouter([
 
       },
       {
-        path: "/tasks/:id",
-        element: <TaskForm />,
+        path: "/task/:id",
+        element: <Task />,
       },
       {
         path: "/tasks/new",

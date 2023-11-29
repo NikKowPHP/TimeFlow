@@ -8,6 +8,7 @@ import {
   UPDATE_TASKS,
   UPDATE_TASK,
   FETCH_DATE_TASKS_SUCCESS,
+  FETCH_SELECTED_TASK,
 } from "./actionTypes";
 
 export const fetchTasksRequest = () => ({
@@ -19,6 +20,10 @@ export const fetchTasksSuccess = (data) => ({
 });
 export const fetchDateTasksSuccess = (data) => ({
   type: FETCH_DATE_TASKS_SUCCESS,
+  payload: data,
+});
+export const fetchSelectedTaskSuccess = (data) => ({
+  type: FETCH_SELECTED_TASK,
   payload: data,
 });
 export const fetchTasksFailure = (error) => ({
@@ -63,5 +68,13 @@ export const fetchDateTasks = (date) => {
 
     const dateTasks = allTasks.filter((task) => task.date === date);
     dispatch(fetchDateTasksSuccess(dateTasks))
+  }
+}
+export const fetchSelectedTask = (id) => {
+  return (dispatch, getState) => {
+    const dateTasks = getState().tasks.dateTasks;
+
+    const selectedTask = dateTasks.find((task) => task.id === id);
+    dispatch(fetchSelectedTaskSuccess(selectedTask))
   }
 }

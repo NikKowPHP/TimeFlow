@@ -7,11 +7,13 @@ import {
   UPDATE_TASK,
   DELETE_TASK,
   SET_NEW_TASK,
+  FETCH_SELECTED_TASK,
 } from "../actions/actionTypes";
 
 const initialState = {
   allTasks: [],
   dateTasks: [],
+  selectedTask: {},
   loading: false,
   error: null,
   newTask: {
@@ -36,6 +38,8 @@ const taskReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: action.payload };
     case FETCH_DATE_TASKS_SUCCESS:
       return { ...state, loading: false, dateTasks: action.payload };
+    case FETCH_SELECTED_TASK:
+      return { ...state, loading: false, selectedTask: action.payload };
     case UPDATE_TASKS:
       const newTask = action.payload;
       return { ...state, allTasks: [...state.allTasks, newTask] };

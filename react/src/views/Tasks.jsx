@@ -9,6 +9,7 @@ import { calendarUtils } from "../utils/calendarUtils";
 import AddNewTaskBtn from "../components/Calendar/items/AddNewTaskBtn";
 import { useLocationState } from "../components/customHooks/useLocationState";
 import { Link } from "react-router-dom";
+import svgPaths from "../components/svgPaths";
 
 function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
   const { loading, setNotification } = useStateContext();
@@ -28,16 +29,6 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
     }
   }, [selectedDate]);
 
-  const onDelete = (task) => {
-    if (!window.confirm("Do you really want to delete this task?")) {
-      return;
-    }
-    axiosClient.delete(`/tasks/${task.id}`).then(({ data }) => {
-      setNotification("The task was successfully deleted");
-      getAllTasks();
-    });
-  };
-
   const handleOnTaskClick = (taskId) => {
     return navigate(`/task/${taskId}`);
   };
@@ -49,23 +40,32 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
     const selectedDateDay = weekDays()[selectedDateObject.getDay() - 1];
 
     return (
-      <div className=" tasks-date-container">
-        <div className="tasks-date-section">
-          <h5 className="tasks-date__day">{selectedDateDay}</h5>
-          <h2 className="tasks-date__date">{selectedDateNumber}</h2>
-        </div>
-        <div className="tasks-date__tasks-container">
-          {dateTasks.map((task) => (
-            <div className="tasks-item-container" key={task.id} onClick={()=>handleOnTaskClick(task.id)}>
-              <h4 className="tasks-item__title">{task.title}</h4>
-              <span className="tasks-item__time">
-                {task.time_start} - {task.time_end}
-              </span>
-            </div>
-          ))}
-        </div>
-        <AddNewTaskBtn date={new Date(selectedDate)} />
+      <>
+      <div className="tasks__date-header">
+        <svg onClick={goBack}>{svgPaths.close}</svg>
       </div>
+        <div className=" tasks-date-container">
+          <div className="tasks-date-section">
+            <h5 className="tasks-date__day">{selectedDateDay}</h5>
+            <h2 className="tasks-date__date">{selectedDateNumber}</h2>
+          </div>
+          <div className="tasks-date__tasks-container">
+            {dateTasks.map((task) => (
+              <div
+                className="tasks-item-container"
+                key={task.id}
+                onClick={() => handleOnTaskClick(task.id)}
+              >
+                <h4 className="tasks-item__title">{task.title}</h4>
+                <span className="tasks-item__time">
+                  {task.time_start} - {task.time_end}
+                </span>
+              </div>
+            ))}
+          </div>
+          <AddNewTaskBtn date={new Date(selectedDate)} />
+        </div>
+      </>
     );
   };
   return (
@@ -73,7 +73,6 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout }) {
       {isMobileLayout ? renderMobileContent() : renderDesktopContent()}
     </div>
   );
-
 }
 
 const mapStateToProps = (state) => ({

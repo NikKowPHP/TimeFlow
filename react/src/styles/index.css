@@ -513,7 +513,7 @@ table > tbody > tr > td {
 }
 
 #defaultLayout main {
-  padding: 0.5rem 2rem;
+  padding: 0.2rem 0;
 }
 #defaultLayout .main-mobile {
   padding: 0;

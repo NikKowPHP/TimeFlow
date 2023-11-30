@@ -209,23 +209,7 @@ function DefaultLayout({
       </Modal>
     );
   };
-  const renderAddNewTaskLink = () => {
-    return (
-      <Link
-        to="/tasks/new"
-        className={`btn__add-task-wrapper btn__add-task__absolute`}
-      >
-        <svg
-          className="btn__add-task"
-          width="36"
-          height="36"
-          viewBox="0 0 36 36"
-        >
-          {svgPaths.addTask}
-        </svg>
-      </Link>
-    );
-  };
+
   const renderProfileModal = () => {
     const id = "profile";
 
@@ -345,7 +329,7 @@ function DefaultLayout({
                       <option value="week">Week</option>
                       <option value="agenda">Agenda</option>
                     </select>
-                    <AddNewTaskBtn date={new Date(currentDate)} />
+                    {renderAddNewTaskBtn()}
                   </>
                 )}
               </>

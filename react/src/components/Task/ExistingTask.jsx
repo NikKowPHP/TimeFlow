@@ -13,7 +13,6 @@ export default function ExistingTask({
     task.notification_preference
       ? replaceUnderscoresWithSpaces(task.notification_preference)
       : "notification is not set";
-      // COMMIT 
   // Render the header of the modal content
   const modalContentHeader = () => (
     <div className="modal-tools">

@@ -29,20 +29,20 @@ function TaskForm({ newTask, updateTasks }) {
 
   useEffect(() => {
     setLoading(true);
-    if(!newTask.date) {
+    if (!id && !newTask.date) {
       goBack();
+    } else if (newTask.date) {
+      setTask({
+        ...initiateNewTask(
+          newTask.time_start,
+          newTask.time_end,
+          newTask.date,
+          null
+        ),
+        user_id: newTask.user_id,
+      });
+      setLoading(false);
     }
-    setTask({
-      ...initiateNewTask(
-        newTask.time_start,
-        newTask.time_end,
-        newTask.date,
-        null
-      ),
-      user_id: newTask.user_id,
-    });
-
-    setLoading(false);
   }, []);
 
   if (id) {

@@ -45,13 +45,12 @@ const router = createBrowserRouter([
         element: <RoleNames />,
       },
       {
-        path: "/tasks",
+        path: "/tasks/:date",
         element: <Tasks />,
       },
       {
-        path: "/tasks/:date",
+        path: "/tasks",
         element: <Tasks />,
-
       },
       {
         path: "/task/:id",

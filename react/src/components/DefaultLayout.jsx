@@ -265,8 +265,7 @@ function DefaultLayout({
             <i className="fa fa-bars"></i>
           </button>
 
-          <Link to={"/calendar"}>Calendar</Link>
-          {isCalendar && isMobileLayout && (
+          <h3 to={"/calendar"}>Calendar</h3>
             <div
               className="aside__calendar-links"
               onClick={() => setAsideShown(false)}
@@ -275,7 +274,6 @@ function DefaultLayout({
               <Link to={"/calendar/week"}>Week</Link>
               <Link to={"/calendar/agenda"}>Schedule</Link>
             </div>
-          )}
           <hr className="aside-seperator" />
           <Link to={"/tasks"}>Tasks</Link>
 

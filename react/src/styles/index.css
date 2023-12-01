@@ -405,6 +405,10 @@ table > tbody > tr > td {
 .wrapper {
   position: relative;
 }
+.wrapper aside h3{
+  color: white;
+  margin-left: 0.5rem;
+}
 
 #defaultLayout {
 }

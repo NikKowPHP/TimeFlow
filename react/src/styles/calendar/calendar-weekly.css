@@ -1,6 +1,7 @@
 .calendar-weekly__container {
   font-size: 1rem;
-  padding: 10px;
+  padding: 0rem 8rem;
+  background-color: white;
 }
 .calendar-weekly__dates-switcher-container {
   display: flex;
@@ -36,7 +37,11 @@
 .calendar-weekly__date-block {
   text-align: center;
 }
+.calendar-weekly__date-block__weekday {
+  font-size: 0.8rem;
+}
 .calendar-weekly__date-block__date {
+  font-size: 1.5rem;
   position: relative;
   margin-top: 10px;
   cursor: pointer;
@@ -48,11 +53,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 25px;
-  width: 25px;
-  z-index: -1;
+  height: 3rem;
+  width: 3rem;
   border-radius: 50%;
-  border: 1px solid rgba(156, 89, 182, 0.6);
+  background: rgba(173, 114, 196, 0.23);
   transition: background 0.2s ease;
 }
 
@@ -68,7 +72,7 @@
 .calendar-weekly__date-block__date:not(.date-active):hover::before {
   opacity: 1;
   border: none;
-  background: #dbdada;
+  background: rgba(0, 0, 0, 0.164);
 }
 
 .calendar-weekly__time-block {
@@ -76,24 +80,31 @@
   grid-template-columns: 40px 1fr;
 }
 .calendar-weekly__time-block .hour-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.603);
 }
 .time-cells-list {
   margin-left: 15px;
   display: flex;
   flex-direction: row;
 }
-.tasks-list .modal-container{
+.tasks-list .modal-container {
   margin-left: 5px;
   display: flex;
   flex-direction: column;
 }
 .calendar-weekly__time-cell {
-  border-bottom: 1px solid black;
-  padding: 30px;
+  border-bottom: 1px solid rgb(1 1 1 / 22%);
+  border-right: 1px solid rgb(1 1 1 / 22%);
+  /* padding: 30px; */
+  padding: 2rem;
   flex-grow: 1;
   position: relative;
   /* z-index: 0; */
+}
+/* Trigger every 7th time cell  */
+.modal-container:nth-child(7n + 7) .calendar-weekly__time-cell {
+  border-right: none;
 }
 
 .clicked-new-task-modal {
@@ -102,13 +113,12 @@
   color: rgb(252, 252, 252);
   font-size: 0.7rem;
   font-weight: 700;
-  top: 50%;
-  left: 45%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  transform: translate(5%, -50%);
   width: 90%;
   height: 100%;
-  background-color: rgb(173, 114, 196);
-  box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
+  background-color: rgb(114 122 196 / 78%);
   border-radius: 10%;
 }
 .clicked-new-task-modal__text {
@@ -119,7 +129,7 @@
   z-index: 1;
 }
 
-.calendar-weekly__time-cell .tasks-list .modal-container{
+.calendar-weekly__time-cell .tasks-list .modal-container {
   position: relative;
 }
 /* .calendar-weekly__time-cell .tasks-list .modal-container{
@@ -127,12 +137,11 @@
 } */
 .calendar-weekly__time-cell .tasks-list .task-option {
   position: absolute;
-  background-color: rgb(0 255 149 / 96%);
-  box-shadow: 3px 3px 15px 3px;
+  background-color: rgba(145, 214, 154, 0.399);
   font-weight: 700;
   border-radius: 5px;
-  padding: 3px;
-  top: -100px;
+  padding: 0.5rem;
+  top: -96px;
   left: -32px;
   right: -21px;
   z-index: 1;
@@ -143,8 +152,12 @@
   flex-direction: column;
   align-items: center;
 }
+.calendar-weekly__task-option__title {
+  font-size: 0.8rem;
+}
 .calendar-weekly__task-option__time {
-  font-size: 13px;
+  font-size: 0.7rem;
+  font-weight: 400;
 }
 
 .task-period-background {
@@ -167,4 +180,13 @@
 .modal-task-time_time-selection-container .time-selection-block {
   flex-grow: 1;
 }
-
+@media screen and (max-width: 1600px) {
+  .calendar-weekly__container {
+    padding: 0rem 3rem;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .calendar-weekly__container {
+    padding: 0rem 2rem;
+  }
+}

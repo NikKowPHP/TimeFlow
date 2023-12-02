@@ -297,9 +297,9 @@ export function calendarUtils() {
     const taskDurationMinutes = (endTimestamp - startTimestamp) / 60000;
     const cellTimeAvailableMinutes = 60;
     const heightRatio = taskDurationMinutes / cellTimeAvailableMinutes;
-    const cellHeight = 64.83;
+    const cellHeight = 60;
     const taskHeight = cellHeight * heightRatio;
-    const top = taskTimeStart.includes("30") ? "-65px" : "-100px";
+    const top = taskTimeStart.includes("30") ? "-65px" : "-95px";
     return {
       top: top,
       height: `${taskHeight}px`,

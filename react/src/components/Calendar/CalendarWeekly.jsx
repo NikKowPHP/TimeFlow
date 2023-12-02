@@ -35,6 +35,7 @@ export default function CalendarWeekly({
   newTask,
   updateTasks,
   deleteTask,
+  isMobileLayout
 }) {
   const { requestNotificationPermission, displayNotification } =
     useNotificationState();

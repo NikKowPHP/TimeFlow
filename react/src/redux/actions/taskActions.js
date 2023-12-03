@@ -67,14 +67,23 @@ export const fetchDateTasks = (date) => {
     const allTasks = getState().tasks.allTasks;
 
     const dateTasks = allTasks.filter((task) => task.date === date);
-    dispatch(fetchDateTasksSuccess(dateTasks))
-  }
-}
+    dispatch(fetchDateTasksSuccess(dateTasks));
+  };
+};
 export const fetchSelectedTask = (id) => {
   return (dispatch, getState) => {
     const dateTasks = getState().tasks.dateTasks;
+const selectedTask = {};  
+    if (dateTasks && dateTasks.length > 0) {
+      dateTasks.find((task) => task.id === id);
+    } else {
+      dispatch(fetchTasksRequest());
+      axiosClient.get(`/tasks/${id}`)
+      .then((response) => {
+        dispatch(fetchSelectedTaskSuccess(response.data.data))
 
-    const selectedTask = dateTasks.find((task) => task.id === id);
-    dispatch(fetchSelectedTaskSuccess(selectedTask))
-  }
-}
+      });
+    }
+    dispatch(fetchSelectedTaskSuccess(selectedTask));
+  };
+};

@@ -32,7 +32,6 @@ class TaskController extends Controller
         $date = Task::whereDate('date', $date)->get();
 
         if ($date->count() !== 0) {
-            log::debug('index by date', ['data' => $date]);
             return TaskResource::collection($date);
         } else {
             return [];

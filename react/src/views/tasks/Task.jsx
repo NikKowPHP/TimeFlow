@@ -22,7 +22,7 @@ function Task({ selectedTask }) {
     dispatch(fetchSelectedTask(parseInt(id)));
   }, [id]);
 
-  return selectedTask ? (
+  return selectedTask.title ? (
     <div className="task__info-wrapper">
       <div className="task__info-header">
         <svg

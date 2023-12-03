@@ -174,8 +174,7 @@ export default function CalendarWeekly({
       handleOnTriggerClick({ event: event, modalId: taskId, dispatch });
     } else {
       event.stopPropagation();
-      dispatch(selectDate(new Date(task.date).getTime()));
-      navigate(`/tasks/${task.date}`);
+      navigate(`/task/${taskId}`);
     }
   };
 

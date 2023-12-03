@@ -1,8 +1,10 @@
 .calendar-agenda-wrapper {
-  border: 1px solid rgba(0, 0, 0, 0.26);
+  /* border: 1px solid rgba(0, 0, 0, 0.26); */
+  background: rgb(255, 255, 255);
+  min-height: 100vh;
 }
 .calendar-agenda__group-wrapper {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
   display: flex;
   padding: 10px;
   /* align-items: center; */
@@ -118,4 +120,44 @@
   transform: translate(-50%, -50%);
   background-color: #ff0000; 
   content: "";
+}
+@media screen and (max-width: 1024px) {
+  .calendar-agenda__group-date {
+    margin: 0 0.5rem;
+  }
+  .calendar-agenda__group-wrapper {
+    border: none;
+  }
+  .calendar-agenda__group-time {
+    margin-right: 1rem;
+  }
+  .calendar-agenda__group-info {
+    padding: 0;
+  }
+  .calendar-agenda__group-time-title {
+    border-radius: 1rem;
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: rgb(62 235 98 / 28%);
+  }
+  .calendar-agenda__group-wrapper__currentDate {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  }
+  .current-time-line {
+    left: 10px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .calendar-agenda__group-date {
+    width: inherit;
+    margin: 0;
+    padding: 0 0.5rem;
+    flex-direction: column;
+    font-size: 0.7rem;
+  }
+  .calendar-agenda {
+
+  }
 }

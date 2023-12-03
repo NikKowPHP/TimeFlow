@@ -48,7 +48,6 @@ function Tasks({ selectedDate, dateTasks, isMobileLayout, allTasks }) {
       const monthNumber = new Date(task.date).getMonth();
       const month = getMonthName(monthNumber);
 
-      debugger;
       if (!grouped[month]) {
         grouped[month] = {};
       }

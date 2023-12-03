@@ -163,17 +163,16 @@ function TaskForm({ newTask, updateTasks }) {
           <div className="taskForm-wrapper animated fadeInDown">
             <form action="" onSubmit={onSubmitForm}>
               <div className="taskForm__btn-group">
-                <button className="btn-close" onClick={goBack}>
                   <svg
-                    className="svg-control"
+                    className="btn-close svg-control"
                     focusable="false"
                     width="20"
                     height="20"
                     viewBox="0 0 24 24"
+                    onClick={goBack}
                   >
                     {svgPaths.close}
                   </svg>
-                </button>
                 <button type="submit" className="btn btn-add">
                   Save
                 </button>

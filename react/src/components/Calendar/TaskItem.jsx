@@ -5,7 +5,7 @@ export default function TaskItem({task, classes, handleOnTaskClick, styles, isMo
   const renderMobileLayout = () => (
     <div className={classes} onClick={handleOnTaskClick} style={styles}>
       <span className="calendar-weekly__task-option__title">
-        {<TruncatedText text={task.title} maxCharacters={10} />}
+        {<TruncatedText text={task.title} maxCharacters={5} />}
       </span>
     </div>
   )

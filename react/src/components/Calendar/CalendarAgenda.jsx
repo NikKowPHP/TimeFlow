@@ -9,6 +9,7 @@ import NewTask from "../Task/NewTask";
 import ExistingTask from "../Task/ExistingTask";
 import { taskUtils } from "../../utils/taskUtils";
 import TimeLine from "./TimeLine";
+import { useLocationState } from "../customHooks/useLocationState";
 
 export default function CalendarAgenda({
   allTasks,
@@ -22,10 +23,13 @@ export default function CalendarAgenda({
   currentDate,
   selectedDate,
   user,
+  isMobileLayout,
 }) {
   const modalRef = useRef(null);
+  const { navigate } = useLocationState();
 
-  const { toggleTaskActiveClass,getActiveDateClass, formatDateToDDMonDay } = calendarUtils();
+  const { toggleTaskActiveClass, getActiveDateClass, formatDateToDDMonDay } =
+    calendarUtils();
 
   const { onTaskDelete, onTaskEdit } = taskUtils({
     onStateReceived: handleTaskState,
@@ -104,7 +108,7 @@ export default function CalendarAgenda({
       return grouped;
     }, {});
 
-  const renderNewTaskContent = ({ id, date}) => (
+  const renderNewTaskContent = ({ id, date }) => (
     <NewTask
       formId={id}
       openedModalId={openedModalId}
@@ -129,7 +133,11 @@ export default function CalendarAgenda({
     const timePeriodStartObj = currentDateObj;
     const timePeriodEndObj = new Date();
     timePeriodEndObj.setHours(currentHours + 1);
-    const currentDateClass = getActiveDateClass(date,currentDate, selectedDate)
+    const currentDateClass = getActiveDateClass(
+      date,
+      currentDate,
+      selectedDate
+    );
     const newTaskProps = {
       id: id,
       date: dateObj,
@@ -145,7 +153,22 @@ export default function CalendarAgenda({
       isNewTask: true,
       allTasks: allTasks,
     };
-    return (
+
+    const groupTaskDateMobile = (
+      <div className="calendar-agenda__group-date">
+        <span
+          className={`calendar-agenda__group-date__dayOfMonth ${currentDateClass}`}
+          onClick={() => navigate("/tasks/new")}
+        >
+          {dayOfMonth}
+        </span>
+        <span className="calendar-agenda__group-date__month">{month}</span>
+        <span className="calendar-agenda__group-date__dayOfWeek">
+          {dayOfWeek}
+        </span>
+      </div>
+    );
+    const groupTaskDateDesktop = (
       <div className="calendar-agenda__group-date">
         <Modal
           modalOpacity={modalOpacity}
@@ -171,6 +194,8 @@ export default function CalendarAgenda({
         </span>
       </div>
     );
+
+    return isMobileLayout ? groupTaskDateMobile : groupTaskDateDesktop;
   };
 
   const renderGroupTaskInfo = (task) => {
@@ -179,14 +204,15 @@ export default function CalendarAgenda({
       openedModalId,
       isModalVisible
     );
-    return (
+
+    const groupTaskInfoDesktop = (
       <div
         className={`calendar-agenda__group-time-title ${activeClass}`}
         onClick={(event) =>
           handleOnTriggerClick({
             event: event,
             modalId: task.id,
-            dispatch:dispatch,
+            dispatch: dispatch,
             newTask: false,
           })
         }
@@ -199,6 +225,22 @@ export default function CalendarAgenda({
         </div>
       </div>
     );
+
+    const groupTaskInfoMobile = (
+      <div
+        className="calendar-agenda__group-time-title"
+        onClick={() => navigate(`/task/${task.id}`)}
+      >
+        <div className="calendar-agenda__group-title font-bold">
+          {task.title}
+        </div>
+        <div className="calendar-agenda__group-time--mobile">
+          {task.time_start}-{task.time_end}
+        </div>
+      </div>
+    );
+
+    return isMobileLayout ? groupTaskInfoMobile : groupTaskInfoDesktop;
   };
 
   const renderTaskList = () => {
@@ -234,8 +276,23 @@ export default function CalendarAgenda({
       </div>
     ));
   };
+  // TODO: CREATE "goToTaskCreation with the route of /tasks/new"
+  const renderCurrentDateGroupMobile = (
+    <div
+      onClick={() => navigate("/tasks/new")}
+      key={currentDate}
+      className="calendar-agenda__group-wrapper calendar-agenda__group-wrapper__currentDate"
+    >
+      {renderGroupTaskDate(currentDate)}
+      <div className="calendar-agenda__group-info calendar-agenda__group-info__current-date-info">
+        <TimeLine />
+      </div>
+    </div>
 
-  const renderCurrentDateGroup = () => (
+  )
+
+
+  const renderCurrentDateGroupDesktop =  (
     <div
       key={currentDate}
       className="calendar-agenda__group-wrapper calendar-agenda__group-wrapper__currentDate"
@@ -251,7 +308,7 @@ export default function CalendarAgenda({
       <Loading />
     ) : (
       <div className="calendar-agenda-wrapper">
-        {renderCurrentDateGroup()}
+        {isMobileLayout ? renderCurrentDateGroupMobile :renderCurrentDateGroupDesktop}
         <div>{renderTaskList()}</div>
       </div>
     );

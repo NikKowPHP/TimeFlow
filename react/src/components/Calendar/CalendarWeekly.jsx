@@ -14,6 +14,8 @@ import { taskUtils } from "../../utils/taskUtils";
 import { useDataHandlingLogic } from "../customHooks/useDataHandlingLogic";
 import TaskItem from "./TaskItem";
 import { useNotificationState } from "../customHooks/useNotificationState";
+import WeekSwitcher from "./items/WeekSwitcher";
+import useTouchHandlers from "../customHooks/useTouchHandlers";
 
 /**
  * CalendarWeekly component for displaying a weekly calendar view.
@@ -35,7 +37,7 @@ export default function CalendarWeekly({
   newTask,
   updateTasks,
   deleteTask,
-  isMobileLayout
+  isMobileLayout,
 }) {
   const { requestNotificationPermission, displayNotification } =
     useNotificationState();
@@ -49,6 +51,9 @@ export default function CalendarWeekly({
   const [selectedDatesByCell, setSelectedDatesByCell] = useState({});
   const [currentWeekStartDate, setCurrentWeekStartDate] = useState(currentDate);
   const modalRef = useRef(null);
+
+  const { handleTouchStart, handleTouchEnd, handleTouchMove } =
+    useTouchHandlers(handleNextWeek, handlePreviousWeek);
 
   // Get modal's state from custom hook
   const {
@@ -139,22 +144,22 @@ export default function CalendarWeekly({
   /**
    * Handles the action to move to the previous week
    */
-  const handlePreviousWeek = () => {
+  function handlePreviousWeek() {
     const newWeekStartDate = new Date(currentWeekStartDate);
     newWeekStartDate.setDate(new Date(currentWeekStartDate).getDate() - 7);
     checkMonthDiff(new Date(currentWeekStartDate), newWeekStartDate);
     setCurrentWeekStartDate(newWeekStartDate);
-  };
+  }
 
   /**
    * Handles the action to move to the next week
    */
-  const handleNextWeek = () => {
+  function handleNextWeek() {
     const newWeekStartDate = new Date(currentWeekStartDate);
     newWeekStartDate.setDate(new Date(currentWeekStartDate).getDate() + 7);
     checkMonthDiff(new Date(currentWeekStartDate), newWeekStartDate);
     setCurrentWeekStartDate(newWeekStartDate);
-  };
+  }
 
   /**
    * Handles the click on a specific date.
@@ -165,7 +170,13 @@ export default function CalendarWeekly({
   };
   const handleExistingTaskClick = (event, taskId) => {
     closeDateTimeSelectedCell();
-    handleOnTriggerClick({ event: event, modalId: taskId, dispatch });
+    if (!isMobileLayout) {
+      handleOnTriggerClick({ event: event, modalId: taskId, dispatch });
+    } else {
+      event.stopPropagation();
+      dispatch(selectDate(new Date(task.date).getTime()));
+      navigate(`/tasks/${task.date}`);
+    }
   };
 
   /**
@@ -316,16 +327,34 @@ export default function CalendarWeekly({
       task.time_start,
       task.time_end
     );
-    return (
+
+    const existingTaskItemDesktop = (
       <TaskItem
         modalOpacity={modalOpacity}
         modalPosition={modalPosition}
         task={task}
         classes={taskClass}
-        handleOnTaskClick={(event) => handleExistingTaskClick(event, task.id, dispatch)}
+        handleOnTaskClick={(event) =>
+          handleExistingTaskClick(event, task.id, dispatch)
+        }
         styles={taskHeightDimensions}
       />
     );
+    const existingTaskItemMobile = (
+      <TaskItem
+        modalOpacity={modalOpacity}
+        modalPosition={modalPosition}
+        task={task}
+        classes={taskClass}
+        handleOnTaskClick={(event) =>
+          handleExistingTaskClick(event, task.id, dispatch)
+        }
+        styles={taskHeightDimensions}
+        isMobileLayout={isMobileLayout}
+      />
+    );
+
+    return isMobileLayout ? existingTaskItemMobile : existingTaskItemDesktop;
   };
 
   const renderNewTaskBox = () => (
@@ -357,15 +386,19 @@ export default function CalendarWeekly({
       "calendar-weekly__time-cell " +
       `${cellClassNameSelected} ${cellHalfClassName}`;
 
-    const handleCellClick = (e) =>
-      handleDateHourClick({
-        date: date,
-        hour: hour,
-        e: e,
-        dateIndex: dateIndex,
-        hourIndex: hourIndex,
-      });
-
+    const handleCellClick = (e) => {
+      if (!isMobileLayout) {
+        handleDateHourClick({
+          date: date,
+          hour: hour,
+          e: e,
+          dateIndex: dateIndex,
+          hourIndex: hourIndex,
+        });
+      } else {
+        navigate("/tasks/new");
+      }
+    };
     return (
       <div key={dateIndex} className={cellClassName} onClick={handleCellClick}>
         <TaskList
@@ -476,20 +509,12 @@ export default function CalendarWeekly({
    */
   const renderCurrentWeekDates = () => (
     <>
-      <div className="calendar-weekly__dates-switcher-container">
-        <span
-          onClick={handlePreviousWeek}
-          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
-        >
-          chevron_left
-        </span>
-        <span
-          onClick={handleNextWeek}
-          className="material-symbols-rounded calendar-weekly__dates-switcher_block"
-        >
-          chevron_right
-        </span>
-      </div>
+      {!isMobileLayout && (
+        <WeekSwitcher
+          handleNextWeek={handleNextWeek}
+          handlePreviousWeek={handlePreviousWeek}
+        />
+      )}
       <div className="calendar-weekly__dates-list">
         {currentWeekDates.map((date, index) => (
           <div key={index} className="calendar-weekly__date-block">
@@ -508,13 +533,30 @@ export default function CalendarWeekly({
       </div>
     </>
   );
-
-  return loading ? (
-    <Loading />
-  ) : (
+  const mobileContent = (
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div className="calendar-weekly__container">
+        {currentWeekDates && renderCurrentWeekDates()}
+        {renderTimeGrid()}
+      </div>
+    </div>
+  );
+  const desktopContent = (
     <div className="calendar-weekly__container">
       {currentWeekDates && renderCurrentWeekDates()}
       {renderTimeGrid()}
     </div>
+  );
+
+  return loading ? (
+    <Loading />
+  ) : isMobileLayout ? (
+    mobileContent
+  ) : (
+    desktopContent
   );
 }

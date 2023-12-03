@@ -190,3 +190,35 @@
     padding: 0rem 2rem;
   }
 }
+@media screen and (max-width: 768px) {
+  .calendar-weekly__container {
+    padding: 0;
+  }
+  .calendar-weekly__time-block .hour-label {
+    margin: 0;
+    padding: 0;
+  }
+  .calendar-weekly__dates-list {
+    margin-left: 5px;
+    margin-bottom: 5px;
+  }
+  .time-cells-list {
+    margin-left: -2rem;
+  }
+  .calendar-weekly__time-cell {
+    padding: 2rem 1rem;
+
+  }
+
+  .calendar-weekly__time-cell .tasks-list .task-option {
+    padding: 0;
+    font-size: 0.6rem;
+    left: -18px;
+    right: -7px;
+  }
+  .calendar-weekly__task-option__title {
+    font-size: 0.7rem;
+    text-wrap: wrap;
+    font-weight: 500;
+  }
+}

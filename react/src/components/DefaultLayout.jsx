@@ -209,6 +209,18 @@ function DefaultLayout({
       </Modal>
     );
   };
+  const renderProfileLink = () => (
+    <Link to={"/profile"} className="btn-profile">
+      <svg
+        width="83px"
+        viewBox="0 0 18 18"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#000000"
+      >
+        {svgPaths.profileLogo}
+      </svg>
+    </Link>
+  );
 
   const renderProfileModal = () => {
     const id = "profile";
@@ -266,14 +278,14 @@ function DefaultLayout({
           </button>
 
           <h3 to={"/calendar"}>Calendar</h3>
-            <div
-              className="aside__calendar-links"
-              onClick={() => setAsideShown(false)}
-            >
-              <Link to={"/calendar/month"}>Month</Link>
-              <Link to={"/calendar/week"}>Week</Link>
-              <Link to={"/calendar/agenda"}>Schedule</Link>
-            </div>
+          <div
+            className="aside__calendar-links"
+            onClick={() => setAsideShown(false)}
+          >
+            <Link to={"/calendar/month"}>Month</Link>
+            <Link to={"/calendar/week"}>Week</Link>
+            <Link to={"/calendar/agenda"}>Schedule</Link>
+          </div>
           <hr className="aside-seperator" />
           <Link to={"/tasks"}>Tasks</Link>
 
@@ -343,7 +355,7 @@ function DefaultLayout({
                 }
               />
             )}
-            {renderProfileModal()}
+            {isMobileLayout ? renderProfileLink() : renderProfileModal()}
 
             {/* <a href="#" onClick={onLogout} className="btn btn-logout">
               Logout

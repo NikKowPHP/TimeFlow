@@ -3,10 +3,13 @@ import "../styles/profile.css";
 import { useStateContext } from "../contexts/ContextProvider";
 import { useLocationState } from "./customHooks/useLocationState";
 import svgPaths from "./svgPaths";
+import axiosClient from "../axios-client";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
-  const { user } = useStateContext();
+  const { user, setUser, setToken } = useStateContext();
   const { goBack } = useLocationState();
+  const navigate = useNavigate();
 
   const onLogout = (ev) => {
     ev.preventDefault();
@@ -22,7 +25,6 @@ function Profile() {
       viewBox="0 0 18 18"
       xmlns="http://www.w3.org/2000/svg"
       fill="#000000"
-      onClick={goBack}
       focusable="false"
       className="profile__avatar"
     >
@@ -55,7 +57,7 @@ function Profile() {
           </div>
         </div>
         <div className="modal-profile__btns">
-          <button onClick={onLogout} className="btn-signOut">
+          <button onClick={(ev) => onLogout(ev)} className="btn-signOut">
             <svg
               viewBox="0 0 24 24"
               fill="none"

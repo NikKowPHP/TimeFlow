@@ -1,0 +1,31 @@
+.profile-wrapper {
+	padding: 1rem;
+
+}
+.profile-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+.profile-header__welcome {
+	flex: 1;
+	text-align: center;
+}
+.profile-header__btn-close  {
+	width: 2rem;
+}
+.profile-body {
+	background: white;
+	border-radius: 1rem;
+	padding: 1rem;
+}
+.profile__info-avatar {
+	margin-right: 1rem;
+}
+.profile__info-avatar svg{
+	width: 3rem;
+}
+.profile__info-wrapper {
+	display: flex;
+	margin-bottom: 1rem;
+}

@@ -13,6 +13,7 @@ import Tasks from "./views/Tasks";
 import TaskForm from "./views/TaskForm";
 import GoogleCallback from "./components/GoogleCallback.jsx";
 import Task from "./views/tasks/Task.jsx";
+import Profile from "./components/Profile.jsx";
 
 
 const router = createBrowserRouter([
@@ -43,6 +44,11 @@ const router = createBrowserRouter([
       {
         path: "/roles/all",
         element: <RoleNames />,
+      },
+      {
+        path: "/profile",
+        element: <Profile/>
+
       },
       {
         path: "/tasks/:date",

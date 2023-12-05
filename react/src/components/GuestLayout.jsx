@@ -1,5 +1,6 @@
+import "../styles/guest-layout.css";
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 import Aside from "./Calendar/items/Aside";
 import { connect, useDispatch } from "react-redux";
@@ -8,6 +9,10 @@ import { windowResize } from "../redux/actions/appActions";
 function GuestLayout({ isMobileLayout }) {
   const [asideShown, setAsideShown] = useState(false);
   const dispatch = useDispatch();
+
+  const handleToggleAside = () => {
+    setAsideShown(!asideShown);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,50 +33,75 @@ function GuestLayout({ isMobileLayout }) {
     };
   }, [isMobileLayout, windowResize]);
 
-  console.log(isMobileLayout);
   const { token } = useStateContext();
   if (token) {
     return <Navigate to="/calendar/month" />;
   }
 
+  const asideLinks = () => (
+    <>
+      <li className="aside__nav-item">
+        <Link to={"/signup"} className="aside__nav-link">
+          About
+        </Link>
+      </li>
+      <li className="aside__nav-item">
+        <Link to={"/signup"} className="aside__nav-link">
+          Contact
+        </Link>
+      </li>
+      <li className="aside__nav-item">
+        <Link to={"/welcome"} className="aside__nav-link">
+          Showcases
+        </Link>
+      </li>
+      {isMobileLayout && <hr className="aside-seperator" />}
+      <li className="aside__nav-item guest__login-link">
+        <Link to={"/login"} className="aside__nav-link ">
+          Login
+        </Link>
+      </li>
+    </>
+  );
+
   const renderNav = () => (
-    <header className="header">
-      <nav className="header__nav">
-        <ul className="header__nav-list">
-          <li className="header__nav-item">
-            {isMobileLayout}
-            <button
-              className="btn-hamburger"
-              onClick={() => handleToggleAside()}
-            >
-              <i className="fa fa-bars"></i>
-            </button>
-          </li>
-          <li className="header__nav-item">
-            <a href="/login" className="header__nav-link">
-              Login
-            </a>
-          </li>
-          <li className="header__nav-item">
-            <a href="/signup" className="header__nav-link">
-              Register
-            </a>
-          </li>
+    <header className="guest-layout--header">
+      <nav className="guest__nav--header">
+        <ul className="guest__nav-list--header">
+          {isMobileLayout ? (
+            <li className="guest__nav-item-hamburger--header">
+              <button
+                className="btn-hamburger"
+                onClick={() => handleToggleAside()}
+              >
+                <i className="fa fa-bars"></i>
+              </button>
+            </li>
+          ) : (
+            <>{asideLinks()}</>
+          )}
         </ul>
       </nav>
     </header>
   );
 
   const renderFooter = () => (
-    <footer className="footer">
+    <footer className="guest-layout__footer">
       <p className="footer__text">&copy; 2023 TimeFlow. All rights reserved.</p>
     </footer>
   );
 
   return (
-    <div className="guestLayout-wrapper">
+    <div className="guest-layout--wrapper">
       {renderNav()}
-      <Aside setAsideShown={setAsideShown} asideShown={asideShown} />
+      {isMobileLayout && (
+        <Aside
+          handleToggleAside={handleToggleAside}
+          setAsideShown={setAsideShown}
+          asideShown={asideShown}
+          asideLinks={asideLinks()}
+        />
+      )}
       <Outlet />
       {renderFooter()}
     </div>

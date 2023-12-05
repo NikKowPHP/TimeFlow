@@ -14,6 +14,7 @@ import TaskForm from "./views/TaskForm";
 import GoogleCallback from "./components/GoogleCallback.jsx";
 import Task from "./views/tasks/Task.jsx";
 import Profile from "./components/Profile.jsx";
+import Welcome from "./components/Welcome.jsx";
 
 
 const router = createBrowserRouter([
@@ -99,6 +100,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <GuestLayout />,
     children: [
+      {
+        path: "/",
+        element: <Navigate to="/welcome" />,
+      },
+      {
+        path: "/welcome",
+        element: <Welcome />,
+      },
       {
         path: "/login",
         element: <Login />,

@@ -1,0 +1,45 @@
+.aside {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+	min-height: 100vh;
+  top: 0;
+  left: -100%;
+	/* background: linear-gradient(50deg, rgb(81, 255, 182), rgb(87, 160, 255)); */
+	background-color: black;
+	padding: 1rem 1.5rem;
+	width: 40vh;
+  z-index: 1000;
+  transition: left 0.3s ease-in-out;
+}
+.aside__close {
+	background-color: transparent;
+	border: none;
+}
+.aside__close svg {
+	width: 2rem;
+	fill: white;
+}
+.aside.aside-active {
+  left: 0;
+}
+.aside.aside-active + .dim-overlay {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.aside__nav {
+list-style: none;
+display: flex;
+flex-direction: column;
+}
+.aside__nav-item {
+	padding: 10px;
+	font-size: 18px;
+}
+.aside-seperator {
+ align-self: center;
+ margin: 0.5rem 0;
+}
+.aside__nav .aside__nav-link {
+	color: rgba(255, 255, 255, 0.5);
+}

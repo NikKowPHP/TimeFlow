@@ -1,28 +1,35 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import "../../../styles/modules/aside.css";
+import React from "react";
+import svgPaths from "../../svgPaths";
 
-function Aside({setAsideShown, asideShown}) {
+function Aside({ setAsideShown, asideShown, handleToggleAside, asideLinks }) {
   return (
     <>
       <aside
-        className={`default-aside-overlay ${asideShown ? "aside-active" : ""}`}
+        className={`aside aside-guest ${asideShown ? "aside-active" : ""}`}
       >
-        <button className="btn-hamburger" onClick={() => handleToggleAside()}>
-          <i className="fa fa-bars"></i>
-        </button>
-
-        <h3 to={"/calendar"}>Calendar</h3>
-        <div
-          className="aside__calendar-links"
-          onClick={() => setAsideShown(false)}
-        >
-          <Link to={"/calendar/month"}>Month</Link>
-          <Link to={"/calendar/week"}>Week</Link>
-          <Link to={"/calendar/agenda"}>Schedule</Link>
+        <div className="aside__header">
+          <button className="aside__close" onClick={handleToggleAside}>
+            <svg
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000000"
+              focusable="false"
+              className="profile__avatar"
+            >
+              {svgPaths.close}
+            </svg>
+          </button>
         </div>
-        <hr className="aside-seperator" />
-        <Link to={"/tasks"}>Tasks</Link>
+        <div className="aside__body">
+          <ul
+            className="aside__nav"
+            onClick={() => setAsideShown(false)}
+          >
+            {asideLinks}
 
+          </ul>
+        </div>
       </aside>
       {asideShown && (
         <div className="dim-overlay" onClick={() => setAsideShown(false)} />

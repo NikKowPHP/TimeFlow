@@ -102,7 +102,9 @@ function GuestLayout({ isMobileLayout }) {
           asideLinks={asideLinks()}
         />
       )}
-      <Outlet />
+      <main class="guest-layout__main">
+        <Outlet />
+      </main>
       {renderFooter()}
     </div>
   );

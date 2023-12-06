@@ -70,7 +70,7 @@ function Welcome() {
 
   const renderMain = () => (
     <section id="welcomeAbout" className="welcome-main__content">
-      <div ref={headerRef} className="reveal fade-bottom">
+      <div ref={headerRef} className="welcome-container welcome-about__section reveal fade-bottom">
         <h1 className="main__title">
           Take control of your schedule and productivity
         </h1>

@@ -38,7 +38,8 @@
     margin-bottom: 4rem;
   }
 
-  .features__title {
+  .features__title,
+  .coming-soon__title {
     font-size: 2rem;
     font-weight: 400;
     color: black;
@@ -46,18 +47,21 @@
     text-align: center;
   }
 
-  .features__list {
+  .features__list,
+  .coming-soon__list {
     list-style-type: none;
     padding: 0;
     margin: 0;
   }
 
-  .features__item {
+  .features__item,
+  .coming-soon__item {
     margin-bottom: 1rem;
     display: flex;
     /* align-items: center; */
   }
-  .feature__icon--container {
+  .feature__icon--container,
+  .coming-soon__icon--container {
     padding: 10px;
     margin-right: 10px;
     background-color: white;
@@ -66,36 +70,29 @@
     align-items: center;
     justify-content: center;
   }
-  .feature__icon--container svg{
+  .feature__icon--container svg,
+  .coming-soon__icon--container svg{
     width: 30px;
     display: block;
   }
-  .feature__title {
+  .feature__title,
+  .coming-soon__item__title {
     font-size: 24px;
     font-weight: 400;
     margin-bottom: 1rem;
   }
 
-  .features__icon {
+  .features__icon,
+  .coming-soon__icon {
     display: inline-block;
-    width: 24px;
-    height: 24px;
+    /* width: 24px;
+    height: 24px; */
     margin-right: 10px;
   }
   .coming-soon {
     padding: 0 1.5rem;
   }
-  .coming-soon__title {
-    font-size: 24px;
-    font-weight: 400;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  .coming-soon__list {
-    list-style: none;
-  }
-  .coming-soon__item {
-    margin-bottom: 1rem;
-    display: flex;
+  .coming-soon__icon--container {
+    background: #00ff2938;
   }
 }

@@ -22,11 +22,26 @@ function Welcome() {
     },
   ];
   const comingSoonList = [
-    "Task Categorization for a Structured Workflow",
-    "Enhanced Drag-and-Drop Functionality",
-    "Team Collaboration Tools for Efficient Task Allocation",
-    "Visual Data Analytics for Workflow Optimization",
-    "Extended Calendar Integration for Multi-Platform Usage",
+    {
+      title: "Task Categorization for a Structured Workflow",
+      icon: svgPaths.taskCategorization,
+    },
+    {
+      title: "Enhanced Drag-and-Drop Functionality",
+      icon: svgPaths.dragAndDrop,
+    },
+    {
+      title: "Team Collaboration Tools for Efficient Task Allocation",
+      icon: svgPaths.teamCollaboration,
+    },
+    {
+      title: "Visual Data Analytics for Workflow Optimization",
+      icon: svgPaths.dataAnalytics,
+    },
+    {
+      title: "Extended Calendar Integration for Multi-Platform Usage",
+      icon: svgPaths.calendarIntegration,
+    },
   ];
   const renderMain = () => (
     <section class="welcome-main__content">
@@ -44,9 +59,7 @@ function Welcome() {
           {featuresList.map((feature, index) => (
             <li key={index} className="features__item">
               <span className="feature__icon">
-                <span className="feature__icon--container">
-                  {feature.icon}
-                  </span>
+                <span className="feature__icon--container">{feature.icon}</span>
               </span>
               <div className="feature__info">
                 <h3 className="feature__title">{feature.title}</h3>
@@ -62,10 +75,11 @@ function Welcome() {
         <ul className="coming-soon__list">
           {comingSoonList.map((item, index) => (
             <li className="coming-soon__item" key={index}>
-              <span coming-soon__icon>
-                {item.icon}
+              <span className="coming-soon__icon">
+                <span className="coming-soon__icon--container">{item.icon}</span>
               </span>
-              {item}
+              <h3 className="coming-soon__item__title">{item.title}</h3>
+              
             </li>
           ))}
         </ul>

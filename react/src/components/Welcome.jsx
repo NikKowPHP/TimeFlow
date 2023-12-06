@@ -70,7 +70,10 @@ function Welcome() {
 
   const renderMain = () => (
     <section id="welcomeAbout" className="welcome-main__content">
-      <div ref={headerRef} className="welcome-container welcome-about__section reveal fade-bottom">
+      <div
+        ref={headerRef}
+        className="welcome-container welcome-about__section reveal fade-bottom"
+      >
         <h1 className="main__title">
           Take control of your schedule and productivity
         </h1>
@@ -84,20 +87,24 @@ function Welcome() {
         </div>
       </div>
       <section id="welcomeFeatures" className="features reveal fade-right">
-        <h2 className="features__title">Key Features</h2>
-        <ul className="features__list">
-          {featuresList.map((feature, index) => (
-            <li key={index} className="features__item">
-              <span className="feature__icon">
-                <span className="feature__icon--container">{feature.icon}</span>
-              </span>
-              <div className="feature__info">
-                <h3 className="feature__title">{feature.title}</h3>
-                <p className="feature__description">{feature.description}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="container">
+          <h2 className="features__title">Key Features</h2>
+          <ul className="features__list">
+            {featuresList.map((feature, index) => (
+              <li key={index} className="features__item">
+                <span className="feature__icon">
+                  <span className="feature__icon--container">
+                    {feature.icon}
+                  </span>
+                </span>
+                <div className="feature__info">
+                  <h3 className="feature__title">{feature.title}</h3>
+                  <p className="feature__description">{feature.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section id="welcomeComingSoon" className="coming-soon reveal fade-left">

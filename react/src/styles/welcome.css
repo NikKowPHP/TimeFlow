@@ -22,7 +22,7 @@
   }
   .main__buttons .btn-main {
     width: 80%;
-    border-radius: 1.3rem;
+    border-radius: 2.3rem;
     padding: 1.5rem;
     font-size: 18px;
     background: rgba(221, 53, 110, 0.9);
@@ -31,14 +31,18 @@
 
   /* Features section */
   .features {
+    background: #FEE856;
+    color: black;
+    margin-top: 5rem;
+    padding: 5rem 1.5rem;
     margin-bottom: 4rem;
   }
 
   .features__title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #4caf50;
-    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 400;
+    color: black;
+    margin-bottom: 2rem;
     text-align: center;
   }
 
@@ -51,7 +55,25 @@
   .features__item {
     margin-bottom: 1rem;
     display: flex;
+    /* align-items: center; */
+  }
+  .feature__icon--container {
+    padding: 10px;
+    margin-right: 10px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
     align-items: center;
+    justify-content: center;
+  }
+  .feature__icon--container svg{
+    width: 30px;
+    display: block;
+  }
+  .feature__title {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 1rem;
   }
 
   .features__icon {
@@ -59,5 +81,21 @@
     width: 24px;
     height: 24px;
     margin-right: 10px;
+  }
+  .coming-soon {
+    padding: 0 1.5rem;
+  }
+  .coming-soon__title {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .coming-soon__list {
+    list-style: none;
+  }
+  .coming-soon__item {
+    margin-bottom: 1rem;
+    display: flex;
   }
 }

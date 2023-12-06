@@ -64,12 +64,12 @@ function Welcome() {
     }
     window.addEventListener("scroll", reveal);
     return () => {
-      window.removeEventListener("scroll",reveal);
-    }
+      window.removeEventListener("scroll", reveal);
+    };
   }, []);
 
   const renderMain = () => (
-    <section className="welcome-main__content">
+    <section id="welcomeAbout" className="welcome-main__content">
       <div ref={headerRef} className="reveal fade-bottom">
         <h1 className="main__title">
           Take control of your schedule and productivity
@@ -83,7 +83,7 @@ function Welcome() {
           </Link>
         </div>
       </div>
-      <section className="features reveal fade-right">
+      <section id="welcomeFeatures" className="features reveal fade-right">
         <h2 className="features__title">Key Features</h2>
         <ul className="features__list">
           {featuresList.map((feature, index) => (
@@ -100,7 +100,7 @@ function Welcome() {
         </ul>
       </section>
 
-      <section className="coming-soon reveal fade-left">
+      <section id="welcomeComingSoon" className="coming-soon reveal fade-left">
         <h2 className="coming-soon__title">Coming soon features</h2>
         <ul className="coming-soon__list">
           {comingSoonList.map((item, index) => (
@@ -114,6 +114,14 @@ function Welcome() {
             </li>
           ))}
         </ul>
+      </section>
+      <section id="welcomeContact" className="contact reveal  fade-right">
+        <h4 className="contact__title">Contact information</h4>
+        <div className="contact__links">
+          <a href="tel://664431074">+48 664 431 074</a>
+          <a href="mailto:nik.kow@outlook.com">nik.kow@outlook.com</a>
+          <a href="github.com/NikKowPHP/TimeFlow">Github link</a>
+        </div>
       </section>
     </section>
   );

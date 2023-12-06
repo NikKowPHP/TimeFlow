@@ -97,6 +97,22 @@
   .coming-soon__icon--container {
     background: #00ff2938;
   }
+  .contact {
+    margin-top: 3rem;
+    padding: 2rem 2rem;
+    background: #dddddd6b;
+  }
+  .contact__title {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 2rem;
+  }
+  .contact__links a {
+    display: block;
+    color: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+    margin-bottom: 1rem;
+  }
 }
 .reveal {
   position: relative;

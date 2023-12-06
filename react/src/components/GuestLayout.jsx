@@ -1,10 +1,11 @@
 import "../styles/guest-layout.css";
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 import Aside from "./Calendar/items/Aside";
 import { connect, useDispatch } from "react-redux";
 import { windowResize } from "../redux/actions/appActions";
+import { Link } from "react-scroll";
 
 function GuestLayout({ isMobileLayout }) {
   const [asideShown, setAsideShown] = useState(false);
@@ -41,18 +42,55 @@ function GuestLayout({ isMobileLayout }) {
   const asideLinks = () => (
     <>
       <li className="aside__nav-item">
-        <Link to={"/signup"} className="aside__nav-link">
-          About
+        <Link
+          to={"welcomeAbout"}
+          onClick={handleToggleAside}
+          spy={true}
+          smooth={true}
+          duration={500}
+          offset={-100}
+          className="aside__nav-link"
+        >
+          Home
         </Link>
       </li>
       <li className="aside__nav-item">
-        <Link to={"/signup"} className="aside__nav-link">
-          Contact
+        <Link
+          to={"welcomeFeatures"}
+          onClick={handleToggleAside}
+          spy={true}
+          smooth={true}
+          duration={500}
+          offset={0}
+          className="aside__nav-link"
+        >
+          Features
         </Link>
       </li>
       <li className="aside__nav-item">
-        <Link to={"/welcome"} className="aside__nav-link">
-          Showcases
+        <Link
+          to={"welcomeComingSoon"}
+          onClick={handleToggleAside}
+          spy={true}
+          smooth={true}
+          duration={500}
+          offset={-30}
+          className="aside__nav-link"
+        >
+          Coming soon
+        </Link>
+      </li>
+      <li className="aside__nav-item">
+        <Link
+          to={"welcomeContact"}
+          onClick={handleToggleAside}
+          spy={true}
+          smooth={true}
+          duration={500}
+          offset={200}
+          className="aside__nav-link"
+        >
+         Contact 
         </Link>
       </li>
       {isMobileLayout && <hr className="aside-seperator" />}

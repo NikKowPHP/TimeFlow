@@ -39,72 +39,89 @@ function GuestLayout({ isMobileLayout }) {
     return <Navigate to="/calendar/month" />;
   }
 
-  const asideLinks = () => (
-    <>
-      <li className="aside__nav-item">
-        <Link
-          to={"welcomeAbout"}
-          onClick={handleToggleAside}
-          spy={true}
-          smooth={true}
-          duration={500}
-          offset={-100}
-          className="aside__nav-link"
-        >
-          Home
-        </Link>
-      </li>
-      <li className="aside__nav-item">
-        <Link
-          to={"welcomeFeatures"}
-          onClick={handleToggleAside}
-          spy={true}
-          smooth={true}
-          duration={500}
-          offset={0}
-          className="aside__nav-link"
-        >
-          Features
-        </Link>
-      </li>
-      <li className="aside__nav-item">
-        <Link
-          to={"welcomeComingSoon"}
-          onClick={handleToggleAside}
-          spy={true}
-          smooth={true}
-          duration={500}
-          offset={-30}
-          className="aside__nav-link"
-        >
-          Coming soon
-        </Link>
-      </li>
-      <li className="aside__nav-item">
-        <Link
-          to={"welcomeContact"}
-          onClick={handleToggleAside}
-          spy={true}
-          smooth={true}
-          duration={500}
-          offset={200}
-          className="aside__nav-link"
-        >
-         Contact 
-        </Link>
-      </li>
-      {isMobileLayout && <hr className="aside-seperator" />}
-      <li className="aside__nav-item guest__login-link">
-        <Link to={"/login"} className="aside__nav-link ">
-          Login
-        </Link>
-      </li>
-    </>
-  );
+  const asideLinks = () => {
+    let listClasses = "";
+    let linkClasses = "";
+    if (isMobileLayout) {
+      listClasses = "aside__nav-item";
+      linkClasses = "aside__nav-link";
+    } else {
+      listClasses = "guest__nav-item";
+      linkClasses = "guest__nav-link";
+    }
+    return (
+      <>
+        <li className={listClasses}>
+          <Link
+            to={"welcomeAbout"}
+            onClick={handleToggleAside}
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={-100}
+            className={linkClasses}
+          >
+            Home
+          </Link>
+        </li>
+        <li className={listClasses}>
+          <Link
+            to={"welcomeFeatures"}
+            onClick={handleToggleAside}
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={0}
+            className={linkClasses}
+          >
+            Features
+          </Link>
+        </li>
+        <li className={listClasses}>
+          <Link
+            to={"welcomeComingSoon"}
+            onClick={handleToggleAside}
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={-30}
+            className={linkClasses}
+          >
+            Coming soon
+          </Link>
+        </li>
+        <li className={listClasses}>
+          <Link
+            to={"welcomeContact"}
+            onClick={handleToggleAside}
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={200}
+            className={linkClasses}
+          >
+            Contact
+          </Link>
+        </li>
+        {isMobileLayout && <hr className="aside-seperator" />}
+        <li className={`${listClasses} guest__login-link`}>
+          <Link to={"/login"} className={linkClasses}>
+            Login
+          </Link>
+        </li>
+      </>
+    );
+  };
 
   const renderNav = () => (
     <header className="guest-layout--header">
       <nav className="guest__nav--header">
+        <div className="guest__nav-item header__logo">
+          <Link className="guest__nav-link guest__nav-logo" to="welcomeHome">
+            TimeFlow 
+          </Link>
+          <span className="header__logo-dot">.</span>
+        </div>
         <ul className="guest__nav-list--header">
           {isMobileLayout ? (
             <li className="guest__nav-item-hamburger--header">
@@ -116,7 +133,8 @@ function GuestLayout({ isMobileLayout }) {
               </button>
             </li>
           ) : (
-            <>{asideLinks()}</>
+            <>
+            {asideLinks()}</>
           )}
         </ul>
       </nav>

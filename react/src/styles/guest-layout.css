@@ -1,35 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;500;700&display=swap');
+
 .guest-layout--wrapper {
   background-color: white;
   min-height: 100vh;
+  font-family: 'Inconsolata', monospace !important;
 }
 .guest-layout--header {
-  background-color: rgb(1, 2, 3);
-  padding: 0.5rem 3rem;
+  padding: 0 3rem;
   background-color: white;
+}
+.guest__nav--header {
+  display: flex;
+  align-items: center;
 }
 
 .guest__nav-list--header {
   list-style: none;
+  font-size: 18px;
   margin: 0;
   padding: 0;
+  flex: 1;
   display: flex;
+  align-items: center;
   /* justify-content: flex-end; */
 }
-.guest__nav-list--header .aside__nav-link {
+
+.guest__nav-item {
   color: black;
   transition: color 0.3s ease-in-out;
 }
-.guest__nav-list--header .aside__nav-link:hover {
+.guest__nav-item:hover {
   color: rgb(141, 138, 138);
 }
-
-.header__nav-item {
-  margin-left: 20px;
+.guest__nav-link {
+  padding: 30px 10px;
+  margin: 5px;
 }
-
-.aside__nav-link {
-  text-decoration: none;
-  color: #333;
+.header__logo {
+  font-size: 32px;
+  font-weight: 500;
+  margin-right: 3rem;
+}
+.header__logo-dot {
+  color: red;
 }
 
 .guest__nav--header .guest__login-link {

@@ -4,7 +4,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
 }
 
 html,
@@ -412,6 +411,7 @@ table > tbody > tr > td {
 }
 
 #defaultLayout {
+  font-family: "Poppins", sans-serif;
 }
 .default-layout-container {
   position: relative;

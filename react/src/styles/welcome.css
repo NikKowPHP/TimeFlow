@@ -21,6 +21,8 @@
     justify-content: center;
   }
   .main__buttons .btn-main {
+    display: block;
+    text-align: center;
     width: 80%;
     border-radius: 2.3rem;
     padding: 1.5rem;
@@ -94,5 +96,62 @@
   }
   .coming-soon__icon--container {
     background: #00ff2938;
+  }
+}
+.reveal {
+  position: relative;
+  opacity: 0;
+}
+.reveal.section-active {
+  opacity: 1;
+}
+.section-active.fade-bottom {
+  animation: fade-bottom 1s ease-in;
+}
+.section-active.fade-left {
+  animation: fade-left 1s ease-in;
+}
+.section-active.fade-right {
+  animation: fade-right 1s ease-in;
+}
+
+@keyframes fade-bottom {
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-top{
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-left {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-right{
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

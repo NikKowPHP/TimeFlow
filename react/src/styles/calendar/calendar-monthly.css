@@ -101,13 +101,12 @@ CALENDAR BY MONTH
 }
 .calendar-monthly__clicked-new-task-modal {
   text-align: center;
-  color: rgb(252, 252, 252);
+  color: rgb(0 0 0);
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 500;
   padding: 10px;
-  background-color: rgb(173, 114, 196);
-  box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.399);
-  border-radius: 10%;
+  background-color: rgb(7 255 0 / 28%);
+  border-radius: 20px;
 }
 
 .calendar-dates li.current-date::before {

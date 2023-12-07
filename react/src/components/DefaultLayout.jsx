@@ -260,79 +260,56 @@ function DefaultLayout({
       </Modal>
     );
   };
+  const renderAside = () => (
+    <aside
+      className={`default-aside-overlay ${asideShown ? "aside-active" : ""}`}
+    >
+      <button className="btn-hamburger" onClick={() => handleToggleAside()}>
+        <i className="fa fa-bars"></i>
+      </button>
 
-  return (
-    <div id="defaultLayout" className="default-layout-container">
-      {/* Notification listener to show notifications from the backend */}
-      <NotificationListener />
+      <h3>Calendar</h3>
+      <div
+        className="aside__calendar-links"
+        onClick={() => setAsideShown(false)}
+      >
+        <Link to={"/calendar/month"}>Month</Link>
+        <Link to={"/calendar/week"}>Week</Link>
+        <Link to={"/calendar/agenda"}>Schedule</Link>
+        <hr className="aside-seperator" />
+        <Link to={"/tasks"}>Tasks</Link>
+      </div>
 
-      <ToastContainer />
-      <div className="wrapper">
-        {/* Dim overlay */}
-        <aside
-          className={`default-aside-overlay ${
-            asideShown ? "aside-active" : ""
-          }`}
-        >
-          <button className="btn-hamburger" onClick={() => handleToggleAside()}>
-            <i className="fa fa-bars"></i>
-          </button>
+      {user && user.hasOwnProperty("roles") && user.roles.includes("admin") && (
+        <>
+          <Link to={"/roles"}>Roles</Link>
+          <Link to={"/roles/all"}>Role names</Link>
+          <Link to={"/users"}>Users</Link>
+        </>
+      )}
+    </aside>
+  );
 
-          <h3 to={"/calendar"}>Calendar</h3>
-          <div
-            className="aside__calendar-links"
-            onClick={() => setAsideShown(false)}
-          >
-            <Link to={"/calendar/month"}>Month</Link>
-            <Link to={"/calendar/week"}>Week</Link>
-            <Link to={"/calendar/agenda"}>Schedule</Link>
-          </div>
-          <hr className="aside-seperator" />
-          <Link to={"/tasks"}>Tasks</Link>
-
-          {user &&
-            user.hasOwnProperty("roles") &&
-            user.roles.includes("admin") && (
-              <>
-                <Link to={"/roles"}>Roles</Link>
-                <Link to={"/roles/all"}>Role names</Link>
-                <Link to={"/users"}>Users</Link>
-              </>
-            )}
-
-          {isCalendar && !isMobileLayout && (
-            <CalendarAside
-              dispatch={dispatch}
-              selectDate={selectDate}
-              year={year}
-              currentDate={currentDate}
-              selectedDate={selectedDate}
-              month={month}
-              dates={dates}
-              setMonth={setMonth}
-            />
-          )}
-        </aside>
-        {asideShown && (
-          <div className="dim-overlay" onClick={() => setAsideShown(false)} />
-        )}
-
-        <div className="content">
-          <header>
+  const renderHeader = () => (
+    <header className="default-layout__header">
+      <nav className="default-layout__nav">
+        <ul className="default-layout__nav-list">
+          <li className="default-layout__nav-item">
             <button
               className="btn-hamburger"
               onClick={() => handleToggleAside()}
             >
               <i className="fa fa-bars"></i>
             </button>
-            {!isMobileLayout && (
-              <>
-                <div>{user && user.name}</div>
-
-                {/* show selection of calendar types */}
-                {isCalendar && (
-                  <>
+          </li>
+          {!isMobileLayout && (
+            <>
+              {/* show selection of calendar types */}
+              {isCalendar && (
+                <>
+                  <li>
                     <select
+                      className="select select-round"
                       value={layout}
                       onChange={(e) => handleOptionSelect(e.target.value)}
                     >
@@ -340,11 +317,14 @@ function DefaultLayout({
                       <option value="week">Week</option>
                       <option value="agenda">Agenda</option>
                     </select>
-                    {renderAddNewTaskBtn()}
-                  </>
-                )}
-              </>
-            )}
+                  </li>
+
+                  <li>{renderAddNewTaskBtn()}</li>
+                </>
+              )}
+            </>
+          )}
+          <li>
             {isMobileLayout && isCalendarMonthly && (
               <MonthSwitcher
                 monthName={getMonthName(month)}
@@ -356,18 +336,36 @@ function DefaultLayout({
                 }
               />
             )}
-            {isMobileLayout ? renderProfileLink() : renderProfileModal()}
+          </li>
+          <li>{isMobileLayout ? renderProfileLink() : renderProfileModal()}</li>
+        </ul>
+      </nav>
+    </header>
+  );
+  const renderMain = () => (
+    <main className={isMobileLayout ? "main-mobile" : ""}>
+      <Outlet />
+      {isMobileLayout && isCalendar && (
+        <AddNewTaskBtn date={new Date(currentDate)} />
+      )}
+    </main>
+  );
+  const render = () => (
+    <div id="defaultLayout" className="default-layout">
+      <NotificationListener />
+      <ToastContainer />
 
-            {/* <a href="#" onClick={onLogout} className="btn btn-logout">
-              Logout
-            </a> */}
-          </header>
-          <main className={isMobileLayout ? "main-mobile" : ""}>
-            <Outlet />
-            {isMobileLayout && isCalendar && (
-              <AddNewTaskBtn date={new Date(currentDate)} />
-            )}
-          </main>
+      <div className="default-layout__wrapper">
+        {renderHeader()}
+        {renderAside()}
+
+        {/* Dim overlay */}
+        {asideShown && (
+          <div className="dim-overlay" onClick={() => setAsideShown(false)} />
+        )}
+
+        <div className="default-layout__content">
+          {renderMain()}
 
           {notification && <div className="notification">{notification}</div>}
           {errors.message && (
@@ -379,6 +377,8 @@ function DefaultLayout({
       </div>
     </div>
   );
+
+  return render();
 }
 
 const mapStateToProps = (state) => ({

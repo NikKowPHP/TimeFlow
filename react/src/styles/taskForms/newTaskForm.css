@@ -1,7 +1,6 @@
 .taskForm-wrapper {
 	background-color: rgb(255, 255, 255);
 	height: 100vh;
-	margin-top: 0.1rem;
 	display: flex;
 	flex-direction: column;
 	/* align-items: center; */

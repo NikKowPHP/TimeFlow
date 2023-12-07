@@ -1,3 +1,4 @@
+import "../styles/modules/login.css";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
@@ -62,7 +63,7 @@ export default function Login() {
           )}
           <input type="email" ref={emailRef} placeholder="Email" />
           <input type="password" ref={passwordRef} placeholder="Password" />
-          <button className="btn btn-block">Sign in</button>
+          <button className="btn btn-block btn-signin">Sign in</button>
           <p className="message">
             Not Registered? <Link to="/signup">Create an account</Link>
           </p>

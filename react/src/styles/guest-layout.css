@@ -28,6 +28,7 @@
 .guest__nav-item {
   color: black;
   transition: color 0.3s ease-in-out;
+  cursor: pointer;
 }
 .guest__nav-item:hover {
   color: rgb(141, 138, 138);

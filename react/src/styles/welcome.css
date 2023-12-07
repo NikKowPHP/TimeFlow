@@ -200,6 +200,50 @@
     font-size: 15px;
     font-weight: 300;
   }
+  .coming-soon {
+    padding: 7em 0;
+  }
+  .coming-soon__title {
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 3rem;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .coming-soon__list {
+    display: flex;
+    flex-direction: column;
+  }
+  .coming-soon__item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+
+
+
+
+
+
+
+  .coming-soon__icon--container {
+    padding: 10px;
+    margin-right: 10px;
+    background: #00ff2938;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 80px;
+  }
+  .coming-soon__icon--container svg {
+    width: 30px;
+  }
+  .coming-soon__item__title {
+    font-size: 24px;
+    font-weight: 400;
+  }
   
 
 

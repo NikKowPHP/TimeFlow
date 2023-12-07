@@ -108,19 +108,21 @@ function Welcome() {
       </section>
 
       <section id="welcomeComingSoon" className="coming-soon reveal fade-left">
-        <h2 className="coming-soon__title">Coming soon features</h2>
-        <ul className="coming-soon__list">
-          {comingSoonList.map((item, index) => (
-            <li className="coming-soon__item" key={index}>
-              <span className="coming-soon__icon">
-                <span className="coming-soon__icon--container">
-                  {item.icon}
+        <div className="container">
+          <h2 className="coming-soon__title">Coming soon features</h2>
+          <ul className="coming-soon__list">
+            {comingSoonList.map((item, index) => (
+              <li className="coming-soon__item" key={index}>
+                <span className="coming-soon__icon">
+                  <span className="coming-soon__icon--container">
+                    {item.icon}
+                  </span>
                 </span>
-              </span>
-              <h3 className="coming-soon__item__title">{item.title}</h3>
-            </li>
-          ))}
-        </ul>
+                <h3 className="coming-soon__item__title">{item.title}</h3>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
       <section id="welcomeContact" className="contact reveal  fade-right">
         <h4 className="contact__title">Contact information</h4>

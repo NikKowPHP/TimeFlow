@@ -1,15 +1,18 @@
 import "../styles/guest-layout.css";
 import React, { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
 import Aside from "./Calendar/items/Aside";
 import { connect, useDispatch } from "react-redux";
 import { windowResize } from "../redux/actions/appActions";
 import { Link } from "react-scroll";
+import { Link as RouterLink } from "react-router-dom";
 
 function GuestLayout({ isMobileLayout }) {
   const [asideShown, setAsideShown] = useState(false);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const isWelcomeLocation = location.pathname.includes("welcome");
 
   const handleToggleAside = () => {
     setAsideShown(!asideShown);
@@ -49,7 +52,7 @@ function GuestLayout({ isMobileLayout }) {
       listClasses = "guest__nav-item";
       linkClasses = "guest__nav-link";
     }
-    return (
+    return isWelcomeLocation ? (
       <>
         <li className={listClasses}>
           <Link
@@ -105,33 +108,65 @@ function GuestLayout({ isMobileLayout }) {
         </li>
         {isMobileLayout && <hr className="aside-seperator" />}
         <li className={`${listClasses} guest__login-link`}>
-          <Link to={"/login"} className={linkClasses}>
+          <RouterLink
+            onClick={handleToggleAside}
+            to={"/login"}
+            className={linkClasses}
+          >
             Login
-          </Link>
+          </RouterLink>
         </li>
       </>
+    ) : (
+      <li className={listClasses}>
+        <RouterLink
+          to={"/welcome"}
+          onClick={handleToggleAside}
+          // spy={true}
+          // smooth={true}
+          // duration={500}
+          // offset={200}
+          className={linkClasses}
+        >
+          Home
+        </RouterLink>
+      </li>
     );
   };
 
   const renderNav = () => (
     <header className="guest-layout--header">
       <nav className="guest__nav--header">
-        <div className="guest__nav-item header__logo">
-          <Link className="guest__nav-link guest__nav-logo" to="welcomeHome">
-            TimeFlow
-            <span className="header__logo-dot">.</span>
-          </Link>
-        </div>
+        {!isMobileLayout && (
+          <div className="guest__nav-item header__logo">
+            <Link className="guest__nav-link guest__nav-logo" to="welcomeHome">
+              TimeFlow
+              <span className="header__logo-dot">.</span>
+            </Link>
+          </div>
+        )}
         <ul className="guest__nav-list--header">
           {isMobileLayout ? (
-            <li className="guest__nav-item-hamburger--header">
-              <button
-                className="btn-hamburger"
-                onClick={() => handleToggleAside()}
-              >
-                <i className="fa fa-bars"></i>
-              </button>
-            </li>
+            <>
+              <li className="guest__nav-item-hamburger--header">
+                <button
+                  className="btn-hamburger"
+                  onClick={() => handleToggleAside()}
+                >
+                  <i className="fa fa-bars"></i>
+                </button>
+              </li>
+
+              <div className="guest__nav-item header__logo">
+                <Link
+                  className="guest__nav-link guest__nav-logo"
+                  to="welcomeHome"
+                >
+                  TimeFlow
+                  <span className="header__logo-dot">.</span>
+                </Link>
+              </div>
+            </>
           ) : (
             <>{asideLinks()}</>
           )}

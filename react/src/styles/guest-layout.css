@@ -27,15 +27,17 @@
 
 .guest__nav-item {
   color: black;
-  transition: color 0.3s ease-in-out;
   cursor: pointer;
-}
-.guest__nav-item:hover {
-  color: rgb(141, 138, 138);
 }
 .guest__nav-link {
   padding: 30px 10px;
   margin: 5px;
+  text-decoration: none;
+  color: black;
+  transition: color 0.3s ease-in-out;
+}
+.guest__nav-link:hover {
+  color: rgb(141, 138, 138);
 }
 .header__logo {
   font-size: 32px;
@@ -62,5 +64,18 @@
   text-align: center;
   padding: 20px;
   background-color: #f4f4f4;
+}
+.guest__nav-link {
+  display: block;
+}
+@media screen and (max-width: 768px) {
+
+  .guest__nav-list--header {
+    flex:1;
+    justify-content: space-between;
+  }
+  .header__logo {
+    margin-left: 20px;
+  }
 }
 

@@ -45,7 +45,6 @@ class AuthController extends Controller
             ]);
         }
         $user = Auth::user();
-        header('Access-Control-Allow-Origin: http://localhost:3000');
         $token = $user->createToken('main')->plainTextToken;
         return response(compact('user', 'token'));
     }

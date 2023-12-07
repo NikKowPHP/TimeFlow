@@ -8,7 +8,6 @@
 	content: "";
 	top: 50%;
 	left: 5px;
-	/* bottom: 0; */
 	transform: translate(-50%, -50%);
 	width: 10px;
 	height: 10px;
@@ -20,9 +19,7 @@
 	align-items: center;
 }
 .modal-newTask__timeSelection-container .timeSelection-block {
-	width: 40%;
-	margin-right: 10px;
-	margin-left: 10px;
+	flex: 1;
 }
 .modal-newTask__timePeriod-container {
 	text-align: center;
@@ -33,6 +30,7 @@
 .modal-newTask__notification-container {
 	margin-bottom: 10px;
 	display: flex;
+	align-items: center;
 }
 .modal-newTask__notification-container svg {
 	margin-right: 5px;

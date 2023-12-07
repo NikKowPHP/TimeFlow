@@ -72,6 +72,7 @@ export default function NewTask({
 
   const renderNotificationSelection = () => (
     <select
+    className="select select-round"
       defaultValue={null}
       onChange={(event) => onNotificationSelection(event)}
     >
@@ -106,7 +107,7 @@ export default function NewTask({
                 {renderDateSelection()}
               </div>
               <div className="modal-newTask__timeSelection-container">
-                {renderTimeSelection(newTaskObj.time_start, true)}-
+                {renderTimeSelection(newTaskObj.time_start, true)}
                 {renderTimeSelection(newTaskObj.time_end, false)}
               </div>
             </div>

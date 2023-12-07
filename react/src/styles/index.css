@@ -347,55 +347,6 @@ table > tbody > tr > td {
   margin-left: 0.5rem;
 }
 
-#defaultLayout {
-  font-family: "Poppins", sans-serif;
-}
-.default-layout-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.default-aside-overlay {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: -100%;
-  background-color: rgba(164, 94, 192, 0.61);
-  z-index: 1000;
-
-  transition: left 0.3s ease-in-out;
-}
-.dim-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0);
-  z-index: 999;
-  display: none;
-  transition: background 0.3s ease-in-out;
-}
-.default-aside-overlay.aside-active {
-  left: 0;
-}
-.default-aside-overlay.aside-active + .dim-overlay {
-  display: block;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.default-aside-overlay .btn-hamburger {
-  color: white;
-  align-self: flex-end;
-}
-
-#defaultLayout aside {
-  width: 300px;
-  height: 100vh;
-  background-color: #5b08a7;
-  padding: 1rem;
-  transform-origin: 0% 0%;
-}
 .btn-hamburger {
   background-color: transparent;
   border: none;
@@ -410,57 +361,6 @@ table > tbody > tr > td {
   display: block;
 }
 
-#defaultLayout aside > a {
-  display: block;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  color: white;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.aside__calendar-links {
-  display: flex;
-  flex-direction: column;
-  padding-left: 10px;
-}
-.aside__calendar-links > a:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-.aside__calendar-links > a {
-  display: block;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  color: white;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-#defaultLayout aside > a:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-#defaultLayout .content {
-  flex: 1;
-}
-
-#defaultLayout header {
-  height: 10vh;
-  /* height: 80px; */
-  padding: 2rem 3rem;
-  background-color: white;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#defaultLayout main {
-  padding: 0.2rem 0;
-}
-#defaultLayout .main-mobile {
-  padding: 0;
-  position: relative;
-}
 
 .animated {
   -webkit-animation-duration: 0.3s;
@@ -523,14 +423,5 @@ table > tbody > tr > td {
   100% {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-@media screen and (max-width: 970px) {
-  #defaultLayout header {
-    /* height: 50px; */
-    height: 5vh;
-  }
-  .btn-logout {
-    padding: 10px;
   }
 }

@@ -1,3 +1,4 @@
+import "../styles/default-layout.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";

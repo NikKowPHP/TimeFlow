@@ -23,3 +23,8 @@
 .calendar-dates li:hover {
   z-index: inherit;
 }
+@media screen and (max-width: 1000px) {
+  .calendar-dates li::before {
+    top: 9%;
+  }
+}

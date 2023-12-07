@@ -118,9 +118,9 @@ function GuestLayout({ isMobileLayout }) {
       <nav className="guest__nav--header">
         <div className="guest__nav-item header__logo">
           <Link className="guest__nav-link guest__nav-logo" to="welcomeHome">
-            TimeFlow 
+            TimeFlow
+            <span className="header__logo-dot">.</span>
           </Link>
-          <span className="header__logo-dot">.</span>
         </div>
         <ul className="guest__nav-list--header">
           {isMobileLayout ? (
@@ -133,8 +133,7 @@ function GuestLayout({ isMobileLayout }) {
               </button>
             </li>
           ) : (
-            <>
-            {asideLinks()}</>
+            <>{asideLinks()}</>
           )}
         </ul>
       </nav>

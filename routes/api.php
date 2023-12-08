@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/due-tasks', [TaskController::class, 'getDueTasks']);
 
+    // Get admin privilagies 
+    Route::put('/admin-claim', [RoleController::class, 'updateUserRole']);
+
     Route::apiResource('/tasks', TaskController::class);
 
     // get all users

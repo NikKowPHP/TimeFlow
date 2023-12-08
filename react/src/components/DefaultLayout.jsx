@@ -143,6 +143,18 @@ function DefaultLayout({
     setLayout(option);
     navigate(`/calendar/${option}`);
   };
+  // TODO: Make user, role, task classes.
+  const handleAdminRequest = () => {
+    const payload = { user_id: user.id, role_id: [1,2]};
+   
+    axiosClient.put(`/admin-claim`, payload)
+    .then((data) => {
+      console.log(data)
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
 
   const renderAddNewTaskBtn = () => {
     const id = "addNewTaskBtn";
@@ -278,6 +290,9 @@ function DefaultLayout({
         <Link to={"/calendar/agenda"}>Schedule</Link>
         <hr className="aside-seperator" />
         <Link to={"/tasks"}>Tasks</Link>
+        <hr className="aside-seperator" />
+        <button onClick={handleAdminRequest}>God mode</button>
+
       </div>
 
       {user && user.hasOwnProperty("roles") && user.roles.includes("admin") && (

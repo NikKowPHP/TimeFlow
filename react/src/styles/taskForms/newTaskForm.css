@@ -1,13 +1,43 @@
-.taskForm-wrapper {
-	background-color: rgb(255, 255, 255);
-	height: 100vh;
-	display: flex;
-	flex-direction: column;
-	/* align-items: center; */
-	padding: 1rem;
+@media screen and (max-width: 768px) {
+  .taskForm-wrapper {
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    padding: 1rem;
+  }
+  .taskForm__btn-group {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
 }
-.taskForm__btn-group {
-	padding: 1rem;
-	display: flex;
-	justify-content: space-between;
+.task-form__wrapper {
+  background-color: rgb(255, 255, 255);
+  height: 100vh;
+	margin: 20px auto;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+	max-width: 435px;
 }
+.task-form__btn-group {
+	display: flex;
+	width: 100%;
+}
+.task-form__btn-group .btn {
+	width: 50%;
+	margin: 10px;
+	border-radius: 20px;
+}
+.task-form__btn-group .btn-add {
+	background-color: rgb(76 255 0 / 39%);
+	color: black;
+}
+.task-form__btn-group .btn-delete {
+
+	background-color: rgb(255 0 0 / 39%);
+	color: black;
+}
+

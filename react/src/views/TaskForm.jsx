@@ -90,7 +90,7 @@ function TaskForm({ newTask, updateTasks }) {
   return (
     <>
       {task.id ? (
-        <div>
+        <div className="task-form__wrapper">
           <h1>Edit '{task.title}'</h1>
           <div className="card animated fadeInDown">
             {loading && <div className="text-center">Loading ...</div>}
@@ -130,6 +130,7 @@ function TaskForm({ newTask, updateTasks }) {
                     />
                   </div>
                   <select
+                  className="select select-round"
                     style={{ marginBottom: "10px" }}
                     defaultValue={task.notification_preference}
                     onChange={(event) =>

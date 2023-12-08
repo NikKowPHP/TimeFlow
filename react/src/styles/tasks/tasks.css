@@ -1,52 +1,68 @@
+@media screen and (max-width: 768px) {
+  .tasks-wrapper {
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .tasks__date-header {
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+  }
+  .tasks__date-header svg {
+    padding: 0;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+  }
+  .tasks-date__items-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 0.5rem 0;
+  }
+  .tasks-date__month {
+    text-align: center;
+  }
+  .tasks-date__tasks__block-container {
+    display: flex;
+  }
+  .tasks-item-container {
+    flex: 1;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: rgba(136, 228, 106, 0.4);
+    border-radius: 10px;
+  }
+  .tasks-date-section {
+    width: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    padding-left: 0;
+  }
+  .tasks-date__day {
+    margin-bottom: 0.2rem;
+  }
+}
 
-.tasks-wrapper {
-	height: 100%;
-	background-color: white;
-	display: flex;
-	flex-direction: column;
-	padding: 1rem;
+.tasks__desktop-content {
+  max-width: 1000px;
+  margin: 0 auto;
+	margin-top: 2rem;
 }
-.tasks__date-header {
-	padding: 0 1rem;
-	margin-bottom: 2rem;
+.tasks__desktop-table th {
+  text-align: center;
 }
-.tasks__date-header svg {
-	padding:0;
-	margin: 0;
-	width: 20px;
-	height: 20px;
+.tasks__desktop-table tr {
+  text-align: center;
 }
-/* TODO: align dates and group by months */
-.tasks-date__items-container {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	margin: 0.5rem 0;
+.tasks__desktop-table__actions {
+  max-width: 100px;
 }
-.tasks-date__month {
-	text-align: center;
-}
-.tasks-date__tasks__block-container {
-	display: flex;
-}
-.tasks-item-container {
-	flex: 1;
-	padding: 1rem;
-	margin-bottom: 0.5rem;
-	background-color:rgba(136, 228, 106, 0.4);
-	border-radius: 10px;
-}
-.tasks-date-section {
-	width: 3rem;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding:  1rem;
-	padding-left: 0;
-}
-.tasks-date__day {
-	margin-bottom: 0.2rem;
-}
-.tasks__desktop-table__actions .btn:nth-child(1){
-	margin-right: 1rem;
+
+.tasks__desktop-table__actions .btn:nth-child(1) {
+  margin-right: 1rem;
 }

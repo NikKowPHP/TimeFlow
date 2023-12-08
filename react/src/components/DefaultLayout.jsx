@@ -145,16 +145,17 @@ function DefaultLayout({
   };
   // TODO: Make user, role, task classes.
   const handleAdminRequest = () => {
-    const payload = { user_id: user.id, role_id: [1,2]};
-   
-    axiosClient.put(`/admin-claim`, payload)
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
+    const payload = { user_id: user.id, role_id: [1, 2] };
+
+    axiosClient
+      .put(`/admin-claim`, payload)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const renderAddNewTaskBtn = () => {
     const id = "addNewTaskBtn";
@@ -290,18 +291,27 @@ function DefaultLayout({
         <Link to={"/calendar/agenda"}>Schedule</Link>
         <hr className="aside-seperator" />
         <Link to={"/tasks"}>Tasks</Link>
-        <hr className="aside-seperator" />
-        <button onClick={handleAdminRequest}>God mode</button>
+        {}
 
+        {!user.roles.includes("admin") && (
+          <>
+            <hr className="aside-seperator" />
+            <button className="btn btn-delete" onClick={handleAdminRequest}>
+              God mode
+            </button>
+          </>
+        )}
+        {user &&
+          user.hasOwnProperty("roles") &&
+          user.roles.includes("admin") && (
+            <>
+              <hr className="aside-seperator" />
+              <Link to={"/roles"}>Roles</Link>
+              <Link to={"/roles/all"}>Role names</Link>
+              <Link to={"/users"}>Users</Link>
+            </>
+          )}
       </div>
-
-      {user && user.hasOwnProperty("roles") && user.roles.includes("admin") && (
-        <>
-          <Link to={"/roles"}>Roles</Link>
-          <Link to={"/roles/all"}>Role names</Link>
-          <Link to={"/users"}>Users</Link>
-        </>
-      )}
     </aside>
   );
 

@@ -12,7 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('tasks:check-due-tasks')->everyFiveMinutes()->appendOutputTo(storage_path('logs/scheduler.log'));
+        $schedule->command('tasks:check-due-tasks')->everyFifteenMinutes()->appendOutputTo(storage_path('logs/scheduler.log'));
     }
 
     /**

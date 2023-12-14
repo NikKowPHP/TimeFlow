@@ -23,6 +23,7 @@
   .main__buttons .btn-main {
     display: block;
     text-align: center;
+    color: white;
     width: 80%;
     border-radius: 2.3rem;
     padding: 1.5rem;
@@ -79,7 +80,7 @@
   }
   .feature__title,
   .coming-soon__item__title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 400;
     margin-bottom: 1rem;
   }

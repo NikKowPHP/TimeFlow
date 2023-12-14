@@ -293,7 +293,7 @@ function DefaultLayout({
         <Link to={"/tasks"}>Tasks</Link>
         {}
 
-        {!user.roles.includes("admin") && (
+        {!user.roles?.includes("admin") && (
           <>
             <hr className="aside-seperator" />
             <button className="btn btn-delete" onClick={handleAdminRequest}>

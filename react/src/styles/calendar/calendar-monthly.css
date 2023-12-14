@@ -129,7 +129,7 @@ CALENDAR BY MONTH
     background: rgb(255, 255, 255);
   }
   .calendar-monthly-dates .date {
-    height: 18vh;
+    height: 21vh;
   }
 }
 @media screen and (max-width: 768px) {

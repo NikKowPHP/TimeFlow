@@ -23,10 +23,8 @@ COPY ./.docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 COPY . .
 RUN composer install
+RUN php artisan migrate
+RUN php artsian db:seed RolesTableSeeder
 
 
-# EXPOSE 8000
-
-# CMD php artisan serve 
-# CMD ["php", "artisan", "serve", "--host", "0.0.0.0"]
 CMD ["php", "artisan", "serve", "--host", "0.0.0.0"]

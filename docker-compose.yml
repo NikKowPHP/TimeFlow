@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
     environment:
       DB_HOST: db
-      DB_DATABASE: lisboa
-      DB_USERNAME: mikita
+      DB_DATABASE: timeflow
+      DB_USERNAME: root
       DB_PASSWORD: gans2vlad
     ports:
      - 8000:8000
@@ -35,8 +35,8 @@ services:
   db:
     image: mysql:5.7.22
     environment:
-      MYSQL_DATABASE: lisboa
-      MYSQL_USER: mikita
+      MYSQL_DATABASE: timeflow
+      MYSQL_USER: root
       MYSQL_PASSWORD: gans2vlad
       MYSQL_ROOT_PASSWORD: gans2vlad
     networks:
